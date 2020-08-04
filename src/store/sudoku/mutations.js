@@ -40,6 +40,7 @@ export default {
         // data.push(true)
         data.push(state.advanchedPossibly.onlyHere)
         data.push(state.advanchedPossibly.onePossibly)
+        x.setAdvanchedPossibly(state.advanchedPossibly)
         state.field = x.allPossubly(field,data)
         //state.field = methods.sudokuSolve.allPossubly(field)
     },

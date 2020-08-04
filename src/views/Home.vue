@@ -2,10 +2,13 @@
   <div class="home">
     <!-- {{this.Fields}} -->
     <div class="cards">
-      <div v-for="(item, index) in fieldsN(start,end)" :key="item">
+      <div v-for="(item, index) in fieldsN(start,end)"
+      :key="item">
         <!-- v-bind:easy="Checked(item)" -->
+         <!-- v-if="checedCount >= index" -->
         <SudokuCard
         v-bind:stringfield="item"
+        v-bind:easy="Checked(item)"
           v-bind:fieldid="index+start" />
       </div>
     </div>
@@ -25,7 +28,8 @@ export default {
   data: function () {
     return {
       start: 0,
-      end: 20
+      end: 100,
+      checedCount :0
     };
   },
   components: {
@@ -46,7 +50,9 @@ export default {
   methods: {
     Checked (stringfield)  {
       let x = new methods.sudokuSolve
-      return x.checkWinPossiblyString(stringfield)
+      let param = x.checkWinPossiblyString(stringfield)
+      //this.checedCount++
+      return param
     },
     startfunc () {
       // let x =new Set([1,2,3])
@@ -62,7 +68,7 @@ export default {
     }
   },
   mounted() {
-    this.startfunc()
+    //this.startfunc()
   }
 }
 </script>

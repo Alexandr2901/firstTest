@@ -34,6 +34,9 @@
                 <div class="menuitem" @click="goBack()">
                     back
                 </div>
+                <div class="menuitem" @click="help()">
+                    help
+                </div>
             </div>
             <div class="Field">
                 <div class="Field-line" v-for="line in 9" :key="line">
@@ -121,6 +124,14 @@
                 onlyHere: 'sudoku/onlyHereSwitch',
                 selectButton: 'sudoku/front/selectButton',
             }),
+            help() {
+                let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
+                this.Field.forEach(element => {
+                    url += element.value
+                });
+                window.open(url)
+                
+            },
             onePossiblythere() {
                 this.onePossibly()
                 this.possiblyesColor.onePossibly = !this.possiblyesColor.onePossibly

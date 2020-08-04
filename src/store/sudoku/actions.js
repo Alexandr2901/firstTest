@@ -154,11 +154,11 @@ export default {
             //console.log(a)
             context.commit('SET_FIELD_VALUE', payload)
             context.dispatch('allPossubly')
-            if (context.state.field.every(item => item.value !== 0)) {
-                setTimeout(() => {
-                    console.log("Решено")
-                }, 2000)
-            }
+            // if (context.state.field.every(item => item.value !== 0)) {
+            //     setTimeout(() => {
+            //         console.log("Решено")
+            //     }, 2000)
+            // }
         }
     },
     undoLastValue(context) {

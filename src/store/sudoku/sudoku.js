@@ -12,12 +12,16 @@ const sudokuSquares = [
 class sudokuSolve {
     constructor() {
         this.repeat = true
-        this.option = new Set()
+        this.option = new Set() //количество решений
         this.possiblyends = 0
         this.param = 0
+        this.advanchedPossibly = [1,0,0]
     }
     optionk() {
         return this.option
+    }
+    setAdvanchedPossibly (parametr) {
+        this.advanchedPossibly  = [1, parametr.onePossibly, parametr.onlyHere]
     }
     fieldInit(stringField) {
         let a = []
@@ -49,7 +53,7 @@ class sudokuSolve {
         if (cycle) {
             this.cycleInint(field)
         }
-        while (this.repeat && error < 100) {
+        while (this.repeat && error < 1000) {
             //console.log('1');
             error++
             this.repeat = false
@@ -85,9 +89,15 @@ class sudokuSolve {
         return
     }
     allPossublyInSegment(segment) {
-        this.existValue(segment)
-        this.onlyHere(segment)
-        this.onePossiblyDelete(segment)
+        if (this.advanchedPossibly[0]) {
+            this.existValue(segment)
+        }
+        if (this.advanchedPossibly[1]) {
+            this.onlyHere(segment)
+        }
+        if (this.advanchedPossibly[2]) {
+            this.onePossiblyDelete(segment)
+        }
         return
         // if (this.methods === 4) {
         //     this.onlyHere(segment)
@@ -195,9 +205,10 @@ class sudokuSolve {
                 check = false
             }
         })
-        if(field[1].value === field[2].value) {
-            check = false
-        }
+        // if(field[1].value === field[2].value) {
+        //     check = false
+        // }
+        //console.log(check);
         return check
         //return field.every(item => (item.value !== 0 & item.possibly.size === 1))
     }
@@ -214,7 +225,9 @@ class sudokuSolve {
         return x
     }
     checkWinPossiblyString(stringfield) {
+        this.advanchedPossibly = [1,1,1]
         return this.checkWinPossibly(this.allPossubly(this.fieldInit(stringfield)))
+        //return false
     }
     setValue (field, id, value) {
         //console.log('setValue')
