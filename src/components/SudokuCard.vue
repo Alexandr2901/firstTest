@@ -1,5 +1,7 @@
 <template>
   <div
+  name="fade"
+  v-if="this.color"
   v-bind:style="{ backgroundColor: color, }"
    class="SudokuCard">
     <div @click="goSudoky()">
@@ -14,12 +16,17 @@
 import {
     mapActions
 } from 'vuex'
+import methods from '../store/sudoku/sudoku'
 export default {
     name: 'SudokuCard',
     props: {
         stringfield: String,
-        fieldid: Number,
-        easy: Boolean
+        fieldid: Number
+    },
+    data: function () {
+        return {
+            color: false
+        }
     },
     methods: {
         ...mapActions({
@@ -30,6 +37,14 @@ export default {
             this.initialization(this.fieldid)
             this.$router.push('/Sudoku')
         },
+        test () {
+            let x = new methods.sudokuSolve
+            if (x.checkWinPossiblyString(this.stringfield)) {
+                this.color = 'green'
+            } else {
+                this.color = 'white'
+            }
+        }
     },
     computed: {
         difficult() {
@@ -41,14 +56,22 @@ export default {
             }
             return ':' + (81 - number)
         },
-        color () {
-            if (this.easy) {
-                return 'green'
-            } else {
-                return 'white'
-            }
-        }
+        // color () {
+        //     if (this.easy) {
+        //         return 'green'
+        //     } else {
+        //         return 'white'
+        //     }
+        // }
+    },
+    mounted() {
+        this.test()
+        this.$emit('itemChecked')
+        //console.log('2');
     }
+    // created() {
+    //     console.log('1');
+    // }
 }
 </script>
 <style>
@@ -60,5 +83,9 @@ export default {
         font-size: 5vmin;
         min-width: 9vmin;
         min-height: 9vmin;
+    /* opacity: 0; */
 }
+/* .fade-enter-active {
+    transition: opacity .5s;
+} */
 </style>

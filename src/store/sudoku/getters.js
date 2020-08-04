@@ -2,15 +2,15 @@ export default {
     field: state =>  state.field,
     autoresolution: state =>  state.autoresolution,
     advanchedPossibly: state => state.advanchedPossibly,
-    testgeetter: (state,id)=> {
-        let a = new Set()
-        console.log(id)
-        for (let i=0; i<9;i++) {
-            a.add(state.field[i].value)
-        }
-    },
+    // testgeetter: (state,id)=> {
+    //     let a = new Set()
+    //     console.log(id)
+    //     for (let i=0; i<9;i++) {
+    //         a.add(state.field[i].value)
+    //     }
+    // },
     ButtonGetter: state => number => {
-        console.log('ButtonGetter')
+        //console.log('ButtonGetter')
         //console.log(number)
         let b = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
         number = Math.floor(number/9) * 9
@@ -42,12 +42,12 @@ export default {
       /* Uppgradedfield: state => {
        },*/
        possibleField: state => {
-              console.log('update')
+              //console.log('update')
               let a = []
               state.field.forEach((item, index) => {
                      let b = [1, 2, 3, 4, 5, 6, 7, 8, 9]
                      b.splice(+item.value-1, !!item||0)
-                     console.log('1')
+                    //console.log('1')
                      a.push({
                             id: index,
                             value: item,

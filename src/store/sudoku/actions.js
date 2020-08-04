@@ -11,7 +11,7 @@ export default {
         // q
         //context.dispatch('testinit')
         //console.log(context.rootGetters['dataManage/field'](id))
-        console.log('init')
+        //console.log('init')
         //console.log(sud.test('222'))
         context.commit('INITIALIZATION', context.rootGetters['dataManage/field'](id))
         //context.dispatch('selectRows')

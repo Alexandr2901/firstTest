@@ -1,7 +1,7 @@
 import methods from './sudoku'
 export default {
     INITIALIZATION(state, stringField) {
-        console.log('init')
+        //console.log('init')
         state.advanchedPossibly.onePossibly = false
         state.advanchedPossibly.onlyHere = false
         state.selectedStringField = stringField

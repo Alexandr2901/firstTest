@@ -7,13 +7,12 @@
         <!-- v-bind:easy="Checked(item)" -->
          <!-- v-if="checedCount >= index" -->
         <SudokuCard
+        v-on:itemChecked="endUp()"
         v-bind:stringfield="item"
-        v-bind:easy="Checked(item)"
           v-bind:fieldid="index+start" />
       </div>
     </div>
-    <button @click="end+=100">+</button>
-    <button @click="end-=100">-</button>
+    <button @click="maxEndUp()">+</button>
   </div>
 </template>
 
@@ -28,7 +27,8 @@ export default {
   data: function () {
     return {
       start: 0,
-      end: 100,
+      end: 10,
+      maxEnd:100,
       checedCount :0
     };
   },
@@ -65,6 +65,17 @@ export default {
       console.log(x.sudokuSolution(this.fieldsN(0,100)[2]))
       
       //return x.sudokuSolution(this.fieldsN(1,2))
+    },
+    endUp() {
+      setTimeout(() => {
+        if(this.maxEnd>this.end) {
+        this.end++
+      }
+      }, 1)
+    },
+    maxEndUp () {
+      this.maxEnd += 100
+      this.endUp()
     }
   },
   mounted() {
