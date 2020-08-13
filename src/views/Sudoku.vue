@@ -130,7 +130,6 @@
                     url += element.value
                 });
                 window.open(url)
-                
             },
             onePossiblythere() {
                 this.onePossibly()
@@ -149,7 +148,7 @@
                 this.easyChoise = false
             },
             pageClick() {
-                console.log('testAction')
+                //console.log('testAction')
                 this.selectButton(-1)
                 this.easyChoise = false
             },
@@ -214,13 +213,13 @@
                     //  + 'px, ' + (data.e.y + Math.min(window.innerHeight, window.innerWidth) / 200 * this.sizeBtn) + 'px)'
                     //     //this.easyChoiseClass.transform+='rotate(180deg)'
                     // }
-                    console.log(y);
-                    console.log(x);
+                    //console.log(y);
+                    //console.log(x);
                 } else {
                     this.easyChoise = false
                 }
-                console.log(this.easyChoiseClass)
-                console.log(data)
+                //console.log(this.easyChoiseClass)
+                //console.log(data)
             },
             keywordClick(e) {
                 //console.log('testAction')
@@ -252,7 +251,8 @@
             },
             goBack() {
                 //alert('back')
-                this.$router.push('/')
+                history.back()
+                //this.$router.push('/')
             },
             updateSize() {
                 //this.easyChoise = false

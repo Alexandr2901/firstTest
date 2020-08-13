@@ -5,11 +5,10 @@
       <div v-for="(item, index) in fieldsN(start,end)"
       :key="item">
         <!-- v-bind:easy="Checked(item)" -->
-         <!-- v-if="checedCount >= index" -->
         <SudokuCard
         v-on:itemChecked="endUp()"
         v-bind:stringfield="item"
-          v-bind:fieldid="index+start" />
+        v-bind:fieldid="index+start" />
       </div>
     </div>
     <button @click="maxEndUp()">+</button>
@@ -22,15 +21,15 @@ import {
 } from 'vuex'
 import SudokuCard from '../components/SudokuCard'
 import methods from '../store/sudoku/sudoku'
+//import { nextTick } from 'vue/types/umd'
 export default {
   name: 'Home',
   data: function () {
     return {
       start: 0,
-      end: 10,
+      end: 1,
       maxEnd:100,
-      checedCount :0
-    };
+      };
   },
   components: {
     SudokuCard
@@ -51,7 +50,6 @@ export default {
     Checked (stringfield)  {
       let x = new methods.sudokuSolve
       let param = x.checkWinPossiblyString(stringfield)
-      //this.checedCount++
       return param
     },
     startfunc () {
@@ -63,26 +61,36 @@ export default {
       //console.log(this.fieldsN(0,10)[2]);
       //x.sudokuSolution(this.fieldsN(0,100)[0]).then(console.log(x.option))
       console.log(x.sudokuSolution(this.fieldsN(0,100)[2]))
-      
       //return x.sudokuSolution(this.fieldsN(1,2))
     },
     endUp() {
-      setTimeout(() => {
-        if(this.maxEnd>this.end) {
-        this.end++
-      }
-      }, 1)
+      // this.$nextTick(()=>{
+      //   this.end++
+      // })
+        if (this.maxEnd >= this.end) {
+          setTimeout(() => {
+            this.end++
+          }, 1)
+          //this.end++
+        }
     },
     maxEndUp () {
-      this.maxEnd += 100
+      this.start += 200
+      this.maxEnd += 200
       this.endUp()
     }
   },
   mounted() {
+    // window.addEventListener('scroll', () => {
+    //   console.log('321');
+    //   this.maxEnd+=10
+    //   this.endUp()
+    // });
     //this.startfunc()
   }
 }
 </script>
+
 <style scoped>
 .cards {
   display: flex;

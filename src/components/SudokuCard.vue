@@ -1,6 +1,5 @@
 <template>
   <div
-  name="fade"
   v-if="this.color"
   v-bind:style="{ backgroundColor: color, }"
    class="SudokuCard">
@@ -37,13 +36,14 @@ export default {
             this.initialization(this.fieldid)
             this.$router.push('/Sudoku')
         },
-        test () {
+        init () {
             let x = new methods.sudokuSolve
             if (x.checkWinPossiblyString(this.stringfield)) {
                 this.color = 'green'
             } else {
                 this.color = 'white'
             }
+            //this.color = 'white'
         }
     },
     computed: {
@@ -65,7 +65,7 @@ export default {
         // }
     },
     mounted() {
-        this.test()
+        this.init()
         this.$emit('itemChecked')
         //console.log('2');
     }

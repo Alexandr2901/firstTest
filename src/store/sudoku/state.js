@@ -1,4 +1,7 @@
 export default {
+    savedData: localStorage.getItem('savedData') || {
+        
+    },
     autoresolution: false,
     possiblyApdated: true,
     advanchedPossibly: {

@@ -4,12 +4,8 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: '/Sudoku', name: 'Sudoku', component: () => import('../views/Sudoku.vue')
-  },
-  {
-    path: '/', name: 'SudHomeoku', component: () => import('../views/Home.vue')
-  }
+  {path: '/Sudoku', name: 'Sudoku', component: () => import('../views/Sudoku.vue')},
+  {path: '/', name: 'SudHomeoku', component: () => import('../views/Home.vue')}
 ];
 if (process.env.MODE !== 'ssr') {
   routes.push({

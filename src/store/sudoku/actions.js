@@ -41,27 +41,7 @@ export default {
         context.dispatch('allPossubly')
     },
     allPossubly(context) {
-        //var noerror = 0
-        //context.commit('CYCLE_INIT')
-        //context.dispatch('selectSegments')
         context.commit('EXIST_VALUE',context.state.field)
-        // context.commit('ALL_ROW_POSSIBLY')
-        // context.commit('ALL_COLUMN_POSSIBLY')
-        // context.commit('ALL_SQUARE_POSSIBLY')
-        //context.commit('POSSIBLY_APDATE')
-        // while (context.state.possiblyApdated) {
-        //     context.commit('POSSIBLY_APDATE')
-        //     if (context.state.advanchedPossibly.onePossibly) {
-        //         context.commit('ROW_ONE_POSSIBLY')
-        //         context.commit('COLUMN_ONE_POSSIBLY')
-        //         context.commit('SQUARE_ONE_POSSIBLY')
-        //     }
-        //     if (context.state.advanchedPossibly.onlyHere) {
-        //         context.commit('ROW_ONLU_HERE')
-        //         context.commit('COLUMN_ONLU_HERE')
-        //         context.commit('SQUARE_ONLU_HERE')
-        //     }
-        // }
         if (context.state.autoresolution) {
             setTimeout(() => {
                 if (context.state.autoresolution) {
