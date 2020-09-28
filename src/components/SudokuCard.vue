@@ -65,6 +65,8 @@ export default {
         // }
     },
     mounted() {
+        // this.initialization(1)
+        //     this.$router.push('/Sudoku')
         this.init()
         this.$emit('itemChecked')
         //console.log('2');

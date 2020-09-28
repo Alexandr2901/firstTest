@@ -114,15 +114,16 @@
         },
         methods: {
             ...mapActions({
-                getData: 'dataManage/getDataMain',
+                //getData: 'dataManage/getDataMain',
                 //testmethod: 'testMod/test',
-                testsudoku: 'sudoku/initialization',
+                //testsudoku: 'sudoku/initialization',
                 undoLastValue: 'sudoku/undoLastValue',
                 autoResolution: 'sudoku/autoResolution',
                 setTargetValue: 'sudoku/front/setTargetValue',
                 onePossibly: 'sudoku/onlePossiblySwitch',
                 onlyHere: 'sudoku/onlyHereSwitch',
                 selectButton: 'sudoku/front/selectButton',
+                appInit: 'sudoku/appInit',
             }),
             help() {
                 let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
@@ -275,6 +276,7 @@
             //window.addEventListener('resize', this.updateSize);
         },
         mounted() {
+            this.appInit()
             this.updateSize()
             //document.addEventListener('keydown')
             document.addEventListener('keydown', this.keywordClick)
@@ -288,6 +290,7 @@
         beforeDestroy () {
             //alert('beforeDestroy')
             document.removeEventListener('keydown', this.keywordClick);
+            window.removeEventListener('resize', this.updateSize);
             //window.removeEventListener('keydown', this.testAction);
             //window.removeEventListener('resize', this.updateSize);
         }

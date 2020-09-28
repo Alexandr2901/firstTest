@@ -21,7 +21,7 @@ class sudokuSolve {
         return this.option
     }
     setAdvanchedPossibly (parametr) {
-        this.advanchedPossibly  = [1, parametr.onePossibly, parametr.onlyHere]
+        this.advanchedPossibly  = parametr
     }
     fieldInit(stringField) {
         let a = []
@@ -117,6 +117,10 @@ class sudokuSolve {
         segment.forEach(item => {
             if (item.value > 0) {
                 segmentPossibly.add(item.value)
+            } else {
+                if (item.possibly.size === 1) {
+                    segmentPossibly.add()
+                }
             }
         })
         segment.forEach(item => {

@@ -1,51 +1,65 @@
 import methods from './sudoku'
 export default {
+    SET_PERSONAL_DATA(state) {
+        // let x = {
+        //     advanchedPossibly: [1, true, true],
+        //     lastField: '',
+        //     lastFieldFill: '',
+        //     solved: [
+        //         '000000012000035000000600070700000300000400800100000000000120000080000040050000600', '000000012003600000000007000410020000000500300700000600280000040000300500000000000', '000000012008030000000000040120500000000004700060000000507000300000620000000100000', '000000012040050000000009000070600400000100000000000050000087500601000300200000000', '000000012050400000000000030700600400001000000000080000920000800000510700000003000', '000000012300000060000040000900000500000001070020000000000350400001400800060000000', '000000012400090000000000050070200000600000400000108000018000000000030700502000000',
+        //     ],
+        //     ignored: [
+        //         '000000012000035000000600070700000300000400800100000000000120000080000040050000600', '000000012003600000000007000410020000000500300700000600280000040000300500000000000', '000000012008030000000000040120500000000004700060000000507000300000620000000100000', '000000012040050000000009000070600400000100000000000050000087500601000300200000000', '000000012050400000000000030700600400001000000000080000920000800000510700000003000', '000000012300000060000040000900000500000001070020000000000350400001400800060000000', '000000012400090000000000050070200000600000400000108000018000000000030700502000000',
+        //     ]
+        // }
+        // localStorage.setItem('savedData', JSON.stringify(x))
+        // console.log(JSON.parse(localStorage.getItem('savedData')));
+        localStorage.setItem('savedData', JSON.stringify(state.savedData))
+    },
+    GET_PERSONAL_DATA(state) {
+        console.log('GET_PERSONAL_DATA');
+        state.savedData = JSON.parse(localStorage.getItem('savedData')) || {
+            advanchedPossibly: [1, 0, 0],
+            //lastField: '',
+            //lastFieldFill: '',
+            solved: [
+                //'000000012000035000000600070700000300000400800100000000000120000080000040050000600', '000000012003600000000007000410020000000500300700000600280000040000300500000000000', '000000012008030000000000040120500000000004700060000000507000300000620000000100000', '000000012040050000000009000070600400000100000000000050000087500601000300200000000', '000000012050400000000000030700600400001000000000080000920000800000510700000003000', '000000012300000060000040000900000500000001070020000000000350400001400800060000000', '000000012400090000000000050070200000600000400000108000018000000000030700502000000',
+            ],
+            ignored: [
+                //'000000023480000000010000000503000060000010800000000000170000400000602000000300005','000000023600010000000400000000080700502000000000000100080203000010000640000500000','000000023600700000000000080000038500200000800000010000000200640003400000010000000','000000023800000050000100000010600400507030000000000000300052000064000100000000000','000000024000010000000000080107000900300800100000200000020400060500070300000000000','000000024000010000000000080307000100100800500000200000020400060500070300000000000','000000024000080010600005000000300700040700000010000000000040501300600000200000000','000000024007000000006000000500090100000300600020000000940000050000607300000800000','000000024010008000000070000600201500400000003000000000070000810500430000000000000',
+            ]
+        }
+    },
     INITIALIZATION(state, stringField) {
-        //console.log('init')
-        state.advanchedPossibly.onePossibly = false
-        state.advanchedPossibly.onlyHere = false
         state.selectedStringField = stringField
         state.autoresolution = false
         let x = new methods.sudokuSolve
         state.field = x.fieldInit(stringField)
-        // let a = []
-        // for (let i = 0; i < stringField.length; i++) {
-        //     a.push({
-        //         id: i,
-        //         value: +stringField[i],
-        //         possibly: new Set()
-        //     })
-        // }
-        //state.field = a
     },
     ONE_POSSIBLY_SWITCH(state) {
         state.advanchedPossibly.onePossibly = !state.advanchedPossibly.onePossibly
-        //console.log('state.onePossibly',state.advanchedPossibly.onePossibly)
+        console.log(state.savedData);
     },
     ONLY_HERE_SWITCH(state) {
         state.advanchedPossibly.onlyHere = !state.advanchedPossibly.onlyHere
-        //console.log('state.onlyHere',state.advanchedPossibly.onlyHere)
+        console.log(state.savedData);
     },
     POSSIBLY_APDATE(state) {
         state.possiblyApdated = !state.possiblyApdated
     },
     AUTO_RESOLUTIONS(state) {
-        //console.log('autoResolution')
         state.autoresolution = !state.autoresolution
     },
-    EXIST_VALUE (state, field) {
+    EXIST_VALUE(state, field) {
         let x = new methods.sudokuSolve
-        let data = []
-        // data.push(true)
-        // data.push(true)
-        data.push(state.advanchedPossibly.onlyHere)
-        data.push(state.advanchedPossibly.onePossibly)
-        x.setAdvanchedPossibly(state.advanchedPossibly)
-        state.field = x.allPossubly(field,data)
-        //state.field = methods.sudokuSolve.allPossubly(field)
+        x.setAdvanchedPossibly([
+            1,
+            state.savedData.advanchedPossibly[1],
+            state.savedData.advanchedPossibly[2],
+        ])
+        state.field = x.allPossubly(field, 1)
     },
     SET_FIELD_VALUE(state, payload) {
-        //console.log(payload)
         if (!payload.unsave) {
             state.moveHistory.push({
                 buttonid: payload.target,
@@ -56,281 +70,26 @@ export default {
         state.field.find(item => item.id === payload.target).possibly.clear()
 
     },
-    ALL_ROW_POSSIBLY(state) {
-        for (let i = 0; i < 9; i++) {
-            let selectedrow = new Set()
-            for (let j = 0; j < 9; j++) {
-                selectedrow.add(state.field[i * 9 + j].value)
-            }
-            for (let j = 0; j < 9; j++) {
-                if (!state.field[i * 9 + j].value) {
-                    //state.field[i * 9 + j].possibly = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
-                    selectedrow.forEach(item => {
-                        state.field[i * 9 + j].possibly.delete(item)
-                    })
-                } else {
-                    state.field[i * 9 + j].possibly = new Set()
-                }
-            }
-        }
-    },
     CYCLE_INIT(state) {
         state.field.forEach(item => {
             if (item.value === 0) {
-                item.possibly = new Set([1,2,3,4,5,6,7,8,9])
+                item.possibly = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
             }
         })
     },
     ALL_POSSIBLY(state, segment) {
         //console.log(segment);
         let segmentPossibly = new Set()
-        segment.forEach(item=>{
+        segment.forEach(item => {
             if (item.value !== 0) {
                 segmentPossibly.add(item.value)
             }
             //console.log(item.value);
         })
-        segment.forEach(item=>{
+        segment.forEach(item => {
             segmentPossibly.forEach(item2 => {
                 item.possibly.delete(item2)
             })
         })
-    },
-    ALL_COLUMN_POSSIBLY(state) {
-        for (let i = 0; i < 9; i++) {
-            let selectedcolumn = new Set()
-            for (let j = 0; j < 9; j++) {
-                selectedcolumn.add(state.field[i + j * 9].value)
-            }
-            for (let j = 0; j < 9; j++) {
-                //state.field[i+j*9].possibly = new Set([0,1,2,3,4,5,6,7,8,9])
-                selectedcolumn.forEach(item => {
-                    state.field[i + j * 9].possibly.delete(item)
-                })
-            }
-        }
-    },
-    ALL_SQUARE_POSSIBLY(state) {
-        for (let i = 0; i < 9; i++) {
-            let square = []
-            let squareValues = new Set()
-            for (let j = 0; j < 9; j++) {
-                square.push(state.field[state.sudokuSquares[i][j]])
-                squareValues.add(state.field[state.sudokuSquares[i][j]].value)
-            }
-            for (let j = 0; j < 9; j++) {
-                squareValues.forEach(item => {
-                    square[j].possibly.delete(item)
-                })
-            }
-            /*let selectedsquare = new Set()
-            state.field.forEach(item => {
-                if(i === Math.floor(Math.floor(item.id/3) / 9) * 3 + Math.floor(item.id/3) % 3 ) {
-                    selectedsquare.add(item.value)
-                }
-            })*/
-        }
-    },
-    ROW_ONE_POSSIBLY(state) {
-        //console.log('ROW_ONE_POSSIBLY')
-        //let has = true
-        //while (has) {
-        //console.log('ROW_ONE_POSSIBLY')
-        //has = false
-        for (let i = 0; i < 9; i++) {
-            let selectedrow = new Set()
-            for (let j = 0; j < 9; j++) {
-                if (state.field[i * 9 + j].possibly.size === 1) {
-                    //has = true
-                    state.field[i * 9 + j].possibly.forEach(item => {
-                        //console.log(item === selectedrow)
-                        selectedrow.add(item)
-                    })
-                }
-            }
-            //console.log(selectedrow)
-            if (selectedrow.size > 0) {
-                for (let j = 0; j < 9; j++) {
-                    selectedrow.forEach(item => {
-                        if (state.field[i * 9 + j].possibly.size !== 1) {
-                            //has = true
-                            if (state.field[i * 9 + j].possibly.has(item)) {
-                                state.field[i * 9 + j].possibly.delete(item)
-                                //console.log(item)
-                                state.possiblyApdated = true
-                            } else {
-                                //console.log(false)
-                            }
-                            //state.field[i * 9 + j].possibly.delete(item)
-                        }
-                    })
-                }
-
-            }
-        }
-        //}
-    },
-    COLUMN_ONE_POSSIBLY(state) {
-        for (let i = 0; i < 9; i++) {
-            let selectedcolumn = new Set()
-            for (let j = 0; j < 9; j++) {
-                if (state.field[i + j * 9].possibly.size === 1) {
-                    state.field[i + j * 9].possibly.forEach(item => {
-                        selectedcolumn.add(item)
-                    })
-                }
-            }
-            //console.log(selectedrow)
-            if (selectedcolumn.size > 0) {
-                for (let j = 0; j < 9; j++) {
-                    selectedcolumn.forEach(item => {
-                        if (state.field[i + j * 9].possibly.size !== 1) {
-                            if (state.field[i + j * 9].possibly.has(item)) {
-                                state.field[i + j * 9].possibly.delete(item)
-                                //console.log(item)
-                                state.possiblyApdated = true
-                            } else {
-                                //console.log(false)
-                            }
-                            //state.field[i + j * 9].possibly.delete(item)
-                        }
-                    })
-                }
-            }
-        }
-    },
-    SQUARE_ONE_POSSIBLY(state) {
-        //console.log('SQUARE_ONE_POSSIBLY')
-        for (let i = 0; i < 9; i++) {
-            let selectedsquare = new Set()
-            let square = []
-            for (let j = 0; j < 9; j++) {
-                square.push(state.field[state.sudokuSquares[i][j]])
-            }
-            for (let j = 0; j < 9; j++) {
-                if (square[j].possibly.size === 1) {
-                    square[j].possibly.forEach(item => {
-                        selectedsquare.add(item)
-                    })
-                }
-            }
-            if (selectedsquare.size > 0) {
-                for (let j = 0; j < 9; j++) {
-                    selectedsquare.forEach(item => {
-                        if (square[j].possibly.size !== 1) {
-                            if (square[j].possibly.has(item)) {
-                                square[j].possibly.delete(item)
-                                //console.log(item)
-                                state.possiblyApdated = true
-                            } else {
-                                //console.log(false)
-                            }
-                            square[j].possibly.delete(item)
-                        }
-                    })
-                }
-            }
-        }
-    },
-    ROW_ONLU_HERE (state) {
-        for (let i = 0; i < 9; i++) {
-            let possiblyes = []
-            for (let j = 0; j < 9; j++) {
-                state.field[i*9+j].possibly.forEach(item => {
-                    possiblyes.push(item)
-                })
-            }
-            possiblyes = possiblyes.filter(value => {
-                if(possiblyes.indexOf(value) === possiblyes.lastIndexOf(value)) {
-                    return value
-                }
-            })
-            // if (possiblyes.length) {
-            //     console.log(i,possiblyes)
-            // }
-            possiblyes.forEach(item =>{
-            for (let j = 0; j < 9; j++) {
-                if (state.field[i*9+j].possibly.has(item) && state.field[i*9+j].possibly.size >1) {
-                    state.possiblyApdated = true
-                    state.field[i*9+j].possibly.clear()
-                    state.field[i*9+j].possibly.add(item)
-                }
-                //q.push([...state.field[1*9+j].possibly])
-                // for (let k = 0; k < 9; k++) {
-                // }
-            }
-        })
-            //q = q.filter ((value, index) => q.indexOf(value) == index)
-            //console.log(possiblyes)
-        }
-    },
-    COLUMN_ONLU_HERE (state) {
-        for (let i = 0; i < 9; i++) {
-            let possiblyes = []
-            for (let j = 0; j < 9; j++) {
-                state.field[i+j*9].possibly.forEach(item => {
-                    possiblyes.push(item)
-                })
-                //q.push([...state.field[1*9+j].possibly])
-                // for (let k = 0; k < 9; k++) {
-                // }
-            }
-            // q = q.sort()
-            // console.log(q)
-            possiblyes = possiblyes.filter(value => {
-                if(possiblyes.indexOf(value) === possiblyes.lastIndexOf(value)) {
-                    return value
-                }
-            })
-            // if (possiblyes.length) {
-            //     console.log(i,possiblyes)
-            // }
-            possiblyes.forEach(item =>{
-            for (let j = 0; j < 9; j++) {
-                if (state.field[i+j*9].possibly.has(item) && state.field[i+j*9].possibly.size >1) {
-                    state.possiblyApdated = true
-                    state.field[i+j*9].possibly.clear()
-                    state.field[i+j*9].possibly.add(item)
-                }
-                //q.push([...state.field[1*9+j].possibly])
-                // for (let k = 0; k < 9; k++) {
-                // }
-            }
-        })
-            //q = q.filter ((value, index) => q.indexOf(value) == index)
-            //console.log(possiblyes)
-        }
-    },
-    SQUARE_ONLU_HERE(state) {
-        for (let i = 0; i < 9; i++) {
-            let possiblyes = []
-            //let selectedsquare = new Set()
-            let square = []
-            for (let j = 0; j < 9; j++) {
-                square.push(state.field[state.sudokuSquares[i][j]])
-            }
-            square.forEach(line => {
-                line.possibly.forEach(item => {
-                    possiblyes.push(item)
-                })
-            })
-            //possiblyes = possiblyes.sort()
-            //console.log(i,possiblyes)
-            possiblyes = possiblyes.filter(value => {
-                if(possiblyes.indexOf(value) === possiblyes.lastIndexOf(value)) {
-                    return value
-                }
-            })
-            // console.log(i,possiblyes)
-            possiblyes.forEach(item =>{
-                square.forEach(line => {
-                    if (line.possibly.has(item) && line.size >1) {
-                        line.possibly.clear()
-                        line.possibly.add(item)
-                        // state.possiblyApdated = true
-                    }
-                })
-            })
-        }
     },
 }

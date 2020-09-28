@@ -17,11 +17,11 @@
 
 <script>
 import {
-  mapGetters
+  mapGetters,
+  mapActions
 } from 'vuex'
 import SudokuCard from '../components/SudokuCard'
 import methods from '../store/sudoku/sudoku'
-//import { nextTick } from 'vue/types/umd'
 export default {
   name: 'Home',
   data: function () {
@@ -47,6 +47,9 @@ export default {
     // }
   },
   methods: {
+    ...mapActions({
+            initialization: 'sudoku/initialization',
+        }),
     Checked (stringfield)  {
       let x = new methods.sudokuSolve
       let param = x.checkWinPossiblyString(stringfield)
@@ -78,9 +81,20 @@ export default {
       this.start += 200
       this.maxEnd += 200
       this.endUp()
-    }
+    },
+    // test () {
+    //   let y =4
+    //   let x = new Set()
+    //   x.add(1)
+    //   console.log(x);
+    //   y = x
+    //   console.log(y);
+    // }
   },
   mounted() {
+    // this.initialization(0)
+    // this.$router.push('/Sudoku')
+    //this.test()
     // window.addEventListener('scroll', () => {
     //   console.log('321');
     //   this.maxEnd+=10
