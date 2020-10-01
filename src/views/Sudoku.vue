@@ -7,6 +7,8 @@
                 </div>
             </div>
             <div v-else v-bind:style="{flexDirection: flexD}" class="menu">
+                <!-- <div v-if="advanchedPossibly[1]"
+                >123</div> -->
                 <div class="menuitem" @click="menushow = !menushow">
                     close menu
                 </div>
@@ -19,18 +21,17 @@
                 <div v-else class="menuitem green" @click="resolution">
                     auto
                 </div>
-                <div v-if="possiblyesColor.onePossibly" class="green menuitem" @click="onePossiblythere()">
-                    one Possibly
-                </div>
-                <div v-else class="menuitem" @click="onePossiblythere()">
-                    one Possibly
-                </div>
-                <div v-if="possiblyesColor.onlyHere" class="green menuitem" @click="onlyHerethere()">
+                <!-- advanchedPossibly[1] -->
+                <!-- v-bind:class="{ green: advanchedPossibly[1] }" -->
+                <!-- v-if="advanchedPossibly[1]" -->
+                <div v-bind:class="{ green: savedData.advanchedPossibly[1] }" class="menuitem" @click="onePossiblythere()">
                     only Here
                 </div>
-                <div v-else class="menuitem" @click="onlyHerethere()">
-                    only Here
+               
+                <div v-bind:class="{ green: savedData.advanchedPossibly[2] }" class=" menuitem" @click="onlyHerethere()">
+                    one Possibly
                 </div>
+                
                 <div class="menuitem" @click="goBack()">
                     back
                 </div>
@@ -101,6 +102,8 @@
         },
         computed: {
             ...mapGetters({
+                savedData: 'sudoku/savedData',
+                //advanchedPossibly: 'sudoku/advanchedPossibly',
                 Field: 'sudoku/field',
                 resolutiontrue: 'sudoku/autoresolution',
                 //testa: 'sudoku/testa'
@@ -116,7 +119,7 @@
             ...mapActions({
                 //getData: 'dataManage/getDataMain',
                 //testmethod: 'testMod/test',
-                //testsudoku: 'sudoku/initialization',
+                initialization: 'sudoku/initialization',
                 undoLastValue: 'sudoku/undoLastValue',
                 autoResolution: 'sudoku/autoResolution',
                 setTargetValue: 'sudoku/front/setTargetValue',
@@ -124,6 +127,7 @@
                 onlyHere: 'sudoku/onlyHereSwitch',
                 selectButton: 'sudoku/front/selectButton',
                 appInit: 'sudoku/appInit',
+                savePersonalData: 'sudoku/savePersonalData',
             }),
             help() {
                 let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
@@ -134,11 +138,18 @@
             },
             onePossiblythere() {
                 this.onePossibly()
-                this.possiblyesColor.onePossibly = !this.possiblyesColor.onePossibly
+                this.savePersonalData()
+                //console.log(this.advanchedPossibly);
+                //console.log(this.savedData);
+                //this.possiblyesColor.onePossibly = !this.possiblyesColor.onePossibly
             },
             onlyHerethere() {
+                //console.log(this.advanchedPossibly);
                 this.onlyHere()
-                this.possiblyesColor.onlyHere = !this.possiblyesColor.onlyHere
+                this.savePersonalData()
+                //console.log(this.advanchedPossibly);
+                //console.log(this.savedData);
+                //this.possiblyesColor.onlyHere = !this.possiblyesColor.onlyHere
             },
             resolution() {
                 this.autoResolution()
@@ -157,11 +168,10 @@
             //     return Math.min(window.innerHeight,window.innerWidth) / 100
             // },
             buttonClick (data) {
-                // console.log(data);
+                //console.log(data);
                 // console.log(data.id);
                 // console.log(this.selectedButton);
                 //console.log(window);
-                
                 if (data.id === this.selectedButton && this.easyChoiseShow) {
                     //this.easyChoiseClass.transform = ''
                     // console.log(this.easyChoiseClass)
@@ -276,10 +286,21 @@
             //window.addEventListener('resize', this.updateSize);
         },
         mounted() {
+            // setInterval(() => {
+            //     console.log('1');
+            // }, 1000)
+            console.log('Personalized');
+            console.log(this.savedData);
+            //console.log(this.advanchedPossibly);
             this.appInit()
             this.updateSize()
             //document.addEventListener('keydown')
             document.addEventListener('keydown', this.keywordClick)
+            if (!this.Field) {
+                //alert('id1')
+             this.initialization(4)   
+            }
+            //this.$router.push('/Sudoku')
             //console.log(this.testsize)
             //console.log(window.screen.height)
             //this.testmethod()

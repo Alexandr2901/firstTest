@@ -15,13 +15,13 @@ class sudokuSolve {
         this.option = new Set() //количество решений
         this.possiblyends = 0
         this.param = 0
-        this.advanchedPossibly = [1,0,0]
+        this.advanchedPossibly = [1, 0, 0]
     }
     optionk() {
         return this.option
     }
-    setAdvanchedPossibly (parametr) {
-        this.advanchedPossibly  = parametr
+    setAdvanchedPossibly(parametr) {
+        this.advanchedPossibly = parametr
     }
     fieldInit(stringField) {
         let a = []
@@ -42,22 +42,27 @@ class sudokuSolve {
         field.forEach(item => {
             if (item.value === 0) {
                 item.possibly = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+            } else {
+                item.possibly.clear()
             }
         })
         return
     }
-    allPossubly(field, cycle = 1) {
+    allPossubly(field) {
         //console.log('allPossublystart');
+        //console.log(this.advanchedPossibly)
         let error = 0
         //this.methods = data
-        if (cycle) {
-            this.cycleInint(field)
-        }
-        while (this.repeat && error < 1000) {
-            //console.log('1');
+        this.cycleInint(field)
+        // if (cycle) {
+        //     this.cycleInint(field)
+        // }
+        while (this.repeat || error < 2) {
+            console.log('1');
             error++
             this.repeat = false
             this.segmentsSeparate(field)
+            //alert('123')
         }
         //console.log(field);
         // setTimeout(()=>{
@@ -117,11 +122,13 @@ class sudokuSolve {
         segment.forEach(item => {
             if (item.value > 0) {
                 segmentPossibly.add(item.value)
-            } else {
-                if (item.possibly.size === 1) {
-                    segmentPossibly.add()
-                }
             }
+            // } else {
+            //     if (item.possibly.size === 1) {
+            //         alert('what')
+            //         segmentPossibly.add()
+            //     }
+            // }
         })
         segment.forEach(item => {
             segmentPossibly.forEach(item2 => {
@@ -133,22 +140,27 @@ class sudokuSolve {
         // console.log(segmentPossibly);
         // segmentPossibly.forEach(item => {
         //     console.log(item);
-            
+
         // })
         // if (segmentPossibly.size > 0) {
         //     console.log('segment');
         //     console.log(segment);
-        
+
         // }
         //console.log(segment);
     }
     onlyHere(segment) {
+        //console.log('onlyHere');
         let possiblyes = []
         segment.forEach(item => {
-            item.possibly.forEach(subitem => {
-                possiblyes.push(subitem)
-            })
+            
+                item.possibly.forEach(subitem => {
+                    //console.log();
+                    possiblyes.push(subitem)
+                })
+            
         })
+        //let test = possiblyes
         //console.log(possiblyes);
 
         possiblyes = possiblyes.filter(value => {
@@ -156,11 +168,15 @@ class sudokuSolve {
                 return value
             }
         })
+        //console.log(possiblyes);
         possiblyes.forEach(number => {
             segment.forEach(item => {
                 if (item.possibly.has(number) && item.possibly.size > 1) {
                     //console.log(segment);
                     //console.log(item);
+                    //console.log(possiblyes);
+                    //console.log(test);
+                    //console.log('2');
                     this.repeat = true
                     item.possibly.clear()
                     item.possibly.add(number)
@@ -170,26 +186,42 @@ class sudokuSolve {
         return
     }
     onePossiblyDelete(segment) {
-        let only = new Set()
+        // let only = new Set()
+        // segment.forEach(item => {
+        //     if (item.possibly.size === 1) {
+        //         item.possibly.forEach(elem => {
+        //             //console.log(elem);
+        //             only.add(+elem)
+        //         })
+        //     }
+        // })
+        // if (only.size > 0) {
+        //     segment.forEach(item => {
+        //         only.forEach(elem => {
+        //             if (item.possibly.size > 1) {
+        //                 //console.log('3');
+        //                 //this.repeat = true
+        //                 item.possibly.delete(elem)
+        //             }
+
+        //         })
+        //     })
+        // }
+        //return
         segment.forEach(item => {
+            let id = 10
             if (item.possibly.size === 1) {
-                item.possibly.forEach(elem => {
-                    //console.log(elem);
-                    only.add(+elem)
-                })
-            }
-        })
-        if (only.size > 0) {
-            segment.forEach(item => {
-                only.forEach(elem => {
-                    if (item.possibly.size > 1) {
-                        this.repeat = true
-                        item.possibly.delete(elem)
+                id = item.id
+                segment.forEach(subitem => {
+                    if (id !== subitem.id) {
+                        item.possibly.forEach(elem => {
+                            subitem.possibly.delete(elem)
+                        })
                     }
 
                 })
-            })
-        }
+            }
+        })
         return
     }
     checkWin(field) {
@@ -229,13 +261,13 @@ class sudokuSolve {
         return x
     }
     checkWinPossiblyString(stringfield) {
-        this.advanchedPossibly = [1,1,1]
+        this.advanchedPossibly = [1, 1, 1]
         return this.checkWinPossibly(this.allPossubly(this.fieldInit(stringfield)))
         //return false
     }
-    setValue (field, id, value) {
+    setValue(field, id, value) {
         //console.log('setValue')
-        if (field[id].possibly.has(value)){
+        if (field[id].possibly.has(value)) {
             field[id].value = value
             field[id].possibly.clear()
         }
@@ -334,37 +366,37 @@ class sudokuSolve {
                 //let litle = JSON.parse(JSON.stringify([...item.possibly]))
                 item.possibly.forEach(subitem => {
                     //if (item.possibly.has(subitem)) {
-                        //console.log(item)
-                        let litle = {}
-                        litle.q1 = []
-                        item.possibly.forEach(x => {
-                            litle.q1.push(x)
-                        })
-                        litle.q2 = item.id
-                        // console.log(litle);
-                        // console.log('subitem',subitem);
-                        //this.setValue(field,item.id,subitem)
-                        // if (item.possibly.has(subitem)) {
-                        //     item.value = subitem
-                        // }
-                        let string = ""
-                        field.forEach(item1 => {
-                            if (item.id !== item1.id) {
+                    //console.log(item)
+                    let litle = {}
+                    litle.q1 = []
+                    item.possibly.forEach(x => {
+                        litle.q1.push(x)
+                    })
+                    litle.q2 = item.id
+                    // console.log(litle);
+                    // console.log('subitem',subitem);
+                    //this.setValue(field,item.id,subitem)
+                    // if (item.possibly.has(subitem)) {
+                    //     item.value = subitem
+                    // }
+                    let string = ""
+                    field.forEach(item1 => {
+                        if (item.id !== item1.id) {
                             string = string + item1.value
                         } else {
                             string = string + subitem
                         }
-                        })
-                        //string[item.id] = subitem
-                        //setTimeout(() => this.Bulkhead(string), 100)
-                        // console.log(string);
-                        // console.log(field);
-                        if  (this.param<1) {
-                            this.Bulkhead(string)
-                            this.param++
-                            //console.log('Bulkhead');
-                        }
-                        //this.Bulkhead(string)
+                    })
+                    //string[item.id] = subitem
+                    //setTimeout(() => this.Bulkhead(string), 100)
+                    // console.log(string);
+                    // console.log(field);
+                    if (this.param < 1) {
+                        this.Bulkhead(string)
+                        this.param++
+                        //console.log('Bulkhead');
+                    }
+                    //this.Bulkhead(string)
                 })
             }
         }
@@ -376,7 +408,7 @@ class sudokuSolve {
             let str = ''
             field.forEach(item => {
                 if (item.value > 0) {
-                    str = str+ item.value
+                    str = str + item.value
                 } else {
                     str = str + [...item.possibly][0]
                 }
@@ -387,14 +419,14 @@ class sudokuSolve {
             button.possibly.forEach(item => {
                 let str = ''
                 field.forEach(item2 => {
-                    if(item2.id === button.id) {
+                    if (item2.id === button.id) {
                         str = str + item
                     } else {
                         str = str + item2.value
                     }
                 })
-                if ( this.option.size <10) {
-                this.Bulkhead(str)
+                if (this.option.size < 10) {
+                    this.Bulkhead(str)
                 }
             })
         }

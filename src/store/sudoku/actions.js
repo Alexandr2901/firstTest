@@ -5,24 +5,28 @@ export default {
         context.dispatch('allPossubly')
         context.dispatch('front/initialization', context.state.selectedStringField)
     },
-    appInit (context) {
-        context.commit('GET_PERSONAL_DATA')
+    savePersonalData (context) {
+        context.commit('SET_PERSONAL_DATA')
+    },
+    appInit () {
+        //console.log('appInit');
+        //context.commit('GET_PERSONAL_DATA')
     },
     autoResolution(context) {
         context.commit('AUTO_RESOLUTIONS')
-        if (context.state.autoresolution) {
+        if (context.state.savedData.autoresolution) {
             context.dispatch('onePossubly')
         }
     },
     onlePossiblySwitch(context) {
-        if (context.state.autoresolution) {
+        if (context.state.savedData.autoresolution) {
             context.commit('AUTO_RESOLUTIONS')
         }
         context.commit('ONE_POSSIBLY_SWITCH')
         context.dispatch('allPossubly')
     },
     onlyHereSwitch(context) {
-        if (context.state.autoresolution) {
+        if (context.state.savedData.autoresolution) {
             context.commit('AUTO_RESOLUTIONS')
         }
         context.commit('ONLY_HERE_SWITCH')
@@ -30,9 +34,9 @@ export default {
     },
     allPossubly(context) {
         context.commit('EXIST_VALUE',context.state.field)
-        if (context.state.autoresolution) {
+        if (context.state.savedData.autoresolution) {
             setTimeout(() => {
-                if (context.state.autoresolution) {
+                if (context.state.savedData.autoresolution) {
                     context.dispatch('onePossubly')
                 }
             }, 1000)
@@ -78,7 +82,7 @@ export default {
         }
     },
     undoLastValue(context) {
-        if (context.state.autoresolution) {
+        if (context.state.savedData.autoresolution) {
             context.commit('AUTO_RESOLUTIONS')
         }
         if (context.state.moveHistory.length) {
