@@ -57,9 +57,10 @@ class sudokuSolve {
         // if (cycle) {
         //     this.cycleInint(field)
         // }
+        //this.repeat = true
         while (this.repeat || error < 2) {
-            console.log('1');
-            error++
+            console.log('1223');
+            error= error + 1
             this.repeat = false
             this.segmentsSeparate(field)
             //alert('123')
@@ -123,60 +124,32 @@ class sudokuSolve {
             if (item.value > 0) {
                 segmentPossibly.add(item.value)
             }
-            // } else {
-            //     if (item.possibly.size === 1) {
-            //         alert('what')
-            //         segmentPossibly.add()
-            //     }
-            // }
         })
         segment.forEach(item => {
             segmentPossibly.forEach(item2 => {
-                item.possibly.delete(item2)
+                //this.repeat = true
+                if(item.possibly.delete(item2)) {
+                    this.repeat = true
+                }
             })
         })
         return
-        // console.log('segmentPossibly');
-        // console.log(segmentPossibly);
-        // segmentPossibly.forEach(item => {
-        //     console.log(item);
-
-        // })
-        // if (segmentPossibly.size > 0) {
-        //     console.log('segment');
-        //     console.log(segment);
-
-        // }
-        //console.log(segment);
     }
     onlyHere(segment) {
-        //console.log('onlyHere');
         let possiblyes = []
         segment.forEach(item => {
-            
                 item.possibly.forEach(subitem => {
-                    //console.log();
                     possiblyes.push(subitem)
                 })
-            
         })
-        //let test = possiblyes
-        //console.log(possiblyes);
-
         possiblyes = possiblyes.filter(value => {
             if (possiblyes.indexOf(value) === possiblyes.lastIndexOf(value)) {
                 return value
             }
         })
-        //console.log(possiblyes);
         possiblyes.forEach(number => {
             segment.forEach(item => {
                 if (item.possibly.has(number) && item.possibly.size > 1) {
-                    //console.log(segment);
-                    //console.log(item);
-                    //console.log(possiblyes);
-                    //console.log(test);
-                    //console.log('2');
                     this.repeat = true
                     item.possibly.clear()
                     item.possibly.add(number)
@@ -186,36 +159,18 @@ class sudokuSolve {
         return
     }
     onePossiblyDelete(segment) {
-        // let only = new Set()
-        // segment.forEach(item => {
-        //     if (item.possibly.size === 1) {
-        //         item.possibly.forEach(elem => {
-        //             //console.log(elem);
-        //             only.add(+elem)
-        //         })
-        //     }
-        // })
-        // if (only.size > 0) {
-        //     segment.forEach(item => {
-        //         only.forEach(elem => {
-        //             if (item.possibly.size > 1) {
-        //                 //console.log('3');
-        //                 //this.repeat = true
-        //                 item.possibly.delete(elem)
-        //             }
-
-        //         })
-        //     })
-        // }
-        //return
         segment.forEach(item => {
-            let id = 10
+            let id = -1
             if (item.possibly.size === 1) {
                 id = item.id
                 segment.forEach(subitem => {
                     if (id !== subitem.id) {
                         item.possibly.forEach(elem => {
-                            subitem.possibly.delete(elem)
+                            //this.repeat = true
+                            if (subitem.possibly.delete(elem)) {
+                                this.repeat = true
+                            }
+                            //subitem.possibly.delete(elem)
                         })
                     }
 
