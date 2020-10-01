@@ -73,6 +73,7 @@
         mapActions
     } from 'vuex'
     import SudokuButton from '../components/SudokuButton'
+    //import methods from '../store/sudoku/sudoku'
     export default {
         name: 'Sudoku',
         components: {
@@ -300,6 +301,20 @@
                 //alert('id1')
              this.initialization(4)   
             }
+
+
+
+            // let x = new methods.sudokuSolve
+            // let str = ''
+            // this.Field.forEach(element => {
+            //         str += element.value
+            //     });
+            //     console.log(str);
+            // console.log(x.sudokuSolution(str))
+
+
+
+
             //this.$router.push('/Sudoku')
             //console.log(this.testsize)
             //console.log(window.screen.height)

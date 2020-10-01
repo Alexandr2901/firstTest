@@ -59,7 +59,7 @@ class sudokuSolve {
         // }
         //this.repeat = true
         while (this.repeat || error < 2) {
-            console.log('1223');
+            //console.log('1223');
             error= error + 1
             this.repeat = false
             this.segmentsSeparate(field)
@@ -359,7 +359,9 @@ class sudokuSolve {
     }
     Bulkhead(stringField) {
         let field = this.allPossubly(this.fieldInit(stringField))
+        //console.log(field);
         if (this.checkWinPossibly(field)) {
+            //console.log('123');
             let str = ''
             field.forEach(item => {
                 if (item.value > 0) {
@@ -368,6 +370,7 @@ class sudokuSolve {
                     str = str + [...item.possibly][0]
                 }
             })
+            console.log('123');
             this.option.add(str)
         } else {
             let button = field.find(item => item.possibly.size > 1)

@@ -61,9 +61,10 @@ export default {
       // x.delete(3)
       // console.log([...x][0]);
       let x = new methods.sudokuSolve
+      console.log(x.sudokuSolution(this.fieldsN(0,100)[2]))
       //console.log(this.fieldsN(0,10)[2]);
       //x.sudokuSolution(this.fieldsN(0,100)[0]).then(console.log(x.option))
-      console.log(x.sudokuSolution(this.fieldsN(0,100)[2]))
+     
       //return x.sudokuSolution(this.fieldsN(1,2))
     },
     endUp() {
