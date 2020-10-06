@@ -9,6 +9,9 @@
             <div v-else v-bind:style="{flexDirection: flexD}" class="menu">
                 <!-- <div v-if="advanchedPossibly[1]"
                 >123</div> -->
+                <div class="menuitem" @click="test()">
+                    test
+                </div>
                 <div class="menuitem" @click="menushow = !menushow">
                     close menu
                 </div>
@@ -27,7 +30,6 @@
                 <div v-bind:class="{ green: savedData.advanchedPossibly[1] }" class="menuitem" @click="onePossiblythere()">
                     only Here
                 </div>
-               
                 <div v-bind:class="{ green: savedData.advanchedPossibly[2] }" class=" menuitem" @click="onlyHerethere()">
                     one Possibly
                 </div>
@@ -46,16 +48,14 @@
                         v-bind:dataView="fieldview[(line-1)*9+item-1]" v-on:select-button="buttonClick($event)" />
                 </div>
             </div>
-            <!-- v-bind:class="{rotatel: rotate}" -->
-            <div class="choice" v-bind:style="{flexDirection: flexD}">
+            <!-- <div class="choice" v-bind:style="{flexDirection: flexD}">
                 <button class="choice-button" @click="SetValue(0)">
                     X
                 </button>
-                <!-- {{Field.find(item => item.id === selectedButton).possibly}} -->
                 <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
                     {{item}}
                 </button>
-            </div>
+            </div> -->
             <div
             @click.self="pageClick()"
             class="easyChoise" v-bind:style="easyChoiseClass" v-if="easyChoise && possiblyChoise.size">
@@ -73,7 +73,7 @@
         mapActions
     } from 'vuex'
     import SudokuButton from '../components/SudokuButton'
-    //import methods from '../store/sudoku/sudoku'
+    import methods from '../store/sudoku/sudoku'
     export default {
         name: 'Sudoku',
         components: {
@@ -107,7 +107,6 @@
                 //advanchedPossibly: 'sudoku/advanchedPossibly',
                 Field: 'sudoku/field',
                 resolutiontrue: 'sudoku/autoresolution',
-                //testa: 'sudoku/testa'
                 fieldview: 'sudoku/front/fieldview',
                 selectedButton: 'sudoku/front/selectedbutton'
             }),
@@ -119,7 +118,6 @@
         methods: {
             ...mapActions({
                 //getData: 'dataManage/getDataMain',
-                //testmethod: 'testMod/test',
                 initialization: 'sudoku/initialization',
                 undoLastValue: 'sudoku/undoLastValue',
                 autoResolution: 'sudoku/autoResolution',
@@ -161,7 +159,6 @@
                 this.easyChoise = false
             },
             pageClick() {
-                //console.log('testAction')
                 this.selectButton(-1)
                 this.easyChoise = false
             },
@@ -234,7 +231,6 @@
                 //console.log(data)
             },
             keywordClick(e) {
-                //console.log('testAction')
                 //console.log(this.selectedButton)
                 if(+e.key >= 0 && +e.key<= 9) {
                      this.SetValue(+e.key)
@@ -259,7 +255,6 @@
                 //ArrowUp
                 //alert(e)   this.selectedButton
                 //console.log(this.possibleField)
-                //this.testmethod()
             },
             goBack() {
                 //alert('back')
@@ -279,10 +274,19 @@
                     this.flexW = 'row'
                 }
             },
+            test() {
+            let x = new methods.sudokuSolve
+            x.setAdvanchedPossibly([1,1,1])
+            let str = ''
+            this.Field.forEach(element => {
+                    str += element.value
+                });
+                //console.log(str);
+            console.log(x.sudokuSolution(str))
+
+            },
         },
         created() {
-            //document.addEventListener('keydown', this.testAction)
-            //console.log(this.testa)
             window.addEventListener('resize', this.updateSize);
             //window.addEventListener('resize', this.updateSize);
         },
@@ -290,8 +294,8 @@
             // setInterval(() => {
             //     console.log('1');
             // }, 1000)
-            console.log('Personalized');
-            console.log(this.savedData);
+            //console.log('Personalized');
+            //console.log(this.savedData);
             //console.log(this.advanchedPossibly);
             this.appInit()
             this.updateSize()
@@ -299,7 +303,7 @@
             document.addEventListener('keydown', this.keywordClick)
             if (!this.Field) {
                 //alert('id1')
-             this.initialization(4)   
+             this.initialization(5)   
             }
 
 
@@ -316,10 +320,7 @@
 
 
             //this.$router.push('/Sudoku')
-            //console.log(this.testsize)
             //console.log(window.screen.height)
-            //this.testmethod()
-            //this.testsudoku(2)
             //console.log(this.fieldview)
             //this.getData()
         },
@@ -327,7 +328,6 @@
             //alert('beforeDestroy')
             document.removeEventListener('keydown', this.keywordClick);
             window.removeEventListener('resize', this.updateSize);
-            //window.removeEventListener('keydown', this.testAction);
             //window.removeEventListener('resize', this.updateSize);
         }
     }

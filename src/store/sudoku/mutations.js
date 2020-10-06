@@ -1,7 +1,7 @@
 import methods from './sudoku'
 export default {
     SET_PERSONAL_DATA(state) {
-        console.log('save');
+        //console.log('save');
         localStorage.setItem('savedData', JSON.stringify(state.savedData))
     },
     // GET_PERSONAL_DATA(state) {

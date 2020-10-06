@@ -79,7 +79,7 @@ export default {
         }
     },
     maxEndUp () {
-      this.start += 200
+      this.start += 100
       this.maxEnd += 200
       this.endUp()
     },

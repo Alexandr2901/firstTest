@@ -16,6 +16,7 @@ class sudokuSolve {
         this.possiblyends = 0
         this.param = 0
         this.advanchedPossibly = [1, 0, 0]
+        this.segments = [] //сегменты пока что для проверки
     }
     optionk() {
         return this.option
@@ -78,6 +79,7 @@ class sudokuSolve {
     }
     segmentsSeparate(field) {
         //console.log('segmentsSeparate');
+        this.segments=[]
         for (let i = 0; i < 9; i++) {
             let selectedrow = []
             let selectedcolumn = []
@@ -88,10 +90,26 @@ class sudokuSolve {
                 square.push(field[sudokuSquares[i][j]])
             }
             //console.log(selectedrow);
-            this.allPossublyInSegment(selectedrow)
-            this.allPossublyInSegment(selectedcolumn)
-            this.allPossublyInSegment(square)
+            this.segments.push(selectedrow)
+            this.segments.push(selectedcolumn)
+            this.segments.push(square)
+            // this.allPossublyInSegment(selectedrow)
+            // this.allPossublyInSegment(selectedcolumn)
+            // this.allPossublyInSegment(square)
+            //console.log(this.segments);
         }
+        this.segments.forEach(item => {
+            if (this.advanchedPossibly[0]) {
+                this.existValue(item)
+            }
+            if (this.advanchedPossibly[1]) {
+                this.onlyHere(item)
+            }
+            if (this.advanchedPossibly[2]) {
+                this.onePossiblyDelete(item)
+            }
+            //this.allPossublyInSegment(item)
+        })
         return
     }
     allPossublyInSegment(segment) {
@@ -160,9 +178,9 @@ class sudokuSolve {
     }
     onePossiblyDelete(segment) {
         segment.forEach(item => {
-            let id = -1
+            //let id = -100000
             if (item.possibly.size === 1) {
-                id = item.id
+                let id = item.id
                 segment.forEach(subitem => {
                     if (id !== subitem.id) {
                         item.possibly.forEach(elem => {
@@ -370,10 +388,17 @@ class sudokuSolve {
                     str = str + [...item.possibly][0]
                 }
             })
-            console.log('123');
+            //console.log('123');
+            //let q = '' + str
+            //console.log(q);
+            //console.log(q.length);
             this.option.add(str)
+            //console.log('12321');
         } else {
+            if (!this.checkLose(field)) {
+            //console.log('123');
             let button = field.find(item => item.possibly.size > 1)
+            console.log(field);
             button.possibly.forEach(item => {
                 let str = ''
                 field.forEach(item2 => {
@@ -383,10 +408,13 @@ class sudokuSolve {
                         str = str + item2.value
                     }
                 })
+                //console.log(str);
+                //console.log(str.length);
                 if (this.option.size < 10) {
                     this.Bulkhead(str)
                 }
             })
+        }
         }
     }
 }
