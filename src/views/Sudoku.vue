@@ -9,11 +9,11 @@
             <div v-else v-bind:style="{flexDirection: flexD}" class="menu">
                 <!-- <div v-if="advanchedPossibly[1]"
                 >123</div> -->
-                <div class="menuitem" @click="test()">
-                    test
-                </div>
                 <div class="menuitem" @click="menushow = !menushow">
                     close menu
+                </div>
+                <div class="menuitem" @click="solutions()">
+                    solutions
                 </div>
                 <div class="menuitem" @click="undoLastValue()">
                     undo
@@ -48,14 +48,14 @@
                         v-bind:dataView="fieldview[(line-1)*9+item-1]" v-on:select-button="buttonClick($event)" />
                 </div>
             </div>
-            <!-- <div class="choice" v-bind:style="{flexDirection: flexD}">
+            <div class="choice" v-bind:style="{flexDirection: flexD}">
                 <button class="choice-button" @click="SetValue(0)">
                     X
                 </button>
                 <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
                     {{item}}
                 </button>
-            </div> -->
+            </div>
             <div
             @click.self="pageClick()"
             class="easyChoise" v-bind:style="easyChoiseClass" v-if="easyChoise && possiblyChoise.size">
@@ -274,7 +274,7 @@
                     this.flexW = 'row'
                 }
             },
-            test() {
+            solutions() {
             let x = new methods.sudokuSolve
             x.setAdvanchedPossibly([1,1,1])
             let str = ''
@@ -283,8 +283,13 @@
                 });
                 //console.log(str);
             console.log(x.sudokuSolution(str))
+            this.message('solutions='+x.sudokuSolution(str).size)
+            //alert('solution=', x.sudokuSolution(str).size)
 
             },
+            message (text) {
+                alert(text)
+            }
         },
         created() {
             window.addEventListener('resize', this.updateSize);

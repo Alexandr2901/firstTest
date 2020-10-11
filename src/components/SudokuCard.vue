@@ -43,6 +43,7 @@ export default {
             } else {
                 this.color = 'white'
             }
+            console.log(x.sudokuSolution(this.stringfield));
             //this.color = 'white'
         }
     },

@@ -398,7 +398,7 @@ class sudokuSolve {
             if (!this.checkLose(field)) {
             //console.log('123');
             let button = field.find(item => item.possibly.size > 1)
-            console.log(field);
+            //console.log(field);
             button.possibly.forEach(item => {
                 let str = ''
                 field.forEach(item2 => {
