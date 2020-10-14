@@ -1,0 +1,11 @@
+<link rel="manifest" href="manifest.json">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="application-name" content="sudoku">
+<meta name="apple-mobile-web-app-title" content="sudoku">
+<meta name="msapplication-starturl" content="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" sizes="16*16" href="\front\public">
+<link rel="apple-touch-icon" sizes="16*16" href="\front\public">
