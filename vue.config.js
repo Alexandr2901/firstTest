@@ -1,6 +1,9 @@
 module.exports = {
     publicPath: './',
     pwa: {
-      workboxPluginMode: 'GenerateSW'
+      workboxPluginMode: 'GenerateSW',
+      workboxOptions: {
+      navigateFallback: 'index.html'
+      }
     }
   }

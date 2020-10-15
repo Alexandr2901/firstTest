@@ -40,6 +40,9 @@
                 <div class="menuitem" @click="help()">
                     help
                 </div>
+                <div class="menuitem" @click="test()">
+                    test
+                </div>
             </div>
             <div class="Field">
                 <div class="Field-line" v-for="line in 9" :key="line">
@@ -50,7 +53,7 @@
             </div>
             <div class="choice" v-bind:style="{flexDirection: flexD}">
                 <button class="choice-button" @click="SetValue(0)">
-                    X
+                    X9
                 </button>
                 <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
                     {{item}}
@@ -128,6 +131,11 @@
                 appInit: 'sudoku/appInit',
                 savePersonalData: 'sudoku/savePersonalData',
             }),
+            test () {
+                //ServiceWorkerRegistration.update()
+                //localStorage.
+                console.log('1');
+            },
             help() {
                 let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
                 this.Field.forEach(element => {
