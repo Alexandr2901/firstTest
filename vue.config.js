@@ -3,7 +3,8 @@ module.exports = {
     pwa: {
       workboxPluginMode: 'GenerateSW',
       workboxOptions: {
-      navigateFallback: 'index.html'
+        navigateFallback: 'index.html',
+        skipWaiting: true
       }
     }
   }

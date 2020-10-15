@@ -53,7 +53,7 @@
             </div>
             <div class="choice" v-bind:style="{flexDirection: flexD}">
                 <button class="choice-button" @click="SetValue(0)">
-                    X9
+                    X
                 </button>
                 <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
                     {{item}}
@@ -134,7 +134,13 @@
             test () {
                 //ServiceWorkerRegistration.update()
                 //localStorage.
-                console.log('1');
+                //alert('1')
+                let isBoss = confirm("Ты здесь главный?");
+                console.log(isBoss);
+                //alert( isBoss ); // true, если нажата OK
+                // let age = prompt('Сколько тебе лет?', 100);
+                // age
+                //console.log('1');
             },
             help() {
                 let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
