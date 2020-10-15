@@ -132,15 +132,7 @@
                 savePersonalData: 'sudoku/savePersonalData',
             }),
             test () {
-                //ServiceWorkerRegistration.update()
-                //localStorage.
-                //alert('1')
-                let isBoss = confirm("Ты здесь главный?");
-                console.log(isBoss);
-                //alert( isBoss ); // true, если нажата OK
-                // let age = prompt('Сколько тебе лет?', 100);
-                // age
-                //console.log('1');
+                console.log(caches.keys());
             },
             help() {
                 let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
@@ -271,8 +263,10 @@
                 //console.log(this.possibleField)
             },
             goBack() {
-                //alert('back')
-                history.back()
+                //alert('back') Sudoku
+                //this.$router.push( '/Sudoku')
+                this.$router.push( {name:'SudokuHome'})
+                //history.back()
                 //this.$router.push('/')
             },
             updateSize() {

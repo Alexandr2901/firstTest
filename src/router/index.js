@@ -4,9 +4,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
 const routes = [
-  {path: '/Sudoku', name: 'Sudoku', component: () => import('../views/Sudoku.vue')},
-  {path: '/', name: 'SudokuHome', component: () => import('../views/Home.vue')},
-  {path: '*', component: () => import('../views/Home.vue')}
+  // {path: '/', name: 'app', component: () => import('../App.vue')},
+  {path: '/', name: 'Sudoku', component: () => import('../views/Sudoku.vue')},
+  {path: 'Sudoku', name: 'SudokuHome', component: () => import('../views/Home.vue')},
+  // {path: '/Sudoku', name: 'SudokuHome', component: () => import('../views/Home.vue')},
+  {path: '*', component: () => import('../views/Sudoku.vue')}
 ];
 // if (process.env.MODE !== 'ssr') {
 //   routes.push({
@@ -16,7 +18,7 @@ const routes = [
 // }
 
 const router = new VueRouter({
-  //mode: 'history',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 });

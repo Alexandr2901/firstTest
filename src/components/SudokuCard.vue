@@ -34,7 +34,7 @@ export default {
         goSudoky() {
             //console.log(this.fieldid)
             this.initialization(this.fieldid)
-            this.$router.push('/Sudoku')
+            this.$router.push( {name:'Sudoku'})
         },
         init () {
             let x = new methods.sudokuSolve

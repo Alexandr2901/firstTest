@@ -27,7 +27,10 @@ if (process.env.NODE_ENV === 'production') {
       //   window.location.reload(true)
       // }
       //console.log(isBoss);
-      //window.location.reload(true)
+      window.location.reload()
+      // caches.keys().then(function(names) {
+      //   for (let name of names) caches.delete(name);
+      // });
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
