@@ -5,6 +5,14 @@ export default {
         context.dispatch('allPossubly')
         context.dispatch('front/initialization', context.state.selectedStringField)
     },
+    initializationString(context, str) {
+        context.commit('INITIALIZATION', str)
+        context.dispatch('allPossubly')
+        context.dispatch('front/initialization', context.state.selectedStringField)
+    },
+    newField (context) {
+        context.commit('NEW_FIELD')
+    },
     savePersonalData (context) {
         context.commit('SET_PERSONAL_DATA')
     },

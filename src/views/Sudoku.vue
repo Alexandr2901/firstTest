@@ -40,9 +40,9 @@
                 <div class="menuitem" @click="help()">
                     help
                 </div>
-                <div class="menuitem" @click="test()">
+                <!-- <div class="menuitem" @click="test()">
                     test
-                </div>
+                </div> -->
             </div>
             <div class="Field">
                 <div class="Field-line" v-for="line in 9" :key="line">
@@ -121,6 +121,8 @@
         methods: {
             ...mapActions({
                 //getData: 'dataManage/getDataMain',
+                newField: 'sudoku/newField',
+                initializationString: 'sudoku/initializationString',
                 initialization: 'sudoku/initialization',
                 undoLastValue: 'sudoku/undoLastValue',
                 autoResolution: 'sudoku/autoResolution',
@@ -131,8 +133,17 @@
                 appInit: 'sudoku/appInit',
                 savePersonalData: 'sudoku/savePersonalData',
             }),
-            test () {
-                console.log(caches.keys());
+            newField () {
+                let x = new methods.sudokuSolve
+                let stringField
+                //let check = true
+                while (!stringField) {
+                    stringField = x.newField()
+                }
+                this.initializationString(stringField)
+                //this.initializationString(stringField)
+                //this.newField()
+                //console.log(caches.keys());
             },
             help() {
                 let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
@@ -284,7 +295,7 @@
             },
             solutions() {
             let x = new methods.sudokuSolve
-            x.setAdvanchedPossibly([1,1,1])
+            //x.setAdvanchedPossibly([1,1,1])
             let str = ''
             this.Field.forEach(element => {
                     str += element.value
@@ -318,6 +329,7 @@
                 //alert('id1')
              this.initialization(5)   
             }
+            this.newField()
 
 
 

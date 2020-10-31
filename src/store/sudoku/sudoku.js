@@ -247,6 +247,9 @@ class sudokuSolve {
         return this.allPossubly(field)
     }
     sudokuSolution(stringField) {
+        this.setAdvanchedPossibly([1,1,1])
+        this.option.clear()
+        //alert(this.checkWinPossiblyString(stringField))
         //this.bulkhead(field, option)
         //console.log(stringField);
         // setTimeout(() => this.Bulkhead(stringField),10000)
@@ -415,6 +418,57 @@ class sudokuSolve {
                 }
             })
         }
+        }
+    }
+    newField() {
+        this.setAdvanchedPossibly([1,1,1])
+        let stringField = ''
+        //let base = '000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+        //let field = new String('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        // '000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+        let field = this.fieldInit('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        let count = 0
+        let check = true
+        let succes = true
+
+        while ((count <16 || check) && succes ) {
+            //count++
+            let place = Math.floor(Math.random() * (81))
+            let value = Math.floor(Math.random() * (8)) + 1
+            if(field[place].possibly.has(value) && field[place].value === 0 )
+            {
+                count++
+                field[place].value = value
+                field[place].possibly.clear()
+                this.allPossubly(field)
+            }
+            if (count>16) {
+                //alert('123')
+                let str = ''
+                field.forEach((item)=> {
+                    str +=item.value
+                })
+                if (this.sudokuSolution(str).size === 0) {
+                    succes = false
+                }
+                if (this.sudokuSolution(str).size === 1) {
+                    check = false
+                }
+            }
+            
+        }
+        if (succes) {
+        field.forEach((item)=> {
+            stringField +=item.value
+        })
+        console.log(this.sudokuSolution(stringField));
+        //this.sudokuSolution(stringField)
+        //console.log(stringField);
+        return stringField
+        } else {
+            console.log('fail try again');
+            return false
+            //this.newField()
         }
     }
 }

@@ -4,6 +4,10 @@ export default {
         //console.log('save');
         localStorage.setItem('savedData', JSON.stringify(state.savedData))
     },
+    NEW_FIELD () {
+        // let x = new methods.sudokuSolve
+        // let stringField = x.newField()
+    },
     // GET_PERSONAL_DATA(state) {
     //     console.log('GET_PERSONAL_DATA');
     //     state.savedData = JSON.parse(localStorage.getItem('savedData')) || {
