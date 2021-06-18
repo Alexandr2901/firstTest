@@ -59,13 +59,21 @@
                     {{item}}
                 </button>
             </div>
-            <div
-            @click.self="pageClick()"
-            class="easyChoise" v-bind:style="easyChoiseClass" v-if="easyChoise && possiblyChoise.size">
-                <div @click="SetValue(item)" class="easyChoiseitem" v-for="item in possiblyChoise" :key="item">
-                    {{item}}
-                </div>
-            </div>
+<!--            <div-->
+<!--            @click.self="pageClick()"-->
+<!--            class="easyChoise" v-bind:style="easyChoiseClass" v-if="easyChoise && possiblyChoise.size">-->
+<!--                <div @click="SetValue(item)" class="easyChoiseitem" v-for="item in possiblyChoise" :key="item">-->
+<!--                    {{item}}-->
+<!--                </div>-->
+<!--            </div>-->
+          <comfort-choice
+              v-on:send-value="SetValue($event)"
+              v-if="easyChoise"
+              :size-btn="sizeBtn"
+              :distance="comfortChoiceData"
+              :possibly="this.comfortChoiceData.possibly"
+              :button-id="comfortChoiceData.buttonId"
+          />
         </div>
     </div>
 </template>
@@ -77,14 +85,18 @@
     } from 'vuex'
     import SudokuButton from '../components/SudokuButton'
     import methods from '../store/sudoku/sudoku'
+    import comfortChoice from "@/components/comfortChoice";
+    import ComfortChoice from "@/components/comfortChoice";
     export default {
         name: 'Sudoku',
         components: {
-            SudokuButton
+          ComfortChoice,
+            SudokuButton,
+          comfortChoice
         },
         data() {
             return {
-                easyChoise: true,
+                easyChoise: false,
                 easyChoiseShow: true,
                 sizeBtn: 10,
                 rotate: false,
@@ -101,7 +113,13 @@
                     maxWidth: '0',
                     maxHeight: '0',
                     fontSize: '0',
-                }
+                },
+              comfortChoiceData: {
+                  left:0,
+                  top:0,
+                buttonId:-1,
+                possibly: []
+              }
             }
         },
         computed: {
@@ -183,7 +201,12 @@
             //     return Math.min(window.innerHeight,window.innerWidth) / 100
             // },
             buttonClick (data) {
-                //console.log(data);
+              this.comfortChoiceData.left = data.left
+              this.comfortChoiceData.top = data.top
+              this.comfortChoiceData.possibly = this.Field[data.id].possibly
+              this.comfortChoiceData.buttonId = data.id
+              // console.log(this.comfortChoiceData)
+              //console.log(data);
                 // console.log(data.id);
                 // console.log(this.selectedButton);
                 //console.log(window);
@@ -329,7 +352,7 @@
                 //alert('id1')
              this.initialization(5)   
             }
-            this.newField()
+            // this.newField()
 
 
 

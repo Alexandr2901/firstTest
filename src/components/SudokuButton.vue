@@ -1,6 +1,7 @@
 <template>
     <div
     class="SudokuButton"
+    ref="sudokuButton"
     v-bind:class="{rightbottom: dataView.sides === 'l',
     right: dataView.sides === 'r',
     bottom: dataView.sides === 'b' }"
@@ -56,10 +57,14 @@
           SelectButton (e) { 
               //console.log(e);
               //console.log('SelectButton')
-              //console.log(this.ButtonId) 
+              //console.log(this.ButtonId)
+
+            // console.log(this.$refs.sudokuButton.getBoundingClientRect())
               this.$emit('select-button', {
                   e:e,
-                  id: this.ButtonId
+                  id: this.ButtonId,
+                left:this.$refs.sudokuButton.getBoundingClientRect().left,
+                top:this.$refs.sudokuButton.getBoundingClientRect().top
               })
               this.selectButton(this.ButtonId) 
           }
