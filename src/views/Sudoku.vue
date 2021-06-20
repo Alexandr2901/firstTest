@@ -202,49 +202,21 @@ export default {
     //     return Math.min(window.innerHeight,window.innerWidth) / 100
     // },
     buttonClick(data) {
-      this.comfortChoiceData.left = data.left
-      this.comfortChoiceData.top = data.top
-      this.comfortChoiceData.possibly = this.Field[data.id].possibly
-      this.comfortChoiceData.buttonId = data.id
-      if (!this.easyChoiseDbClick) {
-        this.selectButton(data.id)
-      }
-
-      if (data.id === this.selectedButton && this.easyChoiseShow) {
-        this.easyChoise = true
-        // let x = Math.min(window.innerHeight, window.innerWidth) / 200 * (this.sizeBtn + 0.1)
-        // let y = x
-        //
-        // if (data.id % 9 > 6 && this.possiblyChoise.size > 2) {
-        //
-        //   if (this.possiblyChoise.size > 6 && data.id % 9 === 7 || data.id % 9 === 8) {
-        //     x *= 3
-        //   }
-        //   if (this.possiblyChoise.size > 6 && data.id % 9 === 8) {
-        //     x = x / 3 * 5
-        //   }
-        //
-        // }
-        // if (data.id > 62 && this.possiblyChoise.size > 2) {
-        //
-        //   if (this.possiblyChoise.size > 6 && data.id > 62 || data.id > 71) {
-        //     y *= 3
-        //   }
-        //   if (this.possiblyChoise.size > 6 && data.id > 71) {
-        //     y = y / 3 * 5
-        //   }
-        // }
-        // this.easyChoiseClass.left = data.e.x - x + 'px'
-        // this.easyChoiseClass.top = data.e.y - y + 'px'
-        // this.easyChoiseClass.maxWidth = this.sizeBtn * 3 + 1.2 + 'vmin'
-        // this.easyChoiseClass.maxHeight = this.sizeBtn * 3 + 1.2 + 'vmin'
-        // this.easyChoiseClass.fontSize = this.sizeBtn + 'vmin'
-        // if (this.possiblyChoise.size < 5) {
-        //   this.easyChoiseClass.maxWidth = this.sizeBtn * 2 + 0.8 + 'vmin'
-        // }
-      } else {
-        this.easyChoise = false
-      }
+      this.easyChoise = false
+      // setTimeout(()=>{
+        this.comfortChoiceData.left = data.left
+        this.comfortChoiceData.top = data.top
+        this.comfortChoiceData.possibly = this.Field[data.id].possibly
+        this.comfortChoiceData.buttonId = data.id
+        if (!this.easyChoiseDbClick) {
+          this.selectButton(data.id)
+        }
+        if (data.id === this.selectedButton && this.easyChoiseShow) {
+          this.easyChoise = true
+        } else {
+          this.selectButton(data.id)
+        }
+      // },1)
     },
     keywordClick(e) {
       //console.log(this.selectedButton)
@@ -301,8 +273,8 @@ export default {
       //alert('solution=', x.sudokuSolution(str).size)
 
     },
-    message(text) {
-      alert(text)
+    message(e) {
+      console.log(e)
     }
   },
   created() {

@@ -6,7 +6,7 @@
     right: dataView.sides === 'r',
     bottom: dataView.sides === 'b' }"
       v-bind:style="{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn}"
-      @mousedown="mouseDown"
+      @click="mouseDown"
   >
     <!--
         <div class="MainValue" v-if="param !== 0">
@@ -59,7 +59,7 @@ export default {
       console.log('hi')
     },
     mouseDown() {
-      this.sayhi()
+      // console.log('mouseDown')
       this.$emit('select-button', {
         id: this.ButtonId,
         left: this.$refs.sudokuButton.getBoundingClientRect().left,
@@ -90,6 +90,9 @@ export default {
         top: this.$refs.sudokuButton.getBoundingClientRect().top
       })
       this.selectButton(this.ButtonId)
+    },
+    message(e) {
+      console.log(e)
     }
   },
   updated() {
@@ -100,6 +103,12 @@ export default {
     testget() {
       return Math.floor(Math.floor(this.ButtonId / 3) / 9) * 3 + Math.floor(this.ButtonId / 3) % 3
     }
+  },
+  mounted() {
+    // document.addEventListener('touchstart', this.message, { capture:true})
+  },
+  beforeDestroy() {
+    // document.removeEventListener('touchstart', this.message);
   }
 }
 </script>

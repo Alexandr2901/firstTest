@@ -1,17 +1,18 @@
 <template>
   <div
-      :style="local"
+      :style="componentStyle"
       class="comfortChoice">
     <div
         v-for="item in possibly "
         :key="item"
-        :style="sizes" class="mainItems"
-        @mouseup="selectValue(item)">
+        :style="buttonSize" class="mainItems"
+        @click="selectValue(item)"
+    >
       {{ item }}
     </div>
     <div
         v-if="possibly.size<9"
-        :style="centerItem"
+        :style="blankItem"
         class="centerItem">
     </div>
   </div>
@@ -31,70 +32,131 @@ export default {
   },
   data: function () {
     return {
-      local: {
-        left: this.distance.left / Math.min(window.innerHeight, window.innerWidth) * 100 - 10,
-        top: this.distance.top / Math.min(window.innerHeight, window.innerWidth) * 100 - 10
-      },
-      sizes: {
-        width: this.sizeBtn + "vmin",
-        height: this.sizeBtn + "vmin",
-      },
-      centerItem: {
-        gridColumnStart: 2,
-        gridRowStart: 2
-      }
     }
   },
   methods: {
-    selectValue(number) {
-        this.$emit('send-value', number)
-
+    hi() {
+      console.log('hi')
     },
-    gridCenterItem() {
+    selectValue(number) {
+      this.$emit('send-value', number)
+    }
+    // gridCenterItem() {
+    //   if (this.buttonId < 9) {
+    //     this.local.top += 10
+    //     this.centerItem.gridRowStart -= 1
+    //   }
+    //   if (this.buttonId > 71) {
+    //     this.local.top -= 10
+    //     this.centerItem.gridRowStart += 1
+    //   }
+    //   if (this.buttonId % 9 === 0) {
+    //     this.local.left += 10
+    //     this.centerItem.gridColumnStart -= 1
+    //   }
+    //   if (this.buttonId % 9 === 8) {
+    //     this.local.left -= 10
+    //     this.centerItem.gridColumnStart += 1
+    //   }
+    //   this.local.left += "vmin"
+    //   this.local.top += "vmin"
+    // }
+  },
+  // mounted() {
+  //   this.gridCenterItem()
+  // },
+  computed: {
+    buttonSize () {
+      return {
+        width: this.sizeBtn + "vmin",
+        height: this.sizeBtn + "vmin",
+      }
+    },
+    componentStyle() {
+      // console.log('2')
+      let gridTemplateColumns = 3
+      let gridTemplateRows = 3
+      let left = this.distance.left / Math.min(window.innerHeight, window.innerWidth) * 100 - 10
+      let top = this.distance.top / Math.min(window.innerHeight, window.innerWidth) * 100 - 10
       if (this.buttonId < 9) {
-        this.local.top +=10
-        this.centerItem.gridRowStart -=1
+        top += 10
       }
       if (this.buttonId > 71) {
-        this.local.top -=10
-        this.centerItem.gridRowStart +=1
+       top -= 10
       }
-      if (this.buttonId%9 ===0) {
-        this.local.left +=10
-        this.centerItem.gridColumnStart -=1
-      }
-      if (this.buttonId%9 ===8) {
-        this.local.left -=10
-        this.centerItem.gridColumnStart +=1
-      }
-      this.local.left += "vmin"
-      this.local.top += "vmin"
-    }
-  },
-  mounted() {
-    this.gridCenterItem()
-  },
-  beforeUpdate() {
-    this.distance.left =0
-    this.distance.top =0
-    // this.gridCenterItem()
-  }
+      if (this.buttonId % 9 === 0) {
+        left += 10
 
+      }
+      if (this.buttonId % 9 === 8) {
+       left -= 10
+      }
+      if (this.possibly.size <6) {
+        gridTemplateRows = 2
+      }
+      if (this.possibly.size <4) {
+        gridTemplateColumns = 2
+      }
+      return {
+        left: left += "vmin",
+        top: top += "vmin",
+        gridTemplateColumns: 'repeat('+gridTemplateColumns+', 1fr)',
+        gridTemplateRows: 'repeat('+gridTemplateRows+', 1fr)'
+
+      }
+    },
+    blankItem() {
+      let column = 2
+      let row = 2
+      if (this.possibly.size <6) {
+        row -= 1
+      }
+      if (this.possibly.size <4) {
+        column -= 1
+      }
+      if (this.buttonId < 9) {
+        row -= 1
+      }
+      if (this.buttonId > 71) {
+        row += 1
+      }
+      if (this.buttonId % 9 === 0) {
+        column -= 1
+      }
+      if (this.buttonId % 9 === 8) {
+        column += 1
+      }
+      return {
+        gridColumnStart: column,
+        gridRowStart: row
+
+      }
+    }
+  }
 }
 </script>
 
 <style scoped>
 .comfortChoice {
   /*border: green solid 5px;*/
+  /*background-color: black;*/
+  pointer-events: none;
+  border-radius: 10px;
   user-select: none;
   position: absolute;
   display: grid;
   font-size: 8vmin;
   text-align: center;
-  grid-template-columns: repeat(3, 1fr);
+  /*grid-template-columns: repeat(3, 1fr);*/
 }
 
 .mainItems {
+  border: black solid 2px;
+  background-color: white;
+  border-radius: 10px;
+  pointer-events: auto;
+}
+.mainItems:hover {
   background-color: #9ae35a;
 }
 </style>
