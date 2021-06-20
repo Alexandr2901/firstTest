@@ -7,8 +7,6 @@
         </div>
       </div>
       <div v-else v-bind:style="{flexDirection: flexD}" class="menu">
-        <!-- <div v-if="advanchedPossibly[1]"
-        >123</div> -->
         <div class="menuitem" @click="menushow = !menushow">
           close menu
         </div>
@@ -24,9 +22,6 @@
         <div v-else class="menuitem green" @click="resolution">
           auto
         </div>
-        <!-- advanchedPossibly[1] -->
-        <!-- v-bind:class="{ green: advanchedPossibly[1] }" -->
-        <!-- v-if="advanchedPossibly[1]" -->
         <div v-bind:class="{ green: savedData.advanchedPossibly[1] }" class="menuitem" @click="onePossiblythere()">
           only Here
         </div>
@@ -40,9 +35,6 @@
         <div class="menuitem" @click="help()">
           help
         </div>
-        <!-- <div class="menuitem" @click="test()">
-            test
-        </div> -->
       </div>
       <div class="Field">
         <div class="Field-line" v-for="line in 9" :key="line">
@@ -63,13 +55,6 @@
           {{ item }}
         </button>
       </div>
-      <!--            <div-->
-      <!--            @click.self="pageClick()"-->
-      <!--            class="easyChoise" v-bind:style="easyChoiseClass" v-if="easyChoise && possiblyChoise.size">-->
-      <!--                <div @click="SetValue(item)" class="easyChoiseitem" v-for="item in possiblyChoise" :key="item">-->
-      <!--                    {{item}}-->
-      <!--                </div>-->
-      <!--            </div>-->
       <comfort-choice
           v-on:send-value="SetValue($event)"
           v-if="easyChoise"
@@ -126,7 +111,6 @@ export default {
   computed: {
     ...mapGetters({
       savedData: 'sudoku/savedData',
-      //advanchedPossibly: 'sudoku/advanchedPossibly',
       Field: 'sudoku/field',
       resolutiontrue: 'sudoku/autoresolution',
       fieldview: 'sudoku/front/fieldview',
@@ -139,7 +123,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      //getData: 'dataManage/getDataMain',
       newField: 'sudoku/newField',
       initializationString: 'sudoku/initializationString',
       initialization: 'sudoku/initialization',
@@ -155,14 +138,10 @@ export default {
     newField() {
       let x = new methods.sudokuSolve
       let stringField
-      //let check = true
       while (!stringField) {
         stringField = x.newField()
       }
       this.initializationString(stringField)
-      //this.initializationString(stringField)
-      //this.newField()
-      //console.log(caches.keys());
     },
     help() {
       let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
@@ -174,17 +153,10 @@ export default {
     onePossiblythere() {
       this.onePossibly()
       this.savePersonalData()
-      //console.log(this.advanchedPossibly);
-      //console.log(this.savedData);
-      //this.possiblyesColor.onePossibly = !this.possiblyesColor.onePossibly
     },
     onlyHerethere() {
-      //console.log(this.advanchedPossibly);
       this.onlyHere()
       this.savePersonalData()
-      //console.log(this.advanchedPossibly);
-      //console.log(this.savedData);
-      //this.possiblyesColor.onlyHere = !this.possiblyesColor.onlyHere
     },
     resolution() {
       this.autoResolution()
@@ -198,12 +170,8 @@ export default {
       this.selectButton(-1)
       this.easyChoise = false
     },
-    // vmin() {
-    //     return Math.min(window.innerHeight,window.innerWidth) / 100
-    // },
     buttonClick(data) {
       this.easyChoise = false
-      // setTimeout(()=>{
         this.comfortChoiceData.left = data.left
         this.comfortChoiceData.top = data.top
         this.comfortChoiceData.possibly = this.Field[data.id].possibly
@@ -216,10 +184,8 @@ export default {
         } else {
           this.selectButton(data.id)
         }
-      // },1)
     },
     keywordClick(e) {
-      //console.log(this.selectedButton)
       if (+e.key >= 0 && +e.key <= 9) {
         this.SetValue(+e.key)
       }
@@ -238,16 +204,9 @@ export default {
       if (e.key === 'ArrowUp') {
         this.selectButton(this.selectedButton - 9)
       }
-      //ArrowDown
-      //ArrowUp
-      //console.log(this.possibleField)
     },
     goBack() {
-      //alert('back') Sudoku
-      //this.$router.push( '/Sudoku')
       this.$router.push({name: 'SudokuHome'})
-      //history.back()
-      //this.$router.push('/')
     },
     updateSize() {
       if (window.innerWidth < window.innerHeight) {
@@ -263,15 +222,12 @@ export default {
     },
     solutions() {
       let x = new methods.sudokuSolve
-      //x.setAdvanchedPossibly([1,1,1])
       let str = ''
       this.Field.forEach(element => {
         str += element.value
       });
-      //console.log(str);
       console.log(x.sudokuSolution(str))
       this.message('solutions=' + x.sudokuSolution(str).size)
-      //alert('solution=', x.sudokuSolution(str).size)
 
     },
     message(e) {
@@ -280,45 +236,19 @@ export default {
   },
   created() {
     window.addEventListener('resize', this.updateSize);
-    //window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-    // setInterval(() => {
-    //     console.log('1');
-    // }, 1000)
-    //console.log('Personalized');
-    //console.log(this.savedData);
-    //console.log(this.advanchedPossibly);
+
     this.appInit()
     this.updateSize()
-    //document.addEventListener('keydown')
     document.addEventListener('keydown', this.keywordClick)
     if (!this.Field) {
-      //alert('id1')
       this.initialization(5)
     }
-    // this.newField()
-
-
-    // let x = new methods.sudokuSolve
-    // let str = ''
-    // this.Field.forEach(element => {
-    //         str += element.value
-    //     });
-    //     console.log(str);
-    // console.log(x.sudokuSolution(str))
-
-
-    //this.$router.push('/Sudoku')
-    //console.log(window.screen.height)
-    //console.log(this.fieldview)
-    //this.getData()
   },
   beforeDestroy() {
-    //alert('beforeDestroy')
     document.removeEventListener('keydown', this.keywordClick);
     window.removeEventListener('resize', this.updateSize);
-    //window.removeEventListener('resize', this.updateSize);
   }
 }
 </script>
@@ -326,17 +256,9 @@ export default {
 .Field {
   display: flex;
   flex-direction: column;
-  /*margin: 1px;*/
-  /*border-color: rgb(0, 0, 0);*/
-  /*border-width: 3px;*/
-  /*border-style: solid;*/
 }
 
 .Field-line {
-  /*flex-wrap: nowrap;*/
-  /*flex: auto;*/
-  /*justify-content: space-between;
-  align-content: stretch;*/
   display: flex;
   flex-direction: row;
 }
@@ -352,7 +274,6 @@ export default {
   display: flex;
   flex-direction: row;
   margin-top: 2vmin;
-  /*flex-wrap: wrap;*/
 }
 
 .choice-button {
@@ -371,7 +292,6 @@ export default {
 
 .menu {
   font-size: 3vmin;
-  /* width: 9vmin; */
   user-select: none;
   display: flex;
   flex-direction: column;
@@ -380,26 +300,5 @@ export default {
 
 .green {
   background-color: green;
-}
-
-.easyChoise {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.easyChoiseitem {
-  user-select: none;
-  min-height: 9vmin;
-  min-width: 9vmin;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 75%;
-  border-color: black;
-  border-width: 0.2vmin;
-  border-style: solid;
 }
 </style>

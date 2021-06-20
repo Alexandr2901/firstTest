@@ -40,30 +40,8 @@ export default {
     selectValue(number) {
       this.$emit('send-value', number)
     }
-    // gridCenterItem() {
-    //   if (this.buttonId < 9) {
-    //     this.local.top += 10
-    //     this.centerItem.gridRowStart -= 1
-    //   }
-    //   if (this.buttonId > 71) {
-    //     this.local.top -= 10
-    //     this.centerItem.gridRowStart += 1
-    //   }
-    //   if (this.buttonId % 9 === 0) {
-    //     this.local.left += 10
-    //     this.centerItem.gridColumnStart -= 1
-    //   }
-    //   if (this.buttonId % 9 === 8) {
-    //     this.local.left -= 10
-    //     this.centerItem.gridColumnStart += 1
-    //   }
-    //   this.local.left += "vmin"
-    //   this.local.top += "vmin"
-    // }
   },
-  // mounted() {
-  //   this.gridCenterItem()
-  // },
+
   computed: {
     buttonSize() {
       return {
@@ -72,7 +50,6 @@ export default {
       }
     },
     componentStyle() {
-      // console.log('2')
       let gridTemplateColumns = 3
       let gridTemplateRows = 3
       let left = this.distance.left / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
@@ -132,8 +109,6 @@ export default {
 
 <style scoped>
 .comfortChoice {
-  /*border: green solid 5px;*/
-  /*background-color: black;*/
   pointer-events: none;
   border-radius: 10px;
   user-select: none;
@@ -141,7 +116,6 @@ export default {
   display: grid;
   font-size: 8vmin;
   text-align: center;
-  /*grid-template-columns: repeat(3, 1fr);*/
 }
 
 .mainItems {
@@ -156,9 +130,4 @@ export default {
   background-color: #9ae35a;
 }
 
-.centerItem {
-  /*background-color: gray;*/
-  /*pointer-events: auto;*/
-
-}
 </style>

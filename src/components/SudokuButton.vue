@@ -8,13 +8,6 @@
       v-bind:style="{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn}"
       @click="mouseDown"
   >
-    <!--
-        <div class="MainValue" v-if="param !== 0">
-            {{this.param}}
-        </div>-->
-    <!-- <button @click="UpdateValue(3)"/>-->
-    <!--{{this.localData.impossibly}}-->
-    <!--{{testget}},-->
     <div v-bind:style="{color: dataView.const}"
          v-if="localData.value !== 0" class="MainValue">
       {{ localData.value }}
@@ -47,83 +40,26 @@ export default {
       UpdateFieldTargetValue: 'sudoku/setFieldValue',
       selectButton: 'sudoku/front/selectButton'
     }),
-    UpdateValue(value) {
-      //console.log(this.ButtonId)
-      this.UpdateFieldTargetValue({
-        value: value,
-        target: this.ButtonId
-      })
-      //console.log('succes')
-    },
-    sayhi() {
-      console.log('hi')
-    },
     mouseDown() {
-      // console.log('mouseDown')
       this.$emit('select-button', {
         id: this.ButtonId,
         left: this.$refs.sudokuButton.getBoundingClientRect().left,
         top: this.$refs.sudokuButton.getBoundingClientRect().top
       })
-      // this.selectButton(this.ButtonId)
-      // setTimeout(()=> {
-      //   this.$emit('select-button', {
-      //     e: e,
-      //     id: this.ButtonId,
-      //     left: this.$refs.sudokuButton.getBoundingClientRect().left,
-      //     top: this.$refs.sudokuButton.getBoundingClientRect().top
-      //   })
-      // },1)
-    },
-    SelectButton(e) {
-      console.log('mouseDown')
-
-      // console.log(e);
-      // console.log('SelectButton')
-      //console.log(this.ButtonId)
-
-      // console.log(this.$refs.sudokuButton.getBoundingClientRect())
-      this.$emit('select-button', {
-        e: e,
-        id: this.ButtonId,
-        left: this.$refs.sudokuButton.getBoundingClientRect().left,
-        top: this.$refs.sudokuButton.getBoundingClientRect().top
-      })
-      this.selectButton(this.ButtonId)
     },
     message(e) {
       console.log(e)
     }
   },
-  updated() {
-    /*console.log('this.localData.possibly')
-    console.log(this.localData.possibly)*/
-  },
   computed: {
     testget() {
       return Math.floor(Math.floor(this.ButtonId / 3) / 9) * 3 + Math.floor(this.ButtonId / 3) % 3
     }
-  },
-  mounted() {
-    // document.addEventListener('touchstart', this.message, { capture:true})
-  },
-  beforeDestroy() {
-    // document.removeEventListener('touchstart', this.message);
   }
 }
 </script>
 <style scoped lang="scss">
 .SudokuButton {
-  // width: 9vmin;
-  // height: 9vmin;
-  // font-size: 9vmin;
-  /*flex-grow: 2;*/
-  /*min-height: 50px;
-  min-width: 50px;*/
-  /*margin: 1px;*/
-  /*padding: 1px;*/
-  // rgba(255, 0, 0, 0.349)
-  //color: rgba(255, 255, 0, 0.452);
   border-color: rgb(0, 0, 0);
   border-width: 1px 1px 0 0;
   border-style: solid;
