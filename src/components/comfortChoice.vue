@@ -12,7 +12,7 @@
     </div>
     <div
         v-if="possibly.size<9"
-        :style="blankItem"
+        :style="[blankItem, buttonSize]"
         class="centerItem">
     </div>
   </div>
@@ -31,8 +31,7 @@ export default {
     buttonId: Number
   },
   data: function () {
-    return {
-    }
+    return {}
   },
   methods: {
     hi() {
@@ -66,7 +65,7 @@ export default {
   //   this.gridCenterItem()
   // },
   computed: {
-    buttonSize () {
+    buttonSize() {
       return {
         width: this.sizeBtn + "vmin",
         height: this.sizeBtn + "vmin",
@@ -76,60 +75,55 @@ export default {
       // console.log('2')
       let gridTemplateColumns = 3
       let gridTemplateRows = 3
-      let left = this.distance.left / Math.min(window.innerHeight, window.innerWidth) * 100 - 10
-      let top = this.distance.top / Math.min(window.innerHeight, window.innerWidth) * 100 - 10
+      let left = this.distance.left / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
+      let top = this.distance.top / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
       if (this.buttonId < 9) {
         top += 10
       }
       if (this.buttonId > 71) {
-       top -= 10
+        top -= 10
       }
       if (this.buttonId % 9 === 0) {
         left += 10
-
       }
       if (this.buttonId % 9 === 8) {
-       left -= 10
+        left -= 10
       }
-      if (this.possibly.size <6) {
+      if (this.possibly.size < 6) {
+        if (this.buttonId >71) {
+          top += 10
+        }
         gridTemplateRows = 2
       }
-      if (this.possibly.size <4) {
+      if (this.possibly.size < 4) {
         gridTemplateColumns = 2
       }
       return {
         left: left += "vmin",
         top: top += "vmin",
-        gridTemplateColumns: 'repeat('+gridTemplateColumns+', 1fr)',
-        gridTemplateRows: 'repeat('+gridTemplateRows+', 1fr)'
+        gridTemplateColumns: 'repeat(' + gridTemplateColumns + ', 1fr)',
+        gridTemplateRows: 'repeat(' + gridTemplateRows + ', 1fr)'
 
       }
     },
     blankItem() {
       let column = 2
       let row = 2
-      if (this.possibly.size <6) {
-        row -= 1
-      }
-      if (this.possibly.size <4) {
-        column -= 1
-      }
       if (this.buttonId < 9) {
-        row -= 1
+        row = 1
       }
       if (this.buttonId > 71) {
-        row += 1
+        row = -2
       }
       if (this.buttonId % 9 === 0) {
-        column -= 1
+        column = 1
       }
       if (this.buttonId % 9 === 8) {
-        column += 1
+        column = -2
       }
       return {
         gridColumnStart: column,
         gridRowStart: row
-
       }
     }
   }
@@ -152,11 +146,19 @@ export default {
 
 .mainItems {
   border: black solid 2px;
+  padding: 1px;
   background-color: white;
   border-radius: 10px;
   pointer-events: auto;
 }
+
 .mainItems:hover {
   background-color: #9ae35a;
+}
+
+.centerItem {
+  /*background-color: gray;*/
+  /*pointer-events: auto;*/
+
 }
 </style>

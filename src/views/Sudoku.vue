@@ -98,8 +98,8 @@ export default {
     return {
       easyChoise: false,
       easyChoiseShow: true,
-      easyChoiseDbClick: false,
-      sizeBtn: 10,
+      easyChoiseDbClick: true,
+      sizeBtn: 11,
       rotate: false,
       flexD: 'column',
       flexW: 'wrap',
@@ -255,6 +255,7 @@ export default {
         this.flexD = 'row'
         this.flexW = 'column'
       } else {
+        this.sizeBtn = 10
         this.rotate = false
         this.flexD = 'column'
         this.flexW = 'row'
@@ -325,10 +326,10 @@ export default {
 .Field {
   display: flex;
   flex-direction: column;
-  margin: 1px;
-  border-color: rgb(0, 0, 0);
-  border-width: 3px;
-  border-style: solid;
+  /*margin: 1px;*/
+  /*border-color: rgb(0, 0, 0);*/
+  /*border-width: 3px;*/
+  /*border-style: solid;*/
 }
 
 .Field-line {

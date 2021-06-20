@@ -135,8 +135,10 @@ export default {
 }
 
 .MainValue {
-  font-size: 75%;
+  font-size: 100%;
+  text-align: center;
   user-select: none;
+  line-height: 0;
 }
 
 // .MainValue:fullscreen
