@@ -5,7 +5,8 @@
     <div
         v-for="item in possibly "
         :key="item"
-        :style="sizes" class="mainItems" @click="selectValue(item)">
+        :style="sizes" class="mainItems"
+        @mouseup="selectValue(item)">
       {{ item }}
     </div>
     <div
@@ -46,7 +47,8 @@ export default {
   },
   methods: {
     selectValue(number) {
-      this.$emit('send-value', number)
+        this.$emit('send-value', number)
+
     },
     gridCenterItem() {
       if (this.buttonId < 9) {
@@ -71,22 +73,28 @@ export default {
   },
   mounted() {
     this.gridCenterItem()
+  },
+  beforeUpdate() {
+    this.distance.left =0
+    this.distance.top =0
+    // this.gridCenterItem()
   }
+
 }
 </script>
 
 <style scoped>
 .comfortChoice {
-  border: green solid 5px;
+  /*border: green solid 5px;*/
+  user-select: none;
   position: absolute;
   display: grid;
+  font-size: 8vmin;
+  text-align: center;
   grid-template-columns: repeat(3, 1fr);
 }
 
 .mainItems {
-  user-select: none;
-  background-color: red;
-  font-size: 8vmin;
-  text-align: center;
+  background-color: #9ae35a;
 }
 </style>
