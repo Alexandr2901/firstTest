@@ -14,9 +14,10 @@ class sudokuData {
     constructor() {
         this.repeat = true
         this.option = new Set() //количество решений
-        this.param = 0
-        this.advancedPossibly = [true, false, false]
+        this.param = 0 // bulkhead
+        this.advancedPossibly = [1, 0, 0]
         this.segments = []
+        this.stack = []
     }
 
     setField(stringField) {
@@ -30,10 +31,12 @@ class sudokuData {
 
     setAdvancedPossibly(number) {
         this.advancedPossibly[number] = !this.advancedPossibly[number]
+        this.allPossibly(this.Field)
     }
 
     setAdvancedPossibles(parameter) {
         this.advancedPossibly = parameter
+        this.allPossibly(this.Field)
     }
 
     fieldInit(stringField) {
@@ -60,8 +63,18 @@ class sudokuData {
 
     setFieldValue(id, value) {
         if (!this.Field[id].const) {
+            this.stack.push({
+                id: id,
+                previousValue: this.Field[id].value
+            })
             this.Field[id].value = value
             this.allPossibly(this.Field)
+        }
+    }
+    undoLastValue () {
+        if (this.stack.length !== 0) {
+            let data = this.stack.pop()
+            this.Field[data.id].value = data.previousValue
         }
     }
 
@@ -126,9 +139,11 @@ class sudokuData {
     onlyHere(segment) {
         let possiblyes = []
         segment.forEach(item => {
+            if (!item.const) {
             item.possibly.forEach(subitem => {
                 possiblyes.push(subitem)
             })
+        }
         })
         possiblyes = possiblyes.filter(value => {
             if (possiblyes.indexOf(value) === possiblyes.lastIndexOf(value)) {
@@ -150,9 +165,10 @@ class sudokuData {
     onePossiblyDelete(segment) {
         segment.forEach(item => {
             //let id = -100000
-            if (item.possibly.size === 1) {
+            if (item.possibly.size === 1 && item.value === 0) {
                 let id = item.id
                 segment.forEach(subitem => {
+                    // console.log(this.repeat)
                     if (id !== subitem.id) {
                         item.possibly.forEach(elem => {
                             if (subitem.possibly.delete(elem)) {

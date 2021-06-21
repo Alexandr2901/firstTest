@@ -3,7 +3,7 @@
       ref="sudokuButton"
       class="SudokuButton"
 
-      v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,borderStyle]"
+      v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
       @click="mouseDown"
   >
     <div v-if="localData.value !== 0"
@@ -39,11 +39,13 @@ export default {
       selectButton: 'sudoku/front/selectButton'
     }),
     mouseDown() {
-      this.$emit('select-button', {
-        id: this.ButtonId,
-        left: this.$refs.sudokuButton.getBoundingClientRect().left,
-        top: this.$refs.sudokuButton.getBoundingClientRect().top
-      })
+      if (!this.localData.const) {
+        this.$emit('select-button', {
+          id: this.ButtonId,
+          left: this.$refs.sudokuButton.getBoundingClientRect().left,
+          top: this.$refs.sudokuButton.getBoundingClientRect().top
+        })
+      }
     },
     message(e) {
       console.log(e)
@@ -53,13 +55,17 @@ export default {
     testget() {
       return Math.floor(Math.floor(this.ButtonId / 3) / 9) * 3 + Math.floor(this.ButtonId / 3) % 3
     },
-    borderStyle () {
+
+    styles () {
       let styles = {}
-      if (this.ButtonId %9 === 2 || this.ButtonId %9 === 5) {
+      if (!this.localData.const) {
+        styles.color = 'rgb(0, 0, 0, 0.5)'
+      }
+      if (this.ButtonId % 9 === 2 || this.ButtonId % 9 === 5) {
         styles.borderRightWidth = '2px'
         styles.paddingRight = 0
       }
-      if (this.ButtonId >17 && this.ButtonId<27 || this.ButtonId >44 && this.ButtonId<54) {
+      if (this.ButtonId > 17 && this.ButtonId < 27 || this.ButtonId > 44 && this.ButtonId < 54) {
         styles.borderBottomWidth = '2px'
         styles.paddingBottom = 0
       }
@@ -79,7 +85,6 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   padding: 2px;
-  //margin: 2px;
 }
 
 .MainValue {

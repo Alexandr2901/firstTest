@@ -22,13 +22,12 @@
         <div v-else class="menuitem green" @click="resolution">
           auto
         </div>
-        <div v-bind:class="{ green: savedData.advanchedPossibly[1] }" class="menuitem" @click="onePossiblythere()">
-          only Here
-        </div>
-        <div v-bind:class="{ green: savedData.advanchedPossibly[2] }" class=" menuitem" @click="onlyHerethere()">
+        <div  class="menuitem" @click="onePossiblythere()">
           one Possibly
         </div>
-
+        <div  class=" menuitem" @click="onlyHerethere()">
+          only Here
+        </div>
         <div class="menuitem" @click="goBack()">
           back
         </div>
@@ -59,9 +58,7 @@
           v-on:send-value="SetValue($event)"
           v-if="easyChoise"
           :size-btn="sizeBtn"
-          :distance="comfortChoiceData"
-          :possibly="this.comfortChoiceData.possibly"
-          :button-id="comfortChoiceData.buttonId"
+          :params="comfortChoiceData"
       />
     </div>
   </div>
@@ -139,14 +136,15 @@ export default {
     ...mapActions({
       newField: 'sudoku/newField',
       initialization: 'sudoku/initialization',
-      undoLastValue: 'sudoku/undoLastValue',
       autoResolution: 'sudoku/autoResolution',
       setTargetValue: 'sudoku/front/setTargetValue',
       onePossibly: 'sudoku/onlePossiblySwitch',
       onlyHere: 'sudoku/onlyHereSwitch',
       selectButton: 'sudoku/front/selectButton',
-      savePersonalData: 'sudoku/savePersonalData',
     }),
+    undoLastValue () {
+      this.sudokuDataClass.undoLastValue()
+    },
     help() {
       let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
       this.Field.forEach(element => {
@@ -154,14 +152,17 @@ export default {
       });
       window.open(url)
     },
-    onePossiblythere() {
-      this.onePossibly()
-      this.savePersonalData()
-    },
     onlyHerethere() {
-      this.onlyHere()
-      this.savePersonalData()
+      console.log('onlyHerethere')
+      this.sudokuDataClass.setAdvancedPossibly(1)
+      // this.onlyHere()
     },
+    onePossiblythere() {
+      console.log('onePossiblythere')
+      this.sudokuDataClass.setAdvancedPossibly(2)
+      // this.onePossibly()
+    },
+
     resolution() {
       this.autoResolution()
     },
@@ -180,14 +181,14 @@ export default {
       this.comfortChoiceData.top = data.top
       this.comfortChoiceData.possibly = this.Field[data.id].possibly
       this.comfortChoiceData.buttonId = data.id
-      this.selectedButton = data.id
+      this.comfortChoiceData.value = this.Field[data.id].value
       if (!this.easyChoiseDbClick) {
-        this.selectButton(data.id)
+        this.selectedButton = data.id
       }
       if (data.id === this.selectedButton && this.easyChoiseShow) {
         this.easyChoise = true
       } else {
-        this.selectButton(data.id)
+        this.selectedButton = data.id
       }
     },
     keywordClick(e) {
@@ -237,7 +238,7 @@ export default {
     // },
     setLocalField () {
       this.sudokuDataClass = new FieldActions.sudokuData()
-      this.sudokuDataClass.setField(this.stringField(5))
+      this.sudokuDataClass.setField(this.stringField(6))
       this.Field = this.sudokuDataClass.getField()
     },
     message(e) {

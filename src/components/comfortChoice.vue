@@ -3,17 +3,26 @@
       :style="componentStyle"
       class="comfortChoice">
     <div
-        v-for="item in possibly "
+        v-for="item in params.possibly "
         :key="item"
-        :style="buttonSize" class="mainItems"
+        :style="buttonSize"
+        class="mainItems"
         @click="selectValue(item)"
     >
       {{ item }}
     </div>
     <div
-        v-if="possibly.size<9"
+        v-if="params.possibly.size<9"
         :style="[blankItem, buttonSize]"
         class="centerItem">
+    </div>
+    <div
+        v-if="params.value !== 0"
+        :style="[blankItem, buttonSize]"
+        class="mainItems"
+        @click="selectValue(0)"
+    >
+      x
     </div>
   </div>
 </template>
@@ -23,20 +32,18 @@ export default {
   name: "comfortChoice",
   props: {
     sizeBtn: Number,
-    distance: {
+    params: {
+      possibly: Set,
+      buttonId: Number,
       top: Number,
       left: Number,
-    },
-    possibly: Set,
-    buttonId: Number
+      value: Number
+    }
   },
   data: function () {
     return {}
   },
   methods: {
-    hi() {
-      console.log('hi')
-    },
     selectValue(number) {
       this.$emit('send-value', number)
     }
@@ -51,27 +58,27 @@ export default {
     componentStyle() {
       let gridTemplateColumns = 3
       let gridTemplateRows = 3
-      let left = this.distance.left / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
-      let top = this.distance.top / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
-      if (this.buttonId < 9) {
+      let left = this.params.left / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
+      let top = this.params.top / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
+      if (this.params.buttonId < 9) {
         top += 10
       }
-      if (this.buttonId > 71) {
+      if (this.params.buttonId > 71) {
         top -= 10
       }
-      if (this.buttonId % 9 === 0) {
+      if (this.params.buttonId % 9 === 0) {
         left += 10
       }
-      if (this.buttonId % 9 === 8) {
+      if (this.params.buttonId % 9 === 8) {
         left -= 10
       }
-      if (this.possibly.size < 6) {
-        if (this.buttonId >71) {
+      if (this.params.possibly.size < 6) {
+        if (this.params.buttonId >71) {
           top += 10
         }
         gridTemplateRows = 2
       }
-      if (this.possibly.size < 4) {
+      if (this.params.possibly.size < 4) {
         gridTemplateColumns = 2
       }
       return {
@@ -85,16 +92,16 @@ export default {
     blankItem() {
       let column = 2
       let row = 2
-      if (this.buttonId < 9) {
+      if (this.params.buttonId < 9) {
         row = 1
       }
-      if (this.buttonId > 71) {
+      if (this.params.buttonId > 71) {
         row = -2
       }
-      if (this.buttonId % 9 === 0) {
+      if (this.params.buttonId % 9 === 0) {
         column = 1
       }
-      if (this.buttonId % 9 === 8) {
+      if (this.params.buttonId % 9 === 8) {
         column = -2
       }
       return {
