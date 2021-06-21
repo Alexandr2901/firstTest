@@ -183,13 +183,7 @@ class sudokuData {
         })
     }
     checkWin(field  = this.Field) {
-        let check = false
-        field.forEach(item => {
-            if (item.value > 0 && item.value <= 9) {
-                check = true
-            }
-        })
-        return check
+        return field.every(item => item.value > 0 && item.value <= 9)
     }
 
     checkWinPossibly(field) {

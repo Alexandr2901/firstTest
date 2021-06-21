@@ -1,6 +1,25 @@
 <template>
   <div>
     <div class="s-page" v-bind:style="{flexDirection: flexW}" @click.self="pageClick()" v-if="Field">
+      <div v-if="choiceshove" class="choice" v-bind:style="{flexDirection: flexD}">
+        <button class="choice-button" @click="SetValue(0)">
+          X
+        </button>
+        <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
+          {{ item }}
+        </button>
+      </div>
+      <div class="Field">
+        <div class="Field-line" v-for="line in 9" :key="line">
+          <SudokuButton v-for="item in 9"
+                        :key="item"
+                        v-bind:button-id="(line-1)*9+item - 1"
+                        v-bind:size-btn="sizeBtn+'vmin'"
+                        v-bind:local-data="Field[(line-1)*9+item-1]"
+                        v-bind:dataView="fieldview[(line-1)*9+item-1]"
+                        v-on:select-button="buttonClick($event)"/>
+        </div>
+      </div>
       <div v-if="!menushow" class="menu">
         <div class="menuitem" @click="menushow = !menushow">
           show menu
@@ -29,25 +48,7 @@
           help
         </div>
       </div>
-      <div class="Field">
-        <div class="Field-line" v-for="line in 9" :key="line">
-          <SudokuButton v-for="item in 9"
-                        :key="item"
-                        v-bind:button-id="(line-1)*9+item - 1"
-                        v-bind:size-btn="sizeBtn+'vmin'"
-                        v-bind:local-data="Field[(line-1)*9+item-1]"
-                        v-bind:dataView="fieldview[(line-1)*9+item-1]"
-                        v-on:select-button="buttonClick($event)"/>
-        </div>
-      </div>
-      <div class="choice" v-bind:style="{flexDirection: flexD}">
-        <button class="choice-button" @click="SetValue(0)">
-          X
-        </button>
-        <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
-          {{ item }}
-        </button>
-      </div>
+
       <comfort-choice
           v-on:send-value="SetValue($event)"
           v-if="easyChoise"
@@ -80,6 +81,8 @@ export default {
       flexD: 'column',
       flexW: 'wrap',
       menushow: true,
+      choiceshove: true,
+      menuStyles: null,
       selectedButton: -1,
       sudokuDataClass: null,
       Field:null,
@@ -127,6 +130,7 @@ export default {
       this.sudokuDataClass.setFieldValue(this.selectedButton, value)
       this.selectedButton = -1
       this.easyChoise = false
+      // console.log(this.sudokuDataClass.checkWin())
     },
     pageClick() {
       this.selectedButton = -1
@@ -172,12 +176,12 @@ export default {
       this.$router.push({name: 'SudokuHome'})
     },
     updateSize() {
-      if (window.innerWidth < window.innerHeight) {
+      if (window.innerWidth < window.innerHeight*1.2) {
         this.rotate = true
         this.flexD = 'row'
         this.flexW = 'column'
       } else {
-        this.sizeBtn = 10
+        this.sizeBtn = 9.5
         this.rotate = false
         this.flexD = 'column'
         this.flexW = 'row'
@@ -221,7 +225,7 @@ export default {
 .s-page {
   display: flex;
   flex-wrap: nowrap;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -243,6 +247,7 @@ export default {
   border-style: solid;
   width: 8vmin;
   height: 8vmin;
+  overflow: hidden;
 }
 
 .menu {
@@ -251,6 +256,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin-bottom: 2vmin;
+  align-self: flex-start;
 }
 
 .green {
