@@ -34,8 +34,8 @@ class sudokuData {
         this.allPossibly(this.Field)
     }
 
-    setAdvancedPossibles(parameter) {
-        this.advancedPossibly = parameter
+    setAdvancedPossibles(parameters) {
+        this.advancedPossibly = parameters
         this.allPossibly(this.Field)
     }
 
@@ -53,7 +53,7 @@ class sudokuData {
         return field
     }
 
-    cycleInint(field) {
+    cycleInint(field  = this.Field) {
         field.forEach(item => {
             if (!item.const) {
                 item.possibly = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -70,15 +70,18 @@ class sudokuData {
             this.Field[id].value = value
             this.allPossibly(this.Field)
         }
+
     }
-    undoLastValue () {
+
+    undoLastValue() {
         if (this.stack.length !== 0) {
             let data = this.stack.pop()
             this.Field[data.id].value = data.previousValue
+            this.allPossibly(this.Field)
         }
     }
 
-    allPossibly(field) {
+    allPossibly(field  = this.Field) {
         if (this.advancedPossibly.some(item => item)) {
             let error = 0
             this.cycleInint(field)
@@ -140,10 +143,10 @@ class sudokuData {
         let possiblyes = []
         segment.forEach(item => {
             if (!item.const) {
-            item.possibly.forEach(subitem => {
-                possiblyes.push(subitem)
-            })
-        }
+                item.possibly.forEach(subitem => {
+                    possiblyes.push(subitem)
+                })
+            }
         })
         possiblyes = possiblyes.filter(value => {
             if (possiblyes.indexOf(value) === possiblyes.lastIndexOf(value)) {
@@ -159,7 +162,6 @@ class sudokuData {
                 }
             })
         })
-        return
     }
 
     onePossiblyDelete(segment) {
@@ -176,17 +178,14 @@ class sudokuData {
                             }
                         })
                     }
-
                 })
             }
         })
-        return
     }
-
-    checkWin(field) {
+    checkWin(field  = this.Field) {
         let check = false
         field.forEach(item => {
-            if (item.value > 0 && item.value < 10) {
+            if (item.value > 0 && item.value <= 9) {
                 check = true
             }
         })
@@ -203,7 +202,7 @@ class sudokuData {
         return check
     }
 
-    checkLose(field) {
+    checkLose(field = this.Field) {
         let x = false
         field.forEach(item => {
             if (item.value === 0 && item.possibly.size === 0) {
@@ -306,7 +305,6 @@ class sudokuData {
         let count = 0
         let check = true
         let succes = true
-
         while ((count < 16 || check) && succes) {
             let place = Math.floor(Math.random() * (81))
             let value = Math.floor(Math.random() * (8)) + 1

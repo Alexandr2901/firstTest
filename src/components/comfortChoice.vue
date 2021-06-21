@@ -79,6 +79,9 @@ export default {
         gridTemplateRows = 2
       }
       if (this.params.possibly.size < 4) {
+        if (this.params.buttonId % 9 === 8) {
+          left += 10
+        }
         gridTemplateColumns = 2
       }
       return {

@@ -13,19 +13,13 @@
         <div class="menuitem" @click="solutions()">
           solutions
         </div>
-        <div class="menuitem" @click="undoLastValue()">
+        <div class="menuitem" @click="sudokuDataClass.undoLastValue()">
           undo
         </div>
-        <div v-if="!resolutiontrue" class="menuitem" @click="resolution">
-          auto
-        </div>
-        <div v-else class="menuitem green" @click="resolution">
-          auto
-        </div>
-        <div  class="menuitem" @click="onePossiblythere()">
+        <div  class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(2)">
           one Possibly
         </div>
-        <div  class=" menuitem" @click="onlyHerethere()">
+        <div  class=" menuitem" @click="sudokuDataClass.setAdvancedPossibly(1)">
           only Here
         </div>
         <div class="menuitem" @click="goBack()">
@@ -89,27 +83,15 @@ export default {
       selectedButton: -1,
       sudokuDataClass: null,
       Field:null,
-      possiblyesColor: {
-        onePossibly: false,
-        onlyHere: false
-      },
-      comfortChoiceData: {
-        left: 0,
-        top: 0,
-        buttonId: -1,
-        possibly: []
-      }
+      comfortChoiceData: {}
     }
   },
   computed: {
     ...mapGetters({
-      savedData: 'sudoku/savedData',
-      resolutiontrue: 'sudoku/autoresolution',
       stringField: 'dataManage/field'
     }),
     possiblyChoise() {
-      return this.selectedButton !== -1 ? this.Field.find(item => item.id === this.selectedButton).possibly :
-          9
+      return this.selectedButton !== -1 ? this.Field.find(item => item.id === this.selectedButton).possibly : 9
     },
      fieldview () {
       let view = []
@@ -133,18 +115,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      newField: 'sudoku/newField',
-      initialization: 'sudoku/initialization',
-      autoResolution: 'sudoku/autoResolution',
-      setTargetValue: 'sudoku/front/setTargetValue',
-      onePossibly: 'sudoku/onlePossiblySwitch',
-      onlyHere: 'sudoku/onlyHereSwitch',
-      selectButton: 'sudoku/front/selectButton',
-    }),
-    undoLastValue () {
-      this.sudokuDataClass.undoLastValue()
-    },
+    ...mapActions({}),
     help() {
       let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
       this.Field.forEach(element => {
@@ -152,27 +123,13 @@ export default {
       });
       window.open(url)
     },
-    onlyHerethere() {
-      console.log('onlyHerethere')
-      this.sudokuDataClass.setAdvancedPossibly(1)
-      // this.onlyHere()
-    },
-    onePossiblythere() {
-      console.log('onePossiblythere')
-      this.sudokuDataClass.setAdvancedPossibly(2)
-      // this.onePossibly()
-    },
-
-    resolution() {
-      this.autoResolution()
-    },
     SetValue(value) {
       this.sudokuDataClass.setFieldValue(this.selectedButton, value)
       this.selectedButton = -1
       this.easyChoise = false
     },
     pageClick() {
-      this.selectButton(-1)
+      this.selectedButton = -1
       this.easyChoise = false
     },
     buttonClick(data) {
@@ -226,16 +183,6 @@ export default {
         this.flexW = 'row'
       }
     },
-    // solutions() {
-    //   let x = new methods.sudokuSolve
-    //   let str = ''
-    //   this.Field.forEach(element => {
-    //     str += element.value
-    //   });
-    //   console.log(x.sudokuSolution(str))
-    //   this.message('solutions=' + x.sudokuSolution(str).size)
-    //
-    // },
     setLocalField () {
       this.sudokuDataClass = new FieldActions.sudokuData()
       this.sudokuDataClass.setField(this.stringField(6))
