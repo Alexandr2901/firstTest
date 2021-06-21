@@ -17,26 +17,15 @@ export default {
         })
         state.fieldview.find(item => item.id === id).bgcolor = 'rgba(255, 0, 0, 0.25)'
     },
-    SETTARGETVALUE (state, value) {
-        console.log(state)
-        console.log(value)
-    },
     INITIALIZATION (state, stringField) {
         state.selectedbutton = -1
         state.selectedStringField = stringField
         let a = []
-        //console.log(stringField)
-        for (let i = 0; i < stringField.length; i++) { 
-            // 0 -null sides: 0
-            // r -bottom
-            // b -right
-            // l -right and bottom
-            //console.log(stringField[i])
+        for (let i = 0; i < stringField.length; i++) {
             a.push({
                 id:i,
                 const: stringField[i] === '0' ? 'rgba(0, 0, 0, 0.5)' : 'black',
-                // glow - shine,light
-                glow: 0,
+                // glow: 0,
                 bgcolor: false
             })
         }

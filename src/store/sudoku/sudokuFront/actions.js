@@ -14,6 +14,5 @@ export default {
             target: context.state.selectedbutton,
             value: value
         }, { root: true })
-       // context.commit('SETTARGETVALUE',payload)
     }
 }

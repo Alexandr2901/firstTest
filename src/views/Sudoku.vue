@@ -172,18 +172,18 @@ export default {
     },
     buttonClick(data) {
       this.easyChoise = false
-        this.comfortChoiceData.left = data.left
-        this.comfortChoiceData.top = data.top
-        this.comfortChoiceData.possibly = this.Field[data.id].possibly
-        this.comfortChoiceData.buttonId = data.id
-        if (!this.easyChoiseDbClick) {
-          this.selectButton(data.id)
-        }
-        if (data.id === this.selectedButton && this.easyChoiseShow) {
-          this.easyChoise = true
-        } else {
-          this.selectButton(data.id)
-        }
+      this.comfortChoiceData.left = data.left
+      this.comfortChoiceData.top = data.top
+      this.comfortChoiceData.possibly = this.Field[data.id].possibly
+      this.comfortChoiceData.buttonId = data.id
+      if (!this.easyChoiseDbClick) {
+        this.selectButton(data.id)
+      }
+      if (data.id === this.selectedButton && this.easyChoiseShow) {
+        this.easyChoise = true
+      } else {
+        this.selectButton(data.id)
+      }
     },
     keywordClick(e) {
       if (+e.key >= 0 && +e.key <= 9) {
@@ -238,7 +238,6 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-
     this.appInit()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)

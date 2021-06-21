@@ -41,7 +41,6 @@ export default {
       this.$emit('send-value', number)
     }
   },
-
   computed: {
     buttonSize() {
       return {
@@ -121,7 +120,7 @@ export default {
 .mainItems {
   border: black solid 2px;
   padding: 1px;
-  background-color: white;
+  background-color: #c32525;
   border-radius: 10px;
   pointer-events: auto;
 }

@@ -1,19 +1,19 @@
 <template>
   <div
-      class="SudokuButton"
       ref="sudokuButton"
+      class="SudokuButton"
       v-bind:class="{rightbottom: dataView.sides === 'l',
-    right: dataView.sides === 'r',
-    bottom: dataView.sides === 'b' }"
+      right: dataView.sides === 'r',
+      bottom: dataView.sides === 'b' }"
       v-bind:style="{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn}"
       @click="mouseDown"
   >
-    <div v-bind:style="{color: dataView.const}"
-         v-if="localData.value !== 0" class="MainValue">
+    <div v-if="localData.value !== 0"
+         class="MainValue" v-bind:style="{color: dataView.const}">
       {{ localData.value }}
     </div>
-    <div class="PossublyValue" v-else v-for="item in this.localData.possibly"
-         :key="item">
+    <div v-for="item in this.localData.possibly" v-else :key="item"
+         class="PossublyValue">
       {{ item }}
     </div>
   </div>
@@ -58,10 +58,10 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .SudokuButton {
   border-color: rgb(0, 0, 0);
-  border-width: 1px 1px 0 0;
+  border-width: 1px 1px 1px 1px;
   border-style: solid;
   display: flex;
   align-items: center;
@@ -77,7 +77,6 @@ export default {
   line-height: 0;
 }
 
-// .MainValue:fullscreen
 .PossublyValue {
   color: #0014ff;
   height: 26%;
