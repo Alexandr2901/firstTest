@@ -1,5 +1,1 @@
-export default{
-    TEST() {
-        console.log('test')
-    }
-}
+export default{}

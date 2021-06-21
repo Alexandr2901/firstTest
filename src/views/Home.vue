@@ -42,7 +42,7 @@ export default {
     // Checked (stringfield)  {
     //   let x = new methods.sudokuSolve
     //   let field = x.fieldInit(stringfield)
-    //   field = x.allPossubly(field)
+    //   field = x.allPossibly(field)
     //   return x.checkWinPossibly(field)
     // }
   },

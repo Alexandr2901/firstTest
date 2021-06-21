@@ -70,7 +70,7 @@
 <script>
 import {mapActions, mapGetters} from 'vuex'
 import SudokuButton from '../components/SudokuButton'
-import methods from '../store/sudoku/sudoku'
+import FieldActions from '../store/sudoku/sudokuData'
 import comfortChoice from "@/components/comfortChoice";
 
 export default {
@@ -89,16 +89,12 @@ export default {
       flexD: 'column',
       flexW: 'wrap',
       menushow: true,
+      selectedButton: -1,
+      sudokuDataClass: null,
+      Field:null,
       possiblyesColor: {
         onePossibly: false,
         onlyHere: false
-      },
-      easyChoiseClass: {
-        left: '0',
-        top: '0',
-        maxWidth: '0',
-        maxHeight: '0',
-        fontSize: '0',
       },
       comfortChoiceData: {
         left: 0,
@@ -111,20 +107,37 @@ export default {
   computed: {
     ...mapGetters({
       savedData: 'sudoku/savedData',
-      Field: 'sudoku/field',
       resolutiontrue: 'sudoku/autoresolution',
-      fieldview: 'sudoku/front/fieldview',
-      selectedButton: 'sudoku/front/selectedbutton'
+      stringField: 'dataManage/field'
     }),
     possiblyChoise() {
       return this.selectedButton !== -1 ? this.Field.find(item => item.id === this.selectedButton).possibly :
           9
     },
+     fieldview () {
+      let view = []
+      for (let i = 0; i < 81; i++) {
+        view.push({
+          id: i,
+          bgcolor: ''
+        })
+      }
+      if (this.selectedButton > -1) {
+        view.forEach((item) => {
+          if (item.id % 9 === this.selectedButton % 9 || Math.floor(item.id / 9) === Math.floor(this.selectedButton / 9) ||
+              (Math.floor(Math.floor(item.id / 3) / 9) * 3 + Math.floor(item.id / 3) % 3) ===
+              (Math.floor(Math.floor(this.selectedButton / 3) / 9) * 3 + Math.floor(this.selectedButton / 3) % 3)) {
+            item.bgcolor = 'rgba(255, 255, 0, 0.25)'
+          }
+        })
+        view.find(item => item.id === this.selectedButton).bgcolor = 'rgba(255, 0, 0, 0.25)'
+      }
+      return view
+    }
   },
   methods: {
     ...mapActions({
       newField: 'sudoku/newField',
-      initializationString: 'sudoku/initializationString',
       initialization: 'sudoku/initialization',
       undoLastValue: 'sudoku/undoLastValue',
       autoResolution: 'sudoku/autoResolution',
@@ -132,17 +145,8 @@ export default {
       onePossibly: 'sudoku/onlePossiblySwitch',
       onlyHere: 'sudoku/onlyHereSwitch',
       selectButton: 'sudoku/front/selectButton',
-      appInit: 'sudoku/appInit',
       savePersonalData: 'sudoku/savePersonalData',
     }),
-    newField() {
-      let x = new methods.sudokuSolve
-      let stringField
-      while (!stringField) {
-        stringField = x.newField()
-      }
-      this.initializationString(stringField)
-    },
     help() {
       let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
       this.Field.forEach(element => {
@@ -162,8 +166,8 @@ export default {
       this.autoResolution()
     },
     SetValue(value) {
-      this.setTargetValue(value)
-      this.selectButton(-1)
+      this.sudokuDataClass.setFieldValue(this.selectedButton, value)
+      this.selectedButton = -1
       this.easyChoise = false
     },
     pageClick() {
@@ -176,6 +180,7 @@ export default {
       this.comfortChoiceData.top = data.top
       this.comfortChoiceData.possibly = this.Field[data.id].possibly
       this.comfortChoiceData.buttonId = data.id
+      this.selectedButton = data.id
       if (!this.easyChoiseDbClick) {
         this.selectButton(data.id)
       }
@@ -193,16 +198,16 @@ export default {
         this.SetValue(0)
       }
       if (e.key === 'ArrowLeft') {
-        this.selectButton(this.selectedButton - 1)
+        this.selectedButton -= 1
       }
       if (e.key === 'ArrowRight') {
-        this.selectButton(this.selectedButton + 1)
+        this.selectedButton += 1
       }
       if (e.key === 'ArrowDown') {
-        this.selectButton(this.selectedButton + 9)
+        this.selectedButton += 9
       }
       if (e.key === 'ArrowUp') {
-        this.selectButton(this.selectedButton - 9)
+        this.selectedButton -= 9
       }
     },
     goBack() {
@@ -220,15 +225,20 @@ export default {
         this.flexW = 'row'
       }
     },
-    solutions() {
-      let x = new methods.sudokuSolve
-      let str = ''
-      this.Field.forEach(element => {
-        str += element.value
-      });
-      console.log(x.sudokuSolution(str))
-      this.message('solutions=' + x.sudokuSolution(str).size)
-
+    // solutions() {
+    //   let x = new methods.sudokuSolve
+    //   let str = ''
+    //   this.Field.forEach(element => {
+    //     str += element.value
+    //   });
+    //   console.log(x.sudokuSolution(str))
+    //   this.message('solutions=' + x.sudokuSolution(str).size)
+    //
+    // },
+    setLocalField () {
+      this.sudokuDataClass = new FieldActions.sudokuData()
+      this.sudokuDataClass.setField(this.stringField(5))
+      this.Field = this.sudokuDataClass.getField()
     },
     message(e) {
       console.log(e)
@@ -238,12 +248,10 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-    this.appInit()
+    this.setLocalField()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
-    if (!this.Field) {
-      this.initialization(5)
-    }
+
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keywordClick);

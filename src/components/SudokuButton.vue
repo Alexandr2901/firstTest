@@ -2,10 +2,8 @@
   <div
       ref="sudokuButton"
       class="SudokuButton"
-      v-bind:class="{rightbottom: dataView.sides === 'l',
-      right: dataView.sides === 'r',
-      bottom: dataView.sides === 'b' }"
-      v-bind:style="{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn}"
+
+      v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,borderStyle]"
       @click="mouseDown"
   >
     <div v-if="localData.value !== 0"
@@ -54,6 +52,18 @@ export default {
   computed: {
     testget() {
       return Math.floor(Math.floor(this.ButtonId / 3) / 9) * 3 + Math.floor(this.ButtonId / 3) % 3
+    },
+    borderStyle () {
+      let styles = {}
+      if (this.ButtonId %9 === 2 || this.ButtonId %9 === 5) {
+        styles.borderRightWidth = '2px'
+        styles.paddingRight = 0
+      }
+      if (this.ButtonId >17 && this.ButtonId<27 || this.ButtonId >44 && this.ButtonId<54) {
+        styles.borderBottomWidth = '2px'
+        styles.paddingBottom = 0
+      }
+      return styles
     }
   }
 }
@@ -68,6 +78,8 @@ export default {
   justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
+  padding: 2px;
+  //margin: 2px;
 }
 
 .MainValue {
@@ -86,20 +98,20 @@ export default {
 }
 
 .right {
-  margin-right: 0px;
+  padding-right: 0px;
   border-right-width: 3px;
 }
 
 .bottom {
-  margin-bottom: 0px;
+  padding-bottom: 0px;
   border-bottom-width: 3px;
 
 }
 
 .rightbottom {
-  margin-bottom: 0px;
+  padding-bottom: 0px;
   border-bottom-width: 3px;
-  margin-right: 0px;
+  padding-right: 0px;
   border-right-width: 3px;
 }
 </style>

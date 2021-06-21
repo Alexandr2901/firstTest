@@ -16,10 +16,6 @@ export default {
     savePersonalData (context) {
         context.commit('SET_PERSONAL_DATA')
     },
-    appInit () {
-        //console.log('appInit');
-        //context.commit('GET_PERSONAL_DATA')
-    },
     autoResolution(context) {
         context.commit('AUTO_RESOLUTIONS')
         if (context.state.savedData.autoresolution) {

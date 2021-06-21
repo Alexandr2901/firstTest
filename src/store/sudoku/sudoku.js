@@ -34,9 +34,6 @@ class sudokuSolve {
             })
         }
         this.cycleInint(a)
-        // setTimeout(() => {
-        //     return a
-        // }, 1000)
         return a
     }
     cycleInint(field) {
