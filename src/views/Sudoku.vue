@@ -4,8 +4,8 @@
       <header>
         <div>
           <div
+              @click="menuPanelShow = !menuPanelShow"
               class="menuitem">
-            <!--            тут будут настройки-->
             настройки
           </div>
         </div>
@@ -50,25 +50,21 @@
           </div>
         </div>
       </header>
-      <!--      <div v-if="!menushow" class="menu">-->
-      <!--        <div class="menuitem" @click="menushow = !menushow">-->
-      <!--          show menu-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      <div v-else v-bind:style="{flexDirection: flexD}" class="menu">-->
-      <!--        <div class="menuitem" @click="menushow = !menushow">-->
-      <!--          close menu-->
-      <!--        </div>-->
-      <!--        <div class="menuitem" @click="solutions()">-->
-      <!--          solutions-->
-      <!--        </div>-->
-      <!--        <div class="menuitem" @click="goBack()">-->
-      <!--          back-->
-      <!--        </div>-->
-      <!--        <div class="menuitem" @click="help()">-->
-      <!--          help-->
-      <!--        </div>-->
-      <!--      </div>-->
+      <div
+          v-if="menuPanelShow"
+          class="menuPanel">
+        <div>
+          <div
+              @click="menuPanelShow = !menuPanelShow"
+              class="menuPanelItem">
+            settings
+          </div>
+          <div class="menuPanelItem">
+            <input type="checkbox">
+          </div>
+
+        </div>
+      </div>
       <div class="Field-wrapper"
            v-bind:style="{flexDirection: flexW}"
       >
@@ -137,8 +133,9 @@ export default {
       sudokuDataClass: null,
       Field: null,
       comfortChoiceData: {},
-      possiblyShow:true,
-      sudokuId: 1
+      possiblyShow: true,
+      sudokuId: 1,
+      menuPanelShow: true
     }
   },
   computed: {
@@ -166,7 +163,7 @@ export default {
           bgcolor: ''
         })
       }
-      if (this.selectedButton > -1) {
+      if (this.selectedButton > -1 && this.selectedButton < 81) {
         view.forEach((item) => {
           if (item.id % 9 === this.selectedButton % 9 || Math.floor(item.id / 9) === Math.floor(this.selectedButton / 9) ||
               (Math.floor(Math.floor(item.id / 3) / 9) * 3 + Math.floor(item.id / 3) % 3) ===
@@ -206,20 +203,20 @@ export default {
       this.easyChoice = false
     },
     buttonClick(data) {
-        this.easyChoice = false
-        this.comfortChoiceData.left = data.left
-        this.comfortChoiceData.top = data.top
-        this.comfortChoiceData.possibly = this.Field[data.id].possibly
-        this.comfortChoiceData.buttonId = data.id
-        this.comfortChoiceData.value = this.Field[data.id].value
-        if (!this.easyChoiceDbClick) {
-          this.selectedButton = data.id
-        }
-        if (data.id === this.selectedButton && this.easyChoiceShow && !this.Field[data.id].const) {
-          this.easyChoice = true
-        } else {
-          this.selectedButton = data.id
-        }
+      this.easyChoice = false
+      this.comfortChoiceData.left = data.left
+      this.comfortChoiceData.top = data.top
+      this.comfortChoiceData.possibly = this.Field[data.id].possibly
+      this.comfortChoiceData.buttonId = data.id
+      this.comfortChoiceData.value = this.Field[data.id].value
+      if (!this.easyChoiceDbClick) {
+        this.selectedButton = data.id
+      }
+      if (data.id === this.selectedButton && this.easyChoiceShow && !this.Field[data.id].const) {
+        this.easyChoice = true
+      } else {
+        this.selectedButton = data.id
+      }
 
     },
     keywordClick(e) {
@@ -293,7 +290,7 @@ export default {
 
 header {
   background-color: #9ae35a;
-  width: 100%;
+  width: 100vw;
   height: 5vh;
   display: flex;
   flex-direction: row;
@@ -302,6 +299,42 @@ header {
   padding: 1px;
   box-sizing: border-box;
   overflow: hidden;
+}
+
+.menuPanel {
+  position: absolute;
+  background-color: #9ae35a;
+  /*min-width: 250px;*/
+  overflow: hidden;
+  height: 100vh;
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  /*transition: background-color 1s linear;*/
+  animation-name: Appearance;
+  animation-duration: 0.3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+}
+
+.menuPanelItem {
+  min-height: 3vh;
+  border: black 2px solid;
+  background-color: white;
+  padding: 5px;
+  margin: 3px;
+}
+
+@keyframes Appearance {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 300px;
+  }
+  /*0% {width: 0;}*/
+  /*100% {width: 250px;}*/
 }
 
 .Field-line {
@@ -370,5 +403,3 @@ header {
   background-color: green;
 }
 </style>
-
-//

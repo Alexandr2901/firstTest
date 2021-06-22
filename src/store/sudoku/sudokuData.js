@@ -97,15 +97,16 @@ class sudokuData {
     }
 
     setFieldValue(id, value) {
-        if (!this.Field[id].const) {
-            this.stack.push({
-                id: id,
-                previousValue: this.Field[id].value
-            })
-            this.Field[id].value = value
-            this.allPossibly(this.Field)
+        if (id < 81 && id >= 0) {
+            if (!this.Field[id].const) {
+                this.stack.push({
+                    id: id,
+                    previousValue: this.Field[id].value
+                })
+                this.Field[id].value = value
+                this.allPossibly(this.Field)
+            }
         }
-
     }
 
     undoLastValue() {
@@ -170,7 +171,7 @@ class sudokuData {
                 segmentPossibly.add(item.value)
             }
         })
-        if (checkWrong.length !==0) {
+        if (checkWrong.length !== 0) {
             segment.forEach(item => {
                 if (checkWrong.has(item.value) && !item.const) {
                     this.wrongIds.add(item.id)

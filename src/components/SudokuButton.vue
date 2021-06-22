@@ -43,8 +43,8 @@ export default {
       // if (!this.localData.const) {
         this.$emit('select-button', {
           id: this.ButtonId,
-          left: this.$refs.sudokuButton.getBoundingClientRect().left,
-          top: this.$refs.sudokuButton.getBoundingClientRect().top
+          left: this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX ,
+          top: this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY
         })
       // }
     },
