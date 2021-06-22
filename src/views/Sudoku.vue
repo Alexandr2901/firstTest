@@ -3,23 +3,25 @@
     <div class="s-page" @click.self="pageClick()" v-if="Field">
       <header>
         <div>
-          <div>
-<!--            тут будут настройки-->
+          <div
+              class="menuitem">
+            <!--            тут будут настройки-->
+            настройки
           </div>
         </div>
         <div class="menuBlock">
           <div class="menuitem"
-               v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[0]}"
-               @click="sudokuDataClass.setAdvancedPossibly(0)">
+               v-bind:class="{green: possiblyShow}"
+               @click="possiblyShow = !possiblyShow">
             0
           </div>
           <div
-              v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[1] && sudokuDataClass.getAdvancedPossibles()[0]}"
+              v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[1]}"
               class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(1)">
             1
           </div>
           <div
-              v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[2]&& sudokuDataClass.getAdvancedPossibles()[0]}"
+              v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[2]}"
               class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(2)">
             2
           </div>
@@ -33,6 +35,9 @@
                @click="() => {easyChoiceShow = !easyChoiceShow;easyChoice=false}">
             easyChoice
           </div>
+          <div class="menuitem" @click="help()">
+            help
+          </div>
           <div class="menuitem" @click="sudokuDataClass.undoLastValue()">
             undo
           </div>
@@ -40,6 +45,7 @@
         <div>
           <div class="menuitem">
             <img
+                @click="nextSudoku"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAjElEQVRIie3VPQ4BURiF4ScSetbANtiNtWitg42MXUw1vUYjrsYoZEhG7qk4ySm/++b7ybn8FdAmDbhhj1kKUB4+YZUEFJyxTQJ6H7FIAgparIcKug9FY33FDtMUoHeDZRLwPIDJmznXUMEl1UFsRINL/qb1UWdaA3DAvMbjr4BoVMTCLh7X8Q/nx3QHemGZLZvPo5wAAAAASUVORK5CYII="/>
           </div>
         </div>
@@ -66,19 +72,7 @@
       <div class="Field-wrapper"
            v-bind:style="{flexDirection: flexW}"
       >
-        <div v-if="choiceshowe" v-bind:style="{flexDirection: flexD}" class="choice">
-          <button class="choice-button" @click="SetValue(0)">
-            X
-          </button>
-          <button
-              v-for="item in 9"
-              :key="item"
-              v-bind:style="{backgroundColor: possiblyChoiceButtonStyle}"
-              class="choice-button"
-              @click="SetValue(item)">
-            {{ item }}
-          </button>
-        </div>
+
         <div class="Field">
           <div class="Field-line" v-for="line in 9" :key="line">
             <SudokuButton v-for="item in 9"
@@ -87,6 +81,8 @@
                           v-bind:size-btn="sizeBtn+'vmin'"
                           v-bind:local-data="Field[(line-1)*9+item-1]"
                           v-bind:dataView="fieldview[(line-1)*9+item-1]"
+                          v-bind:possibly-show="possiblyShow"
+                          v-bind:wrong-ids="sudokuDataClass.getWrongIds()"
                           v-on:select-button="buttonClick($event)"/>
           </div>
         </div>
@@ -104,7 +100,6 @@
           </button>
         </div>
       </div>
-
       <comfort-choice
           v-on:send-value="SetValue($event)"
           v-if="easyChoice"
@@ -138,18 +133,19 @@ export default {
       flexW: 'wrap',
       menushow: true,
       choiceshowe: true,
-      menuStyles: null,
       selectedButton: -1,
       sudokuDataClass: null,
       Field: null,
-      comfortChoiceData: {}
+      comfortChoiceData: {},
+      possiblyShow:true,
+      sudokuId: 1
     }
   },
   computed: {
     ...mapGetters({
       stringField: 'dataManage/field'
     }),
-    advancedPossibly () {
+    advancedPossibly() {
       return this.sudokuDataClass.getAdvancedPossibles()
     },
     possiblyChoice() {
@@ -192,10 +188,17 @@ export default {
       });
       window.open(url)
     },
+    nextSudoku() {
+      this.sudokuId++
+      this.setLocalField(this.sudokuId)
+    },
     SetValue(value) {
+      // if(this.Field[this.selectedButton].possibly.has(value)) {
       this.sudokuDataClass.setFieldValue(this.selectedButton, value)
       this.selectedButton = -1
       this.easyChoice = false
+      // }
+
       // console.log(this.sudokuDataClass.checkWin())
     },
     pageClick() {
@@ -203,20 +206,21 @@ export default {
       this.easyChoice = false
     },
     buttonClick(data) {
-      this.easyChoice = false
-      this.comfortChoiceData.left = data.left
-      this.comfortChoiceData.top = data.top
-      this.comfortChoiceData.possibly = this.Field[data.id].possibly
-      this.comfortChoiceData.buttonId = data.id
-      this.comfortChoiceData.value = this.Field[data.id].value
-      if (!this.easyChoiceDbClick) {
-        this.selectedButton = data.id
-      }
-      if (data.id === this.selectedButton && this.easyChoiceShow) {
-        this.easyChoice = true
-      } else {
-        this.selectedButton = data.id
-      }
+        this.easyChoice = false
+        this.comfortChoiceData.left = data.left
+        this.comfortChoiceData.top = data.top
+        this.comfortChoiceData.possibly = this.Field[data.id].possibly
+        this.comfortChoiceData.buttonId = data.id
+        this.comfortChoiceData.value = this.Field[data.id].value
+        if (!this.easyChoiceDbClick) {
+          this.selectedButton = data.id
+        }
+        if (data.id === this.selectedButton && this.easyChoiceShow && !this.Field[data.id].const) {
+          this.easyChoice = true
+        } else {
+          this.selectedButton = data.id
+        }
+
     },
     keywordClick(e) {
       if (+e.key >= 0 && +e.key <= 9) {
@@ -254,9 +258,9 @@ export default {
         this.flexW = 'row'
       }
     },
-    setLocalField() {
+    setLocalField(id = this.sudokuId) {
       this.sudokuDataClass = new FieldActions.sudokuData()
-      this.sudokuDataClass.setField(this.stringField(6))
+      this.sudokuDataClass.setField(this.stringField(id))
       this.Field = this.sudokuDataClass.getField()
     },
     message(e) {
@@ -267,7 +271,6 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-
     this.setLocalField()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
@@ -333,6 +336,7 @@ header {
 }
 
 .menuitem {
+  min-width: 5vh;
   border-color: rgb(0, 0, 0);
   /*border-width: 1px;*/
   /*border-right-width: 3px;*/

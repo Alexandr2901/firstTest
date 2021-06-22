@@ -19,6 +19,7 @@ class sudokuData {
         this.segments = []
         this.stack = []
         this.autoSolve = false
+        this.wrongIds = new Set()
     }
 
     setField(stringField) {
@@ -28,6 +29,10 @@ class sudokuData {
 
     getField() {
         return this.Field
+    }
+
+    getWrongIds() {
+        return this.wrongIds
     }
 
     setAdvancedPossibly(number) {
@@ -125,6 +130,7 @@ class sudokuData {
     }
 
     segmentsSeparate(field) {
+        this.wrongIds = new Set()
         this.segments = []
         for (let i = 0; i < 9; i++) {
             let selectedrow = []
@@ -155,11 +161,22 @@ class sudokuData {
 
     existValue(segment) {
         let segmentPossibly = new Set()
+        let checkWrong = new Set()
         segment.forEach(item => {
             if (item.value > 0) {
+                if (segmentPossibly.has(item.value)) {
+                    checkWrong.add(item.value)
+                }
                 segmentPossibly.add(item.value)
             }
         })
+        if (checkWrong.length !==0) {
+            segment.forEach(item => {
+                if (checkWrong.has(item.value) && !item.const) {
+                    this.wrongIds.add(item.id)
+                }
+            })
+        }
         segment.forEach(item => {
             segmentPossibly.forEach(item2 => {
                 if (item.possibly.delete(item2)) {

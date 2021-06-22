@@ -10,7 +10,7 @@
          class="MainValue" v-bind:style="{color: dataView.const}">
       {{ localData.value }}
     </div>
-    <div v-for="item in this.localData.possibly" v-else :key="item"
+    <div v-else-if="possiblyShow" v-for="item in this.localData.possibly"  :key="item"
          class="PossublyValue">
     {{item}}
     </div>
@@ -25,7 +25,9 @@ export default {
     ButtonId: Number,
     localData: Object,
     dataView: Object,
-    sizeBtn: String
+    sizeBtn: String,
+    possiblyShow: Boolean,
+    wrongIds: Set
   },
   data: function () {
     return {
@@ -35,17 +37,16 @@ export default {
   },
   methods: {
     ...mapActions({
-      UpdateFieldTargetValue: 'sudoku/setFieldValue',
-      selectButton: 'sudoku/front/selectButton'
+      UpdateFieldTargetValue: 'sudoku/setFieldValue'
     }),
     mouseDown() {
-      if (!this.localData.const) {
+      // if (!this.localData.const) {
         this.$emit('select-button', {
           id: this.ButtonId,
           left: this.$refs.sudokuButton.getBoundingClientRect().left,
           top: this.$refs.sudokuButton.getBoundingClientRect().top
         })
-      }
+      // }
     },
     message(e) {
       console.log(e)
@@ -68,6 +69,13 @@ export default {
       if (this.ButtonId > 17 && this.ButtonId < 27 || this.ButtonId > 44 && this.ButtonId < 54) {
         styles.borderBottomWidth = '2px'
         styles.paddingBottom = 0
+      }
+      if (this.wrongIds.has(this.ButtonId)) {
+        // styles.color = 'red'
+        styles.backgroundColor = 'red'
+      }
+      if ((this.localData.possibly.size === 0 && !this.localData.const && this.localData.value ===0)) {
+        styles.backgroundColor = '#720101'
       }
       return styles
     }
@@ -116,6 +124,7 @@ export default {
 }
 
 .rightbottom {
+  //color: #720101;
   padding-bottom: 0px;
   border-bottom-width: 3px;
   padding-right: 0px;
