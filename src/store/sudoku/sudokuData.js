@@ -18,6 +18,7 @@ class sudokuData {
         this.advancedPossibly = [1, 0, 0]
         this.segments = []
         this.stack = []
+        this.autoSolve = false
     }
 
     setField(stringField) {
@@ -30,13 +31,42 @@ class sudokuData {
     }
 
     setAdvancedPossibly(number) {
-        this.advancedPossibly[number] = !this.advancedPossibly[number]
+        // this.advancedPossibly[number] = !this.advancedPossibly[number]
+        this.advancedPossibly.splice(number, 1, !this.advancedPossibly[number])
+        // console.log(this.advancedPossibly)
         this.allPossibly(this.Field)
     }
 
     setAdvancedPossibles(parameters) {
         this.advancedPossibly = parameters
         this.allPossibly(this.Field)
+    }
+
+    getAdvancedPossibles() {
+        return this.advancedPossibly
+    }
+
+    settAutoSolve() {
+        this.autoSolve = !this.autoSolve
+        this.startAutoSolve()
+    }
+
+    startAutoSolve() {
+        if (this.autoSolve) {
+            setTimeout(() => {
+                if (this.autoSolve) {
+                    if (!this.advancedPossibly[0]) {
+                        this.advancedPossibly[0] = 1
+                        this.allPossibly(this.Field)
+                    }
+                    if (this.Field.some(item => item.possibly.size === 1 && item.value === 0)) {
+                        let x = this.Field.find(item => item.possibly.size === 1 && item.value === 0)
+                        this.setFieldValue(x.id, ...[...x.possibly])
+                        this.startAutoSolve()
+                    }
+                }
+            }, 1000)
+        }
     }
 
     fieldInit(stringField) {
@@ -53,7 +83,7 @@ class sudokuData {
         return field
     }
 
-    cycleInint(field  = this.Field) {
+    cycleInint(field = this.Field) {
         field.forEach(item => {
             if (!item.const) {
                 item.possibly = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -81,10 +111,10 @@ class sudokuData {
         }
     }
 
-    allPossibly(field  = this.Field) {
+    allPossibly(field = this.Field) {
+        this.cycleInint(field)
         if (this.advancedPossibly.some(item => item)) {
             let error = 0
-            this.cycleInint(field)
             while (this.repeat || error < 2) {
                 error = error + 1
                 this.repeat = false
@@ -142,7 +172,7 @@ class sudokuData {
     onlyHere(segment) {
         let possiblyes = []
         segment.forEach(item => {
-            if (!item.const) {
+            if (!item.const && item.value === 0) {
                 item.possibly.forEach(subitem => {
                     possiblyes.push(subitem)
                 })
@@ -182,7 +212,8 @@ class sudokuData {
             }
         })
     }
-    checkWin(field  = this.Field) {
+
+    checkWin(field = this.Field) {
         return field.every(item => item.value > 0 && item.value <= 9)
     }
 

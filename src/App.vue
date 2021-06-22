@@ -8,4 +8,7 @@ export default {
 name: 'App'
 }
 <style lang="scss">
+body{
+  margin: 0;
+}
 </style>

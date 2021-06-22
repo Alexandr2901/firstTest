@@ -12,7 +12,7 @@
       {{ item }}
     </div>
     <div
-        v-if="params.possibly.size<9"
+        v-if="params.possibly.size<9 && params.value === 0"
         :style="[blankItem, buttonSize]"
         class="centerItem">
     </div>
@@ -113,10 +113,10 @@ export default {
         gridRowStart: row
       }
     }
-  },
-  mounted() {
-    console.log(this.sizeBtn)
   }
+  // mounted() {
+  //   console.log(this.params.top)
+  // }
 }
 </script>
 

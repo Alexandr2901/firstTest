@@ -1,37 +1,84 @@
 <template>
   <div>
-    <div class="s-page" v-bind:style="{flexDirection: flexW}" @click.self="pageClick()" v-if="Field">
-      <div v-if="!menushow" class="menu">
-        <div class="menuitem" @click="menushow = !menushow">
-          show menu
+    <div class="s-page" @click.self="pageClick()" v-if="Field">
+      <header>
+        <div>
+          <div>
+<!--            тут будут настройки-->
+          </div>
         </div>
-      </div>
-      <div v-else v-bind:style="{flexDirection: flexD}" class="menu">
-        <div class="menuitem" @click="menushow = !menushow">
-          close menu
+        <div class="menuBlock">
+          <div class="menuitem"
+               v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[0]}"
+               @click="sudokuDataClass.setAdvancedPossibly(0)">
+            0
+          </div>
+          <div
+              v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[1] && sudokuDataClass.getAdvancedPossibles()[0]}"
+              class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(1)">
+            1
+          </div>
+          <div
+              v-bind:class="{green: sudokuDataClass.getAdvancedPossibles()[2]&& sudokuDataClass.getAdvancedPossibles()[0]}"
+              class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(2)">
+            2
+          </div>
+          <div
+              v-bind:class="{green: choiceshowe}"
+              class="menuitem" @click="choiceshowe = !choiceshowe">
+            choiceshowe
+          </div>
+          <div class="menuitem"
+               v-bind:class="{green: easyChoiceShow}"
+               @click="() => {easyChoiceShow = !easyChoiceShow;easyChoice=false}">
+            easyChoice
+          </div>
+          <div class="menuitem" @click="sudokuDataClass.undoLastValue()">
+            undo
+          </div>
         </div>
-        <div class="menuitem" @click="solutions()">
-          solutions
+        <div>
+          <div class="menuitem">
+            <img
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAjElEQVRIie3VPQ4BURiF4ScSetbANtiNtWitg42MXUw1vUYjrsYoZEhG7qk4ySm/++b7ybn8FdAmDbhhj1kKUB4+YZUEFJyxTQJ6H7FIAgparIcKug9FY33FDtMUoHeDZRLwPIDJmznXUMEl1UFsRINL/qb1UWdaA3DAvMbjr4BoVMTCLh7X8Q/nx3QHemGZLZvPo5wAAAAASUVORK5CYII="/>
+          </div>
         </div>
-        <div class="menuitem" @click="sudokuDataClass.undoLastValue()">
-          undo
-        </div>
-        <div class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(2)">
-          one Possibly
-        </div>
-        <div class=" menuitem" @click="sudokuDataClass.setAdvancedPossibly(1)">
-          only Here
-        </div>
-        <div class="menuitem" @click="goBack()">
-          back
-        </div>
-        <div class="menuitem" @click="help()">
-          help
-        </div>
-      </div>
+      </header>
+      <!--      <div v-if="!menushow" class="menu">-->
+      <!--        <div class="menuitem" @click="menushow = !menushow">-->
+      <!--          show menu-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div v-else v-bind:style="{flexDirection: flexD}" class="menu">-->
+      <!--        <div class="menuitem" @click="menushow = !menushow">-->
+      <!--          close menu-->
+      <!--        </div>-->
+      <!--        <div class="menuitem" @click="solutions()">-->
+      <!--          solutions-->
+      <!--        </div>-->
+      <!--        <div class="menuitem" @click="goBack()">-->
+      <!--          back-->
+      <!--        </div>-->
+      <!--        <div class="menuitem" @click="help()">-->
+      <!--          help-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div class="Field-wrapper"
            v-bind:style="{flexDirection: flexW}"
       >
+        <div v-if="choiceshowe" v-bind:style="{flexDirection: flexD}" class="choice">
+          <button class="choice-button" @click="SetValue(0)">
+            X
+          </button>
+          <button
+              v-for="item in 9"
+              :key="item"
+              v-bind:style="{backgroundColor: possiblyChoiceButtonStyle}"
+              class="choice-button"
+              @click="SetValue(item)">
+            {{ item }}
+          </button>
+        </div>
         <div class="Field">
           <div class="Field-line" v-for="line in 9" :key="line">
             <SudokuButton v-for="item in 9"
@@ -43,7 +90,7 @@
                           v-on:select-button="buttonClick($event)"/>
           </div>
         </div>
-        <div v-if="choiceshove" v-bind:style="{flexDirection: flexD}" class="choice">
+        <div v-if="choiceshowe" v-bind:style="{flexDirection: flexD}" class="choice">
           <button class="choice-button" @click="SetValue(0)">
             X
           </button>
@@ -60,7 +107,7 @@
 
       <comfort-choice
           v-on:send-value="SetValue($event)"
-          v-if="easyChoise"
+          v-if="easyChoice"
           :size-btn="sizeBtn"
           :params="comfortChoiceData"
       />
@@ -82,15 +129,15 @@ export default {
   },
   data() {
     return {
-      easyChoise: false,
-      easyChoiseShow: true,
-      easyChoiseDbClick: true,
+      easyChoice: false,
+      easyChoiceShow: true,
+      easyChoiceDbClick: true,
       sizeBtn: 11,
       rotate: false,
       flexD: 'column',
       flexW: 'wrap',
       menushow: true,
-      choiceshove: true,
+      choiceshowe: true,
       menuStyles: null,
       selectedButton: -1,
       sudokuDataClass: null,
@@ -102,10 +149,13 @@ export default {
     ...mapGetters({
       stringField: 'dataManage/field'
     }),
+    advancedPossibly () {
+      return this.sudokuDataClass.getAdvancedPossibles()
+    },
     possiblyChoice() {
       return this.selectedButton !== -1 ? this.Field.find(item => item.id === this.selectedButton).possibly : 9
     },
-    possiblyChoiceButtonStyle (number) {
+    possiblyChoiceButtonStyle(number) {
       let style = {}
       if (this.selectedButton !== -1) {
         style = this.Field.find(item => item.id === this.selectedButton).possibly.has(number) ? 'green' : 'gray'
@@ -145,25 +195,25 @@ export default {
     SetValue(value) {
       this.sudokuDataClass.setFieldValue(this.selectedButton, value)
       this.selectedButton = -1
-      this.easyChoise = false
+      this.easyChoice = false
       // console.log(this.sudokuDataClass.checkWin())
     },
     pageClick() {
       this.selectedButton = -1
-      this.easyChoise = false
+      this.easyChoice = false
     },
     buttonClick(data) {
-      this.easyChoise = false
+      this.easyChoice = false
       this.comfortChoiceData.left = data.left
       this.comfortChoiceData.top = data.top
       this.comfortChoiceData.possibly = this.Field[data.id].possibly
       this.comfortChoiceData.buttonId = data.id
       this.comfortChoiceData.value = this.Field[data.id].value
-      if (!this.easyChoiseDbClick) {
+      if (!this.easyChoiceDbClick) {
         this.selectedButton = data.id
       }
-      if (data.id === this.selectedButton && this.easyChoiseShow) {
-        this.easyChoise = true
+      if (data.id === this.selectedButton && this.easyChoiceShow) {
+        this.easyChoice = true
       } else {
         this.selectedButton = data.id
       }
@@ -193,6 +243,7 @@ export default {
     },
     updateSize() {
       if (window.innerWidth < window.innerHeight * 1.1) {
+        this.sizeBtn = 11
         this.rotate = true
         this.flexD = 'row'
         this.flexW = 'column'
@@ -216,9 +267,13 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
+
     this.setLocalField()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
+    // setTimeout(()=> {
+    //   console.log(this.sudokuDataClass.getAdvancedPossibles())
+    // },1000)
 
   },
   beforeDestroy() {
@@ -231,6 +286,19 @@ export default {
 .Field {
   display: flex;
   flex-direction: column;
+}
+
+header {
+  background-color: #9ae35a;
+  width: 100%;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 1vh;
+  padding: 1px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .Field-line {
@@ -248,6 +316,7 @@ export default {
   flex-wrap: nowrap;
   justify-content: space-around;
   align-items: center;
+  flex-direction: column;
 }
 
 .choice {
@@ -265,11 +334,22 @@ export default {
 
 .menuitem {
   border-color: rgb(0, 0, 0);
-  border-width: 1px;
+  /*border-width: 1px;*/
+  /*border-right-width: 3px;*/
   border-style: solid;
-  width: 8vmin;
-  height: 8vmin;
+  /*min-width: 8vmin;*/
+  /*min-height: 8vmin;*/
   overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: white;
+  padding: 5px;
+  user-select: none;
+}
+
+.menuBlock {
+  display: flex;
+  flex-direction: row;
 }
 
 .menu {
