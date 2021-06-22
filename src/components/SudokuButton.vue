@@ -12,7 +12,7 @@
     </div>
     <div v-for="item in this.localData.possibly" v-else :key="item"
          class="PossublyValue">
-      {{ item }}
+    {{item}}
     </div>
   </div>
 </template>
@@ -56,7 +56,7 @@ export default {
       return Math.floor(Math.floor(this.ButtonId / 3) / 9) * 3 + Math.floor(this.ButtonId / 3) % 3
     },
 
-    styles () {
+    styles() {
       let styles = {}
       if (!this.localData.const) {
         styles.color = 'rgb(0, 0, 0, 0.5)'
@@ -76,7 +76,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .SudokuButton {
-  border-color: rgb(0, 0, 0);
+  border-color: black;
   border-width: 1px 1px 1px 1px;
   border-style: solid;
   display: flex;
@@ -85,6 +85,8 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   padding: 2px;
+  box-sizing: border-box;
+
 }
 
 .MainValue {

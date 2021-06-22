@@ -41,7 +41,8 @@ export default {
     }
   },
   data: function () {
-    return {}
+    return {
+    }
   },
   methods: {
     selectValue(number) {
@@ -58,29 +59,29 @@ export default {
     componentStyle() {
       let gridTemplateColumns = 3
       let gridTemplateRows = 3
-      let left = this.params.left / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
-      let top = this.params.top / Math.min(window.innerHeight, window.innerWidth) * 100 -1 - this.sizeBtn
+      let left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100 - this.sizeBtn
+      let top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100- this.sizeBtn
       if (this.params.buttonId < 9) {
-        top += 10
+        top += this.sizeBtn
       }
       if (this.params.buttonId > 71) {
-        top -= 10
+        top -= this.sizeBtn
       }
       if (this.params.buttonId % 9 === 0) {
-        left += 10
+        left += this.sizeBtn
       }
       if (this.params.buttonId % 9 === 8) {
-        left -= 10
+        left -= this.sizeBtn
       }
       if (this.params.possibly.size < 6) {
         if (this.params.buttonId >71) {
-          top += 10
+          top += this.sizeBtn
         }
         gridTemplateRows = 2
       }
       if (this.params.possibly.size < 4) {
         if (this.params.buttonId % 9 === 8) {
-          left += 10
+          left += this.sizeBtn
         }
         gridTemplateColumns = 2
       }
@@ -112,6 +113,9 @@ export default {
         gridRowStart: row
       }
     }
+  },
+  mounted() {
+    console.log(this.sizeBtn)
   }
 }
 </script>
@@ -125,14 +129,16 @@ export default {
   display: grid;
   font-size: 8vmin;
   text-align: center;
+
 }
 
 .mainItems {
   border: black solid 2px;
   padding: 1px;
   background-color: #c32525;
-  border-radius: 10px;
+  /*border-radius: 10px;*/
   pointer-events: auto;
+  box-sizing: border-box;
 }
 
 .mainItems:hover {

@@ -1,25 +1,6 @@
 <template>
   <div>
     <div class="s-page" v-bind:style="{flexDirection: flexW}" @click.self="pageClick()" v-if="Field">
-      <div v-if="choiceshove" class="choice" v-bind:style="{flexDirection: flexD}">
-        <button class="choice-button" @click="SetValue(0)">
-          X
-        </button>
-        <button v-for="item in possiblyChoise" :key="item" class="choice-button" @click="SetValue(item)">
-          {{ item }}
-        </button>
-      </div>
-      <div class="Field">
-        <div class="Field-line" v-for="line in 9" :key="line">
-          <SudokuButton v-for="item in 9"
-                        :key="item"
-                        v-bind:button-id="(line-1)*9+item - 1"
-                        v-bind:size-btn="sizeBtn+'vmin'"
-                        v-bind:local-data="Field[(line-1)*9+item-1]"
-                        v-bind:dataView="fieldview[(line-1)*9+item-1]"
-                        v-on:select-button="buttonClick($event)"/>
-        </div>
-      </div>
       <div v-if="!menushow" class="menu">
         <div class="menuitem" @click="menushow = !menushow">
           show menu
@@ -35,10 +16,10 @@
         <div class="menuitem" @click="sudokuDataClass.undoLastValue()">
           undo
         </div>
-        <div  class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(2)">
+        <div class="menuitem" @click="sudokuDataClass.setAdvancedPossibly(2)">
           one Possibly
         </div>
-        <div  class=" menuitem" @click="sudokuDataClass.setAdvancedPossibly(1)">
+        <div class=" menuitem" @click="sudokuDataClass.setAdvancedPossibly(1)">
           only Here
         </div>
         <div class="menuitem" @click="goBack()">
@@ -46,6 +27,34 @@
         </div>
         <div class="menuitem" @click="help()">
           help
+        </div>
+      </div>
+      <div class="Field-wrapper"
+           v-bind:style="{flexDirection: flexW}"
+      >
+        <div class="Field">
+          <div class="Field-line" v-for="line in 9" :key="line">
+            <SudokuButton v-for="item in 9"
+                          :key="item"
+                          v-bind:button-id="(line-1)*9+item - 1"
+                          v-bind:size-btn="sizeBtn+'vmin'"
+                          v-bind:local-data="Field[(line-1)*9+item-1]"
+                          v-bind:dataView="fieldview[(line-1)*9+item-1]"
+                          v-on:select-button="buttonClick($event)"/>
+          </div>
+        </div>
+        <div v-if="choiceshove" v-bind:style="{flexDirection: flexD}" class="choice">
+          <button class="choice-button" @click="SetValue(0)">
+            X
+          </button>
+          <button
+              v-for="item in 9"
+              :key="item"
+              v-bind:style="{backgroundColor: possiblyChoiceButtonStyle}"
+              class="choice-button"
+              @click="SetValue(item)">
+            {{ item }}
+          </button>
         </div>
       </div>
 
@@ -85,7 +94,7 @@ export default {
       menuStyles: null,
       selectedButton: -1,
       sudokuDataClass: null,
-      Field:null,
+      Field: null,
       comfortChoiceData: {}
     }
   },
@@ -93,10 +102,17 @@ export default {
     ...mapGetters({
       stringField: 'dataManage/field'
     }),
-    possiblyChoise() {
+    possiblyChoice() {
       return this.selectedButton !== -1 ? this.Field.find(item => item.id === this.selectedButton).possibly : 9
     },
-     fieldview () {
+    possiblyChoiceButtonStyle (number) {
+      let style = {}
+      if (this.selectedButton !== -1) {
+        style = this.Field.find(item => item.id === this.selectedButton).possibly.has(number) ? 'green' : 'gray'
+      }
+      return style
+    },
+    fieldview() {
       let view = []
       for (let i = 0; i < 81; i++) {
         view.push({
@@ -176,18 +192,18 @@ export default {
       this.$router.push({name: 'SudokuHome'})
     },
     updateSize() {
-      if (window.innerWidth < window.innerHeight*1.2) {
+      if (window.innerWidth < window.innerHeight * 1.1) {
         this.rotate = true
         this.flexD = 'row'
         this.flexW = 'column'
       } else {
-        this.sizeBtn = 9.5
+        this.sizeBtn = 10
         this.rotate = false
         this.flexD = 'column'
         this.flexW = 'row'
       }
     },
-    setLocalField () {
+    setLocalField() {
       this.sudokuDataClass = new FieldActions.sudokuData()
       this.sudokuDataClass.setField(this.stringField(6))
       this.Field = this.sudokuDataClass.getField()
@@ -222,10 +238,15 @@ export default {
   flex-direction: row;
 }
 
+.Field-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
 .s-page {
   display: flex;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 
@@ -233,6 +254,7 @@ export default {
   display: flex;
   flex-direction: row;
   margin-top: 2vmin;
+  padding: 2vmin;
 }
 
 .choice-button {
@@ -251,6 +273,7 @@ export default {
 }
 
 .menu {
+  justify-self: flex-start;
   font-size: 3vmin;
   user-select: none;
   display: flex;
@@ -263,3 +286,5 @@ export default {
   background-color: green;
 }
 </style>
+
+//
