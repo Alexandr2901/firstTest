@@ -3,10 +3,10 @@
       :style="componentStyle"
       class="comfortChoice">
     <div
-        v-for="item in params.possibly "
+        v-for="item in possibly"
         :key="item"
         :style="buttonSize"
-        class="mainItems"
+        class=" mainColor mainItems"
         @click="selectValue(item)"
     >
       {{ item }}
@@ -14,7 +14,7 @@
     <div
         v-if="params.possibly.size<9 && params.value === 0"
         :style="[blankItem, buttonSize]"
-        class="centerItem">
+        class=" centerItem">
     </div>
     <div
         v-if="params.value !== 0"
@@ -55,6 +55,11 @@ export default {
         width: this.sizeBtn + "vmin",
         height: this.sizeBtn + "vmin",
       }
+    },
+    possibly () {
+      let ar = new Set( [...this.params.possibly])
+      ar.delete(this.params.value)
+      return ar
     },
     componentStyle() {
       let gridTemplateColumns = 3
@@ -123,7 +128,7 @@ export default {
 <style scoped>
 .comfortChoice {
   pointer-events: none;
-  border-radius: 10px;
+  /*border-radius: 10px;*/
   user-select: none;
   position: absolute;
   display: grid;
@@ -135,14 +140,16 @@ export default {
 .mainItems {
   border: black solid 2px;
   padding: 1px;
-  background-color: #c32525;
+  /*background-color: #c32525;*/
   /*border-radius: 10px;*/
   pointer-events: auto;
   box-sizing: border-box;
 }
-
-.mainItems:hover {
-  background-color: #9ae35a;
+.centerItem{
+  opacity: 1;
 }
+/*.mainItems:hover {*/
+/*  background-color: #9ae35a;*/
+/*}*/
 
 </style>
