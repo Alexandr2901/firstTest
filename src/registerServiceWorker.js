@@ -27,6 +27,7 @@ if (process.env.NODE_ENV === 'production') {
       //   window.location.reload(true)
       // }
       //console.log(isBoss);
+      localStorage.clear()
       window.location.reload()
       // caches.keys().then(function(names) {
       //   for (let name of names) caches.delete(name);

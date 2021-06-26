@@ -247,7 +247,9 @@ class sudokuData {
 
     checkGuaranteedWin() {
         this.setAdvancedPossibles([1, 1, 1])
-        return this.Field.every(item => (item.value > 0 && item.value <= 9) || item.possibly.size === 1)
+        let field = new sudokuData([1,1,1])
+        field.setField(this.getFieldString())
+        return field.Field.every(item => (item.value > 0 && item.value <= 9) || item.possibly.size === 1)
     }
 
     checkDeadlock() {
@@ -376,7 +378,6 @@ class sudokuData {
             // let res = await this.newField()
             // console.log(res)
             return await this.newField()
-
         }
     }
 

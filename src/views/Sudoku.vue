@@ -20,7 +20,6 @@
     </header>
     <div class="s-page" @click.self="pageClick()">
       <div
-
           v-if="viewSettings.menuPanelShow"
           class="menuPanel mainColor">
         <div>
@@ -66,6 +65,15 @@
               class="menuPanelItem">
             deleteDataSettings
           </div>
+          <input
+              v-model="savedData.difficulty"
+              id="difficulty"
+              min="0" max="3"
+              type="range">
+          <label for="difficulty" >
+            difficulty:
+            {{savedData.difficulty}}
+          </label>
           <div>
             <a style="padding: 10px" href="https://icons8.ru">икнонки взяты с сайта</a>
           </div>
@@ -75,7 +83,7 @@
       <div class="Field-wrapper"
            v-bind:style="{flexDirection: flexW}"
       >
-        <div  v-if="!rotate && viewSettings.choiceShow" v-bind:style="{flexDirection: flexD}" class="choice">
+        <div v-if="!rotate && viewSettings.choiceShow" v-bind:style="{flexDirection: flexD}" class="choice">
           <button class="choice-button mainColor" @click="SetValue(0)">
             X
           </button>
@@ -159,6 +167,7 @@ export default {
       },
       savedData: JSON.parse(localStorage.getItem('savedData')) || {
         sudokuId: 1,
+        difficulty:1
       }
     }
   },
@@ -214,7 +223,6 @@ export default {
       this.selectedButton = -1
       this.easyChoice = false
       // }
-
       // console.log(this.sudokuDataClass.checkWin())
     },
     pageClick() {
@@ -290,7 +298,7 @@ export default {
     setLocalField() {
       // let start = new Date()
       // let x = new FieldActions.sudokuData()
-      // x.newField()
+      // x.createField()
       // console.log(this.stringField(3))
       this.setLocalField2()
       // x.time()
@@ -380,7 +388,7 @@ header {
   user-select: none;
 }
 
-.menuitem:hover{
+.menuitem:hover {
   transform: scale(1.3);
   background-color: green;
   border-radius: 500px;
