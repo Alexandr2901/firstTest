@@ -194,7 +194,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      getField: 'dataManage/getField'
+    }),
     help() {
       let url = "https://www.sudokuwiki.org/sudoku.htm?bd="
       this.Field.forEach(element => {
@@ -273,14 +275,29 @@ export default {
         this.flexW = 'row'
       }
     },
-    setLocalField(id = this.savedData.sudokuId) {
+    setLocalField2(id = this.savedData.sudokuId) {
       if (this.savedData.sudokuId > 154) {
         this.savedData.sudokuId = 0
       }
       this.sudokuDataClass = new FieldActions.sudokuData()
-      this.sudokuDataClass.setField(this.stringField(id))
-      this.Field = this.sudokuDataClass.getField()
-      this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
+      this.getField(id).then(result => {
+        this.sudokuDataClass.setField(result)
+        this.Field = this.sudokuDataClass.getField()
+        this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
+      })
+
+    },
+    setLocalField() {
+      // let start = new Date()
+      // let x = new FieldActions.sudokuData()
+      // x.newField()
+      // console.log(this.stringField(3))
+      this.setLocalField2()
+      // x.time()
+      // x.sudokuSolution('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+      // console.log(x.sudokuSolution('000000000000000000000000000000000000000000000000000000000000000000000000000000000'))
+      // console.log('time')
+      // console.log(new Date() - start)
     },
     message(e) {
       console.log(e)

@@ -11,13 +11,13 @@ const sudokuSquares = [
 ]
 
 class sudokuData {
-    constructor() {
+    constructor(advancedPossibly = [1, 0, 0]) {
         this.repeat = true
         this.option = new Set() //количество решений
         this.param = 0 // bulkhead
-        this.advancedPossibly = [1, 0, 0]
+        this.advancedPossibly = advancedPossibly
         this.segments = []
-        this.stack = []
+        this.stack = [] // история поставленных значений
         this.autoSolve = false
         this.wrongIds = new Set()
     }
@@ -29,6 +29,14 @@ class sudokuData {
 
     getField() {
         return this.Field
+    }
+
+    getFieldString() {
+        let x = ''
+        this.Field.forEach(item => {
+            x += item.value
+        })
+        return x
     }
 
     getWrongIds() {
@@ -43,8 +51,10 @@ class sudokuData {
     }
 
     setAdvancedPossibles(parameters) {
-        this.advancedPossibly = parameters
-        this.allPossibly(this.Field)
+        if (this.advancedPossibly !== [1, 1, 1] && parameters !== [1, 1, 1]) {
+            this.advancedPossibly = parameters
+            this.allPossibly(this.Field)
+        }
     }
 
     getAdvancedPossibles() {
@@ -113,7 +123,7 @@ class sudokuData {
         if (this.stack.length !== 0) {
             let data = this.stack.pop()
             this.Field[data.id].value = data.previousValue
-            this.allPossibly(this.Field)
+            this.allPossibly()
         }
     }
 
@@ -231,8 +241,18 @@ class sudokuData {
         })
     }
 
-    checkWin(field = this.Field) {
-        return field.every(item => item.value > 0 && item.value <= 9)
+    checkWin() {
+        return this.Field.every(item => item.value > 0 && item.value <= 9) && this.wrongIds.size === 0
+    }
+
+    checkGuaranteedWin() {
+        this.setAdvancedPossibles([1, 1, 1])
+        return this.Field.every(item => (item.value > 0 && item.value <= 9) || item.possibly.size === 1)
+    }
+
+    checkDeadlock() {
+        this.setAdvancedPossibles([1, 1, 1])
+        return this.Field.some(item => item.value === 0 && item.possibly.size === 0)
     }
 
     checkWinPossibly(field) {
@@ -261,94 +281,162 @@ class sudokuData {
     }
 
     sudokuSolution(stringField) {
-        this.setAdvancedPossibly([1, 1, 1])
         this.option.clear()
+        // console.log(stringField)
         this.Bulkhead(stringField)
+        // console.log(this.option)
         return this.option
     }
 
-    Bulkhead2(stringField) {
-        let field = this.fieldInit(stringField)
-        this.possiblyend = false
-        field = this.allPossibly(field, false)
-        if (!this.checkLose(field) && this.option.size < 10) {
-            if (this.checkWinPossibly(field)) {
-                let string = ""
-                field.forEach(item => {
-                    if (item.possibly.size === 1) {
-                        string += [...item.possibly][0]
-                    } else {
-                        string += item.value
-                    }
+    Bulkhead(stringField, value = 0) {
+        let fieldClass = new sudokuData()
+        fieldClass.setField(stringField)
+        if (value) {
+            fieldClass.getField().find(item => item.value === 0).value = value
+        }
+        let string = fieldClass.getFieldString()
+        fieldClass.setAdvancedPossibles([1, 1, 1])
+        if (this.option.size < 2 && !fieldClass.checkDeadlock()) {
+            if (!fieldClass.checkGuaranteedWin()) {
+                fieldClass.getField().find(item => item.value === 0).possibly.forEach(item => {
+                    this.Bulkhead(string, item)
                 })
-                this.option.add(string)
             } else {
-                let item = field.find(x => x.possibly.size > 1 && x.value === 0)
-                item.possibly.forEach(subitem => {
-                    let litle = {}
-                    litle.q1 = []
-                    item.possibly.forEach(x => {
-                        litle.q1.push(x)
-                    })
-                    litle.q2 = item.id
-                    let string = ""
-                    field.forEach(item1 => {
-                        if (item.id !== item1.id) {
-                            string = string + item1.value
-                        } else {
-                            string = string + subitem
-                        }
-                    })
-                    if (this.param < 1) {
-                        this.Bulkhead(string)
-                        this.param++
-                    }
-                })
+                this.option.add(string)
             }
         }
-
     }
 
-    Bulkhead(stringField) {
-        let field = this.allPossibly(this.fieldInit(stringField))
-        if (this.checkWinPossibly(field)) {
-            let str = ''
-            field.forEach(item => {
-                if (item.value > 0) {
-                    str = str + item.value
-                } else {
-                    str = str + [...item.possibly][0]
-                }
+    newFields() {
+        let fieldClasses = [new sudokuData([1, 1, 1])]
+        fieldClasses[0].setField('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        let x = new Set()
+        while (x.size !== 4) {
+            x.add(Math.floor(Math.random() * (81)))
+        }
+        [...x].forEach(pos => {
+            // let fields = []
+            fieldClasses.forEach(field => {
+                // setTimeout(() => {
+                let index = -1
+                // console.log(field.getField())
+                field.getField()[pos].possibly.forEach((value) => {
+                    let strF = field.getFieldString()
+                    index++
+                    if (index === 0) {
+                        field.getField()[pos].value = value
+                    } else {
+                        let fieldClass = new sudokuData([1, 1, 1])
+                        fieldClass.setField(strF)
+                        fieldClass.getField()[pos].value = value
+                        fieldClasses.push(fieldClass)
+                    }
+                })
+                // }, 0)
             })
-            this.option.add(str)
-        } else {
-            if (!this.checkLose(field)) {
-                let button = field.find(item => item.possibly.size > 1)
-                button.possibly.forEach(item => {
-                    let str = ''
-                    field.forEach(item2 => {
-                        if (item2.id === button.id) {
-                            str = str + item
-                        } else {
-                            str = str + item2.value
-                        }
-                    })
-                    if (this.option.size < 10) {
-                        this.Bulkhead(str)
-                    }
-                })
+            // fieldClasses.push(result)
+
+        })
+        // this.newField2(fields)
+
+        setTimeout(() => {
+            // fieldClasses.forEach(item => {
+            //     console.log(item.getFieldString())
+            // })
+            console.log(fieldClasses)
+        }, 100)
+        // console.log(fieldClasses["sudokuData"])
+    }
+
+    random81symbols() {
+        let x = Math.random().toFixed(40).slice(2)
+        let y = Math.random().toFixed(41).slice(2)
+        return x + y
+    }
+
+    async newField() {
+        let field = new sudokuData([1, 1, 1])
+        field.setField('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        let count = 0
+        while (count < 18 || (field.sudokuSolution(field.getFieldString()).size > 1)) {
+            let pos = Math.floor(Math.random() * (81))
+            if (field.getField()[pos].possibly.size !== 0) {
+                count++
+                let possibles = [...field.getField()[pos].possibly]
+                let value = possibles[Math.floor(Math.random() * possibles.length)];
+                field.getField()[pos].value = value
+                field.allPossibly()
             }
+        }
+        if (field.sudokuSolution(field.getFieldString()).size === 1) {
+
+            return field.getFieldString()
+        } else {
+            console.log(1)
+            // let res = await this.newField()
+            // console.log(res)
+            return await this.newField()
+
         }
     }
 
-    newField() {
+    newField3() {
+        let stringField = this.random81symbols()
+        let field = new sudokuData([1, 1, 1])
+        field.setField(stringField)
+        field.getField().forEach(item => {
+            item.const = false
+        })
+        field.allPossibly()
+        while (field.getWrongIds().size !== 0) {
+            field.getField()[[...field.getWrongIds()][0]].value = 0
+            field.allPossibly()
+        }
+        while (field.sudokuSolution(field.getFieldString()).size < 1) {
+            field.getField().find(item => item.value !== 0).value = 0
+            field.allPossibly()
+        }
+
+        // field.getWrongIds().forEach(item => {
+        //     field.getField()[item].value = 0
+        // })
+        return field.getFieldString()
+    }
+
+    newField2() {
+        let fieldClass = new sudokuData()
+        let str = '000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+
+        fieldClass.setField('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        fieldClass.setAdvancedPossibles([1, 1, 1])
+        let x = new Set()
+        while (x.size !== 16) {
+            x.add(Math.floor(Math.random() * (81)))
+        }
+        [...x].forEach(item => {
+            str.charAt(item)
+            console.log(item)
+            fieldClass.setFieldValue(item, [...fieldClass.getField()[item].possibly][0])
+        })
+        // while (this.sudokuSolution(fieldClass.getFieldString()).size !== 1) {
+        //     fieldClass.getField().find(item => item.value === 0).possibly.forEach(item => {
+        //         fieldClass.setFieldValue(fieldClass.getField().find(item => item.value === 0), item)
+        //     })
+        // }
+        // if (this.sudokuSolution(fieldClass.getFieldString()).size !== 1) {
+        //
+        // }
+        console.log(fieldClass.getField())
+    }
+
+    newField5() {
         this.setAdvancedPossibly([1, 1, 1])
         let stringField = ''
         let field = this.fieldInit('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
         let count = 0
         let check = true
-        let succes = true
-        while ((count < 16 || check) && succes) {
+        let success = true
+        while ((count < 16 || check) && success) {
             let place = Math.floor(Math.random() * (81))
             let value = Math.floor(Math.random() * (8)) + 1
             if (field[place].possibly.has(value) && field[place].value === 0) {
@@ -363,7 +451,7 @@ class sudokuData {
                     str += item.value
                 })
                 if (this.sudokuSolution(str).size === 0) {
-                    succes = false
+                    success = false
                 }
                 if (this.sudokuSolution(str).size === 1) {
                     check = false
@@ -371,7 +459,7 @@ class sudokuData {
             }
 
         }
-        if (succes) {
+        if (success) {
             field.forEach((item) => {
                 stringField += item.value
             })

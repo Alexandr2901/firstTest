@@ -1,3 +1,5 @@
+import sudokuData from "@/store/sudoku/sudokuData";
+
 export default {
     getDataMain(context) {
         // console.log('132')
@@ -11,7 +13,17 @@ export default {
         //receiveData.actions.getData()
         // context.commit('TEST')
     },
-    testget() {
-        console.log('testget')
+    getField (context, id) {
+        // if (context.state.fields.length < id + 250) {
+        //     setTimeout(()=>{
+        //         let x = new sudokuData.sudokuData()
+        //         // x.newField()
+        //         x.newField().then(res => {
+        //             console.log(res)
+        //         })
+        //     },0)
+        // } else {
+            return  context.state.fields[id]
+        // }
     }
 }
