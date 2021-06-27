@@ -247,7 +247,7 @@ class sudokuData {
 
     checkGuaranteedWin() {
         this.setAdvancedPossibles([1, 1, 1])
-        let field = new sudokuData([1,1,1])
+        let field = new sudokuData([1, 1, 1])
         field.setField(this.getFieldString())
         return field.Field.every(item => (item.value > 0 && item.value <= 9) || item.possibly.size === 1)
     }

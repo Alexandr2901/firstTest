@@ -288,7 +288,7 @@ export default {
         this.savedData.sudokuId = 0
       }
       this.sudokuDataClass = new FieldActions.sudokuData()
-      this.getField(id).then(result => {
+      this.getField(id).then((result) => {
         this.sudokuDataClass.setField(result)
         this.Field = this.sudokuDataClass.getField()
         this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
