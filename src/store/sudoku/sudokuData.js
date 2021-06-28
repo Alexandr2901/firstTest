@@ -245,10 +245,10 @@ class sudokuData {
         return this.Field.every(item => item.value > 0 && item.value <= 9) && this.wrongIds.size === 0
     }
 
-    checkGuaranteedWin() {
-        this.setAdvancedPossibles([1, 1, 1])
-        let field = new sudokuData([1, 1, 1])
-        field.setField(this.getFieldString())
+    checkGuaranteedWin(str = this.getFieldString()) {
+        // this.setAdvancedPossibles([1, 1, 1])
+        let field = new sudokuData([1,1,1])
+        field.setField(str)
         return field.Field.every(item => (item.value > 0 && item.value <= 9) || item.possibly.size === 1)
     }
 
@@ -291,16 +291,18 @@ class sudokuData {
     }
 
     Bulkhead(stringField, value = 0) {
-        let fieldClass = new sudokuData()
+        let fieldClass = new sudokuData([1, 1, 1])
         fieldClass.setField(stringField)
+        // console.log(fieldClass.getField());
         if (value) {
-            fieldClass.getField().find(item => item.value === 0).value = value
+            // fieldClass.getField()[pos].value = value
+            // console.log(fieldClass.getField().find(item => item.value === 0).possibly, value);
+            fieldClass.getField().find(item => item.value === 0 && item.possibly.size >1).value = value
         }
         let string = fieldClass.getFieldString()
-        fieldClass.setAdvancedPossibles([1, 1, 1])
         if (this.option.size < 2 && !fieldClass.checkDeadlock()) {
             if (!fieldClass.checkGuaranteedWin()) {
-                fieldClass.getField().find(item => item.value === 0).possibly.forEach(item => {
+                fieldClass.getField().find((item) => item.value === 0 && item.possibly.size >1 ).possibly.forEach(item => {
                     this.Bulkhead(string, item)
                 })
             } else {
@@ -374,7 +376,7 @@ class sudokuData {
 
             return field.getFieldString()
         } else {
-            console.log(1)
+            // console.log(1)
             // let res = await this.newField()
             // console.log(res)
             return await this.newField()
@@ -416,7 +418,7 @@ class sudokuData {
         }
         [...x].forEach(item => {
             str.charAt(item)
-            console.log(item)
+            // console.log(item)
             fieldClass.setFieldValue(item, [...fieldClass.getField()[item].possibly][0])
         })
         // while (this.sudokuSolution(fieldClass.getFieldString()).size !== 1) {
@@ -427,7 +429,7 @@ class sudokuData {
         // if (this.sudokuSolution(fieldClass.getFieldString()).size !== 1) {
         //
         // }
-        console.log(fieldClass.getField())
+        // console.log(fieldClass.getField())
     }
 
     newField5() {

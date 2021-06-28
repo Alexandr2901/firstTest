@@ -1,5 +1,5 @@
 import actions from "./actions";
-import state from "./state2";
+import state from "./state4";
 import mutations from "./mutations"
 import getters from "./getters"
 export default {

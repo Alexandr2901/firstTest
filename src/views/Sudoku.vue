@@ -40,7 +40,7 @@
             first algorithm
           </div>
           <div
-              v-if="viewSettings.prompt"
+              v-if="viewSettings.prompt && savedData.difficulty"
               v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[2]}"
               class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(2)">
             second algorithm
@@ -66,13 +66,14 @@
             deleteDataSettings
           </div>
           <input
-              v-model="savedData.difficulty"
+              v-model.number="tempChoiceDifficulty"
+              @change="setDifficulty"
               id="difficulty"
-              min="0" max="3"
+              min="0" max="10"
               type="range">
-          <label for="difficulty" >
+          <label for="difficulty">
             difficulty:
-            {{savedData.difficulty}}
+            {{ tempChoiceDifficulty }}
           </label>
           <div>
             <a style="padding: 10px" href="https://icons8.ru">икнонки взяты с сайта</a>
@@ -156,9 +157,9 @@ export default {
       sudokuDataClass: null,
       Field: null,
       comfortChoiceData: {},
+      tempChoiceDifficulty: 1,
       viewSettings: JSON.parse(localStorage.getItem('viewSettings')) || {
         easyChoiceShow: true,
-        sudokuId: 1,
         easyChoiceDbClick: true,
         choiceShow: true,
         menuPanelShow: false,
@@ -167,7 +168,16 @@ export default {
       },
       savedData: JSON.parse(localStorage.getItem('savedData')) || {
         sudokuId: 1,
-        difficulty:1
+        difficulty: 1,
+        difficultyId: [{
+          id: 0,
+          difficulty: 0,
+          solvedId: []
+        }, {
+          id: 0,
+          difficulty: 1,
+          solvedId: []
+        }]
       }
     }
   },
@@ -214,7 +224,8 @@ export default {
       window.open(url)
     },
     nextSudoku() {
-      this.savedData.sudokuId++
+      this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id++
+      // this.savedData.sudokuId++
       this.setLocalField(this.savedData.sudokuId)
     },
     SetValue(value) {
@@ -283,35 +294,49 @@ export default {
         this.flexW = 'row'
       }
     },
-    setLocalField2(id = this.savedData.sudokuId) {
-      if (this.savedData.sudokuId > 154) {
-        this.savedData.sudokuId = 0
-      }
+    setLocalField() {
       this.sudokuDataClass = new FieldActions.sudokuData()
-      this.getField(id).then((result) => {
-        this.sudokuDataClass.setField(result)
-        this.Field = this.sudokuDataClass.getField()
-        this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
+      this.getField([this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id,
+        this.savedData.difficulty])
+          .then((result) => {
+            this.sudokuDataClass.setField(result)
+            this.Field = this.sudokuDataClass.getField()
+            this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
+          }).catch(e => {
+        console.log(e)
       })
 
     },
-    setLocalField() {
+    setLocalField2() {
       // let start = new Date()
       // let x = new FieldActions.sudokuData()
       // x.createField()
       // console.log(this.stringField(3))
-      this.setLocalField2()
+      this.setLocalField()
       // x.time()
       // x.sudokuSolution('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
       // console.log(x.sudokuSolution('000000000000000000000000000000000000000000000000000000000000000000000000000000000'))
       // console.log('time')
       // console.log(new Date() - start)
     },
+    setDifficulty(message) {
+      if (!this.savedData.difficultyId.some(item => item.difficulty === +message.target.value)) {
+        this.savedData.difficultyId.push({
+          id: 0,
+          difficulty: +message.target.value
+        })
+      }
+      if (confirm('are you sure')) {
+        this.savedData.difficulty = this.tempChoiceDifficulty
+        this.setLocalField()
+      } else {
+        this.tempChoiceDifficulty = this.savedData.difficulty
+      }
+    },
     message(e) {
       console.log(e)
     },
     deleteViewSettings() {
-
       if (confirm('are you sure')) {
         localStorage.removeItem('viewSettings')
         window.location.reload()
@@ -329,9 +354,12 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
+    // localStorage.clear()
     this.setLocalField()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
+    this.tempChoiceDifficulty = this.savedData.difficulty
+    // console.log(this.tempChoiceDifficulty )
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keywordClick);
