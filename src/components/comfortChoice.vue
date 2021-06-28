@@ -19,7 +19,7 @@
     <div
         v-if="params.value !== 0"
         :style="[blankItem, buttonSize]"
-        class="mainItems"
+        class="mainItems secondColor"
         @click="selectValue(0)"
     >
       x
@@ -146,6 +146,9 @@ export default {
   box-sizing: border-box;
 }
 .centerItem{
+  opacity: 1;
+}
+.zero{
   opacity: 1;
 }
 /*.mainItems:hover {*/

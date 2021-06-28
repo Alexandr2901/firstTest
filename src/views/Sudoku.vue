@@ -30,7 +30,8 @@
           </div>
           <div class="menuPanelItem"
                v-bind:class="{secondColor: viewSettings.prompt}"
-               @click="viewSettings.prompt = !viewSettings.prompt">
+               @click="() =>{this.easyChoice = 0
+                 viewSettings.prompt = !viewSettings.prompt}">
             prompt
           </div>
           <div
@@ -169,21 +170,14 @@ export default {
       savedData: JSON.parse(localStorage.getItem('savedData')) || {
         sudokuId: 1,
         difficulty: 1,
-        difficultyId: [{
-          id: 0,
-          difficulty: 0,
-          solvedId: []
-        }, {
-          id: 0,
-          difficulty: 1,
-          solvedId: []
-        }]
+        difficultyId: null
       }
     }
   },
   computed: {
     ...mapGetters({
-      stringField: 'dataManage/field'
+      stringField: 'dataManage/field',
+      getDataOptions: 'dataManage/getDataOptions'
     }),
     advancedPossibly() {
       return this.sudokuDataClass.getAdvancedPossibles()
@@ -224,8 +218,15 @@ export default {
       window.open(url)
     },
     nextSudoku() {
+      if (this.sudokuDataClass.checkWin()) {
+        this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).solved
+            .push(this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id)
+      }
       this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id++
+      // console.log(this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id)
+      // console.log(this.sudokuDataClass.checkWin())
       // this.savedData.sudokuId++
+      // console.log(this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty))
       this.setLocalField(this.savedData.sudokuId)
     },
     SetValue(value) {
@@ -295,7 +296,30 @@ export default {
       }
     },
     setLocalField() {
+      // localStorage.clear()
       this.sudokuDataClass = new FieldActions.sudokuData()
+      let ar = this.savedData.difficultyId.find(item => item.difficulty === this.savedData.difficulty)
+      if (ar.maxId < ar.id){
+        ar.id = 0
+      }
+      if (ar.solved.length === ar.maxId) {
+        // alert('alarm')
+        ar.finished = true
+        // console.log(this.savedData.difficultyId.find(item => !item.finished))
+        this.savedData.difficulty = this.savedData.difficultyId.find(item => !item.finished).difficulty
+        this.tempChoiceDifficulty = this.savedData.difficulty
+        // console.log(this.savedData.difficulty)
+      } else {
+        for (let i=0;i<=ar.maxId;i++) {
+          if (ar.solved.some(item => item === ar.id)) {
+            // console.log(ar.id)
+            ar.id =(ar.id+1)%(ar.maxId+1)
+          }
+        }
+      }
+      // console.log(ar.maxId, ar.id, ar.solved.length)
+      // console.log([...ar.solved])
+      // console.log(ar.id)
       this.getField([this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id,
         this.savedData.difficulty])
           .then((result) => {
@@ -307,18 +331,6 @@ export default {
       })
 
     },
-    setLocalField2() {
-      // let start = new Date()
-      // let x = new FieldActions.sudokuData()
-      // x.createField()
-      // console.log(this.stringField(3))
-      this.setLocalField()
-      // x.time()
-      // x.sudokuSolution('000000000000000000000000000000000000000000000000000000000000000000000000000000000')
-      // console.log(x.sudokuSolution('000000000000000000000000000000000000000000000000000000000000000000000000000000000'))
-      // console.log('time')
-      // console.log(new Date() - start)
-    },
     setDifficulty(message) {
       if (!this.savedData.difficultyId.some(item => item.difficulty === +message.target.value)) {
         this.savedData.difficultyId.push({
@@ -327,6 +339,9 @@ export default {
         })
       }
       if (confirm('are you sure')) {
+        if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
+          this.sudokuDataClass.setAdvancedPossibly(2)
+        }
         this.savedData.difficulty = this.tempChoiceDifficulty
         this.setLocalField()
       } else {
@@ -348,9 +363,26 @@ export default {
         localStorage.removeItem('savedData')
         window.location.reload()
       }
+    },
+    startSettings() {
+      this.tempChoiceDifficulty = this.savedData.difficulty
+      if (!this.savedData.difficultyId) {
+        this.savedData.difficultyId = []
+        this.getDataOptions.forEach((item, index) => {
+          this.savedData.difficultyId.push({
+            id: 0,
+            difficulty: index,
+            maxId: item,
+            solved: [],
+            finished:false
+          })
+        })
+        // console.log(this.savedData.difficultyId)
+      }
     }
   },
   created() {
+    this.startSettings()
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
@@ -358,7 +390,7 @@ export default {
     this.setLocalField()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
-    this.tempChoiceDifficulty = this.savedData.difficulty
+
     // console.log(this.tempChoiceDifficulty )
   },
   beforeDestroy() {
