@@ -12,7 +12,7 @@
       {{ item }}
     </div>
     <div
-        v-if="params.possibly.size<9 && params.value === 0"
+        v-if="params.possibly.size<9 && params.value === 0 && params.possibly.size>1"
         :style="[blankItem, buttonSize]"
         class=" centerItem">
     </div>
@@ -90,6 +90,14 @@ export default {
         }
         gridTemplateColumns = 2
       }
+      if (this.params.possibly.size <=1) {
+        left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100
+        top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100
+        // left += this.sizeBtn
+        // top += this.sizeBtn
+        gridTemplateColumns = 1
+        gridTemplateRows = 1
+      }
       return {
         left: left += "vmin",
         top: top += "vmin",
@@ -127,6 +135,7 @@ export default {
 
 <style scoped>
 .comfortChoice {
+  opacity: 2;
   pointer-events: none;
   /*border-radius: 10px;*/
   user-select: none;
@@ -134,7 +143,7 @@ export default {
   display: grid;
   font-size: 8vmin;
   text-align: center;
-
+  box-shadow: black 0 0 20px 10px ;
 }
 
 .mainItems {
@@ -146,7 +155,8 @@ export default {
   box-sizing: border-box;
 }
 .centerItem{
-  opacity: 1;
+  opacity: 0;
+  border-radius: 90px;
 }
 .zero{
   opacity: 1;

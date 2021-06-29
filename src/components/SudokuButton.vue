@@ -1,20 +1,21 @@
 <template>
-  <div
-      ref="sudokuButton"
-      class="SudokuButton"
-
-      v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
-      @click="mouseDown"
-  >
-    <div v-if="localData.value !== 0"
-         class="MainValue" v-bind:style="{color: dataView.const}">
-      {{ localData.value }}
+  <transition appear name="sudokuButton">
+    <div
+        ref="sudokuButton"
+        class="SudokuButton"
+        v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
+        @click="mouseDown"
+    >
+      <div v-if="localData.value !== 0"
+           class="MainValue" v-bind:style="{color: dataView.const}">
+        {{ localData.value }}
+      </div>
+      <div v-else-if="possiblyShow" v-for="item in this.localData.possibly" :key="item"
+           class="PossublyValue">
+        {{ item }}
+      </div>
     </div>
-    <div v-else-if="possiblyShow" v-for="item in this.localData.possibly"  :key="item"
-         class="PossublyValue">
-    {{item}}
-    </div>
-  </div>
+  </transition>
 </template>
 <script>
 import {mapActions} from 'vuex'
@@ -41,11 +42,11 @@ export default {
     }),
     mouseDown() {
       // if (!this.localData.const) {
-        this.$emit('select-button', {
-          id: this.ButtonId,
-          left: this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX ,
-          top: this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY
-        })
+      this.$emit('select-button', {
+        id: this.ButtonId,
+        left: this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX,
+        top: this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY
+      })
       // }
     },
     message(e) {
@@ -74,7 +75,7 @@ export default {
         // styles.color = 'red'
         styles.backgroundColor = 'red'
       }
-      if ((this.localData.possibly.size === 0 && !this.localData.const && this.localData.value ===0)) {
+      if ((this.localData.possibly.size === 0 && !this.localData.const && this.localData.value === 0)) {
         styles.backgroundColor = '#720101'
       }
       return styles
@@ -94,8 +95,15 @@ export default {
   flex-wrap: wrap;
   padding: 2px;
   box-sizing: border-box;
-
 }
+
+//.SudokuButton-enter-active, .SudokuButton-leave-active {
+//  transition: opacity .5s;
+//}
+//
+//.SudokuButton-enter, .SudokuButton-leave-to {
+//  opacity: 0;
+//}
 
 .MainValue {
   font-size: 100%;

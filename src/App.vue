@@ -10,13 +10,15 @@ name: 'App'
 <style lang="scss">
 body {
   margin: 0;
+
 }
 
 .mainColor {
-  background-color: #47D5F5;
+  background-color: #E2E3FB;
+
 }
 .secondColor {
-  background-color: #39F55E;
+  background-color: #FDE0B0;
 
 }
 

@@ -66,6 +66,24 @@ class sudokuData {
         this.startAutoSolve()
     }
 
+    autoSolveOne() {
+        if (this.Field.some(item => item.possibly.size === 1 && item.value === 0)) {
+            let delay = 0
+            this.Field.forEach(item=> {
+                if (item.possibly.size ===1) {
+                    delay +=50
+                    setTimeout(()=>{
+                        this.setFieldValue(item.id,[...item.possibly][0])
+                    },delay)
+                }
+            })
+            setTimeout(()=>{
+                this.autoSolveOne()
+            },delay+50)
+        }
+
+    }
+
     startAutoSolve() {
         if (this.autoSolve) {
             setTimeout(() => {
@@ -100,7 +118,7 @@ class sudokuData {
 
     cycleInint(field = this.Field) {
         field.forEach(item => {
-            if (!item.const) {
+            if (item.value ===0) {
                 item.possibly = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
             }
         })

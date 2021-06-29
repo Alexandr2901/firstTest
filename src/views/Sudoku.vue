@@ -1,15 +1,15 @@
 <template>
-  <div class="Sudoku" v-if="Field">
+  <div @click.self="pageClick()" class="Sudoku" v-if="Field">
     <transition name="menuPanel">
       <div
           v-if="viewSettings.menuPanelShow"
-          class="menuPanel">
+          class="menuPanel mainColor">
         <div
-            @click="viewSettings.menuPanelShow = !viewSettings.menuPanelShow"
+            @click="menuPanelShow"
             class="menuPanelItem">
           close
         </div>
-        <div class="menuPanelItem"
+        <div class="menuPanelItem "
              v-bind:class="{secondColor: viewSettings.prompt}"
              @click="() =>{this.easyChoice = 0
                  viewSettings.prompt = !viewSettings.prompt}">
@@ -28,6 +28,12 @@
           second algorithm
         </div>
         <div
+            class="menuPanelItem"
+            @click="startAutoSolve"
+        >
+          startAutoSolve
+        </div>
+        <div
             v-bind:class="{secondColor: viewSettings.choiceShow}"
             class="menuPanelItem" @click="viewSettings.choiceShow = !viewSettings.choiceShow">
           choiceShow
@@ -37,11 +43,17 @@
              @click="() => {viewSettings.easyChoiceShow = !viewSettings.easyChoiceShow;easyChoice=false}">
           easyChoice
         </div>
-        <div
-            @click="deleteViewSettings"
-            class="menuPanelItem">
-          deleteViewSettings
+        <div class="menuPanelItem"
+             v-if="viewSettings.easyChoiceShow"
+             v-bind:class="{secondColor: viewSettings.easyChoiceDbClick}"
+             @click="viewSettings.easyChoiceDbClick = !viewSettings.easyChoiceDbClick">
+          easyChoiceDbClick
         </div>
+        <!--        <div-->
+        <!--            @click="deleteViewSettings"-->
+        <!--            class="menuPanelItem">-->
+        <!--          deleteViewSettings-->
+        <!--        </div>-->
         <div
             @click="deleteDataSettings"
             class="menuPanelItem">
@@ -49,38 +61,29 @@
         </div>
         <div class="menuPanelItem">
           <div>
-            difficylty
+            difficulty
           </div>
           <div class="difficultyChoice">
-            <div v-for="item in 11" :key="item">
-              {{ item - 1 }}
+            <div @click="setDifficulty(item)"
+                 v-for="item in savedData.difficultyId.filter(item => !item.finished).map(item => {return item.difficulty})"
+                 v-bind:class="{secondColor: item === savedData.difficulty}"
+                 :key="item">
+              {{ item }}
             </div>
           </div>
-
-          <!--          <input-->
-          <!--              v-model.number="tempChoiceDifficulty"-->
-          <!--              @change="setDifficulty"-->
-          <!--              id="difficulty"-->
-          <!--              min="0" max="10"-->
-          <!--              type="range">-->
-          <!--          <br>-->
-          <!--          <label for="difficulty">-->
-          <!--            difficulty:-->
-          <!--            {{ tempChoiceDifficulty }}-->
-          <!--          </label>-->
         </div>
 
-        <div>
-          <a style="padding: 10px" href="https://icons8.ru">икнонки взяты с сайта</a>
-        </div>
+        <!--        <div>-->
+        <!--          <a style="padding: 10px" href="https://icons8.ru">икнонки взяты с сайта</a>-->
+        <!--        </div>-->
       </div>
     </transition>
     <!--    v-bind:class="{translation: viewSettings.menuPanelShow && rotate}"-->
-    <div class="s-page" @click.self="pageClick()">
+    <div class="s-page">
       <header>
         <div>
           <img
-              @click="viewSettings.menuPanelShow = !viewSettings.menuPanelShow"
+              @click="menuPanelShow"
               class="menuitem"
               src="https://img.icons8.com/material-outlined/24/000000/settings--v1.png"/>
         </div>
@@ -111,7 +114,9 @@
             {{ item }}
           </button>
         </div>
-        <div class="Field">
+        <div
+            v-bind:class="{opacity:easyChoice}"
+            class="Field">
           <div class="Field-line" v-for="line in 9" :key="line">
             <SudokuButton v-for="item in 9"
                           :key="item"
@@ -171,7 +176,6 @@ export default {
       sudokuDataClass: null,
       Field: null,
       comfortChoiceData: {},
-      tempChoiceDifficulty: 1,
       disappearAnimation: false,
       phrasesEn: {
         settings: 'settings',
@@ -216,10 +220,10 @@ export default {
           if (item.id % 9 === this.selectedButton % 9 || Math.floor(item.id / 9) === Math.floor(this.selectedButton / 9) ||
               (Math.floor(Math.floor(item.id / 3) / 9) * 3 + Math.floor(item.id / 3) % 3) ===
               (Math.floor(Math.floor(this.selectedButton / 3) / 9) * 3 + Math.floor(this.selectedButton / 3) % 3)) {
-            item.bgcolor = 'rgba(255, 255, 0, 0.25)'
+            item.bgcolor = '#FDE0B0'
           }
         })
-        view.find(item => item.id === this.selectedButton).bgcolor = 'rgba(255, 0, 0, 0.25)'
+        view.find(item => item.id === this.selectedButton).bgcolor = '#E2E3FB'
       }
       return view
     }
@@ -234,6 +238,19 @@ export default {
         url += element.value
       });
       window.open(url)
+    },
+    menuPanelShow() {
+      this.viewSettings.menuPanelShow = !this.viewSettings.menuPanelShow
+      this.easyChoice = false
+    },
+    startAutoSolve() {
+      setTimeout(()=>{
+        this.sudokuDataClass.autoSolveOne()
+      },501)
+      this.menuPanelShow()
+        // if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
+        //   this.sudokuDataClass.setAdvancedPossibly(2)
+        // }
     },
     nextSudoku() {
       if (this.sudokuDataClass.checkWin()) {
@@ -262,20 +279,21 @@ export default {
     },
     buttonClick(data) {
       this.easyChoice = false
-      this.comfortChoiceData.left = data.left
-      this.comfortChoiceData.top = data.top
-      this.comfortChoiceData.possibly = this.possiblyChoice
-      this.comfortChoiceData.buttonId = data.id
-      this.comfortChoiceData.value = this.Field[data.id].value
-      if (!this.viewSettings.easyChoiceDbClick) {
-        this.selectedButton = data.id
-      }
-      if (data.id === this.selectedButton && this.viewSettings.easyChoiceShow && !this.Field[data.id].const) {
-        this.easyChoice = true
-      } else {
-        this.selectedButton = data.id
-      }
-
+      setTimeout(() => {
+        if (!this.viewSettings.easyChoiceDbClick) {
+          this.selectedButton = data.id
+        }
+        this.comfortChoiceData.left = data.left
+        this.comfortChoiceData.top = data.top
+        this.comfortChoiceData.possibly = this.possiblyChoice
+        this.comfortChoiceData.buttonId = data.id
+        this.comfortChoiceData.value = this.Field[data.id].value
+        if (data.id === this.selectedButton && this.viewSettings.easyChoiceShow && !this.Field[data.id].const) {
+          this.easyChoice = true
+        } else {
+          this.selectedButton = data.id
+        }
+      }, 0)
     },
     keywordClick(e) {
       if (+e.key >= 0 && +e.key <= 9) {
@@ -283,6 +301,9 @@ export default {
       }
       if (e.key === 'Backspace') {
         this.SetValue(0)
+      }
+      if (e.key === "Escape") {
+        this.pageClick()
       }
       if (e.key === 'ArrowLeft') {
         this.selectedButton -= 1
@@ -316,16 +337,19 @@ export default {
     setLocalField() {
       // localStorage.clear()
       this.sudokuDataClass = new FieldActions.sudokuData()
+      // console.log(this.savedData.difficulty)
       let ar = this.savedData.difficultyId.find(item => item.difficulty === this.savedData.difficulty)
+
+      // console.log(ar)
       if (ar.maxId < ar.id) {
         ar.id = 0
       }
+
       if (ar.solved.length === ar.maxId) {
         // alert('alarm')
         ar.finished = true
         // console.log(this.savedData.difficultyId.find(item => !item.finished))
         this.savedData.difficulty = this.savedData.difficultyId.find(item => !item.finished).difficulty
-        this.tempChoiceDifficulty = this.savedData.difficulty
         // console.log(this.savedData.difficulty)
       } else {
         for (let i = 0; i <= ar.maxId; i++) {
@@ -341,29 +365,28 @@ export default {
       this.getField([this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id,
         this.savedData.difficulty])
           .then((result) => {
+            // console.log(result)
             this.sudokuDataClass.setField(result)
             this.Field = this.sudokuDataClass.getField()
             this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
+              if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
+                this.sudokuDataClass.setAdvancedPossibly(2)
+              }
           }).catch(e => {
         console.log(e)
       })
 
     },
-    setDifficulty(message) {
-      if (!this.savedData.difficultyId.some(item => item.difficulty === +message.target.value)) {
-        this.savedData.difficultyId.push({
-          id: 0,
-          difficulty: +message.target.value
-        })
-      }
-      if (confirm('are you sure')) {
-        if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
-          this.sudokuDataClass.setAdvancedPossibly(2)
-        }
-        this.savedData.difficulty = this.tempChoiceDifficulty
+    setDifficulty(value) {
+
+      if (this.savedData.difficulty !== value) {
+        // if (confirm('are you sure')) {
+        //   if (this.sudokuDataClass.getAdvancedPossibles()[2] && value === 0) {
+        //     this.sudokuDataClass.setAdvancedPossibly(2)
+        //   }
+        this.savedData.difficulty = value
         this.setLocalField()
-      } else {
-        this.tempChoiceDifficulty = this.savedData.difficulty
+        // }
       }
     },
     message(e) {
@@ -383,7 +406,6 @@ export default {
       }
     },
     startSettings() {
-      this.tempChoiceDifficulty = this.savedData.difficulty
       if (!this.savedData.difficultyId) {
         this.savedData.difficultyId = []
         this.getDataOptions.forEach((item, index) => {
@@ -395,7 +417,6 @@ export default {
             finished: false
           })
         })
-        // console.log(this.savedData.difficultyId)
       }
     }
   },
@@ -404,12 +425,10 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-    localStorage.clear()
+    // localStorage.clear()
     this.setLocalField()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
-
-    // console.log(this.tempChoiceDifficulty )
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keywordClick);
@@ -432,8 +451,10 @@ export default {
   display: flex;
   flex-direction: row;
   margin: 0;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
+  background-color: #F3F1E9;
+  /*background-color: white;*/
 }
 
 .Field {
@@ -477,7 +498,7 @@ header {
   margin-top: 6vh;
   left: 0;
   user-select: none;
-  background-color: rgb(43, 156, 184);
+  /*background-color: rgb(43, 156, 184);*/
 }
 
 .menuPanel-enter-active, .menuPanel-leave-active {
@@ -485,7 +506,7 @@ header {
 }
 
 .menuPanel-enter, .menuPanel-leave-to {
-  left: -66vw;
+  left: -100vw;
 }
 
 .menuPanelItem {
@@ -495,7 +516,7 @@ header {
   border-radius: 10px;
   border-color: black;
   border-style: solid;
-  border-width: 1px 5px 1px 1px;
+  border-width: 1px 1px 1px 5px;
   text-align: left;
   padding: 5px;
   margin: 3px;
@@ -508,9 +529,13 @@ header {
 
 .difficultyChoice div {
   text-align: center;
+  margin-left: 5px;
   min-width: 3vh;
-  border-color: black;
-  border-style: solid;
+  border-radius: 3px;
+  /*background-color: #39f55e;*/
+  border: black 1px solid;
+  /*border-color: white;*/
+  /*border-style: solid;*/
 }
 
 .Field-line {
@@ -533,7 +558,9 @@ header {
   align-items: center;
   flex-direction: column;
   height: 100%;
-  min-height: 93vh;
+
+  /*min-height: 93vh;*/
+  background-color: #F3F1E9;
 
 }
 
@@ -553,6 +580,10 @@ header {
 .menuBlock {
   display: flex;
   flex-direction: row;
+}
+
+.opacity {
+  opacity: 0.5;
 }
 
 </style>
