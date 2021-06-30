@@ -1,21 +1,26 @@
 <template>
-  <transition appear name="sudokuButton">
     <div
         ref="sudokuButton"
         class="SudokuButton"
         v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
         @click="mouseDown"
     >
+<!--      {{value}}-->
       <div v-if="localData.value !== 0"
            class="MainValue" v-bind:style="{color: dataView.const}">
-        {{ localData.value }}
+        <transition  mode="out-in" name="slide-fade">
+        <div :key="value">
+          {{ value }}
+        </div>
+        </transition>
       </div>
       <div v-else-if="possiblyShow" v-for="item in this.localData.possibly" :key="item"
            class="PossublyValue">
         {{ item }}
       </div>
     </div>
-  </transition>
+
+
 </template>
 <script>
 import {mapActions} from 'vuex'
@@ -33,7 +38,8 @@ export default {
   data: function () {
     return {
       isMouseUp: false,
-      isClicked: false
+      isClicked: false,
+      value: this.localData.value === 0 ? '': this.localData.value
     }
   },
   methods: {
@@ -41,6 +47,7 @@ export default {
       UpdateFieldTargetValue: 'sudoku/setFieldValue'
     }),
     mouseDown() {
+      // this.localData.value++
       // if (!this.localData.const) {
       this.$emit('select-button', {
         id: this.ButtonId,
@@ -54,10 +61,9 @@ export default {
     }
   },
   computed: {
-    testget() {
-      return Math.floor(Math.floor(this.ButtonId / 3) / 9) * 3 + Math.floor(this.ButtonId / 3) % 3
-    },
-
+    // value() {
+    //   return this.localData.value
+    // },
     styles() {
       let styles = {}
       if (!this.localData.const) {
@@ -80,6 +86,14 @@ export default {
       }
       return styles
     }
+  },
+  beforeUpdate() {
+    // this.value=this.localData.value
+  },
+  updated() {
+    this.value=this.localData.value === 0 ? '': this.localData.value
+
+    // console.log(this.localData.value)
   }
 }
 </script>
@@ -97,13 +111,29 @@ export default {
   box-sizing: border-box;
 }
 
-//.SudokuButton-enter-active, .SudokuButton-leave-active {
-//  transition: opacity .5s;
-//}
-//
-//.SudokuButton-enter, .SudokuButton-leave-to {
-//  opacity: 0;
-//}
+.SudokuButton-enter-active, .SudokuButton-leave-active {
+  transition: opacity .5s;
+  opacity: 1;
+  //transition: transform .5s;
+  //transform: translate(0)scale(1);
+}
+
+.SudokuButton-enter, .SudokuButton-leave-to {
+  opacity: 0;
+  //transform: translate(-66vw)scale(0);
+}
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active for <2.1.8 */ {
+  transform: translateY(10px);
+  opacity: 0;
+}
 
 .MainValue {
   font-size: 100%;

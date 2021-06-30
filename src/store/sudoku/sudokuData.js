@@ -79,7 +79,7 @@ class sudokuData {
             })
             setTimeout(()=>{
                 this.autoSolveOne()
-            },delay+50)
+            },delay+250)
         }
 
     }

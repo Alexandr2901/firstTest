@@ -1,6 +1,6 @@
 <template>
   <div @click.self="pageClick()" class="Sudoku" v-if="Field">
-    <transition name="menuPanel">
+    <transition name="translation">
       <div
           v-if="viewSettings.menuPanelShow"
           class="menuPanel mainColor">
@@ -15,24 +15,31 @@
                  viewSettings.prompt = !viewSettings.prompt}">
           prompt
         </div>
+        <transition name="translation">
         <div
             v-if="viewSettings.prompt"
             v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[1]}"
             class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(1)">
           first algorithm
         </div>
+        </transition>
+        <transition name="translation">
         <div
             v-if="viewSettings.prompt"
             v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[2]}"
             class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(2)">
           second algorithm
         </div>
+        </transition>
+          <transition name="translation">
         <div
+            v-if="viewSettings.prompt"
             class="menuPanelItem"
             @click="startAutoSolve"
         >
           startAutoSolve
         </div>
+          </transition>
         <div
             v-bind:class="{secondColor: viewSettings.choiceShow}"
             class="menuPanelItem" @click="viewSettings.choiceShow = !viewSettings.choiceShow">
@@ -43,12 +50,14 @@
              @click="() => {viewSettings.easyChoiceShow = !viewSettings.easyChoiceShow;easyChoice=false}">
           easyChoice
         </div>
+        <transition name="translation">
         <div class="menuPanelItem"
              v-if="viewSettings.easyChoiceShow"
              v-bind:class="{secondColor: viewSettings.easyChoiceDbClick}"
              @click="viewSettings.easyChoiceDbClick = !viewSettings.easyChoiceDbClick">
           easyChoiceDbClick
         </div>
+        </transition>
         <!--        <div-->
         <!--            @click="deleteViewSettings"-->
         <!--            class="menuPanelItem">-->
@@ -176,7 +185,6 @@ export default {
       sudokuDataClass: null,
       Field: null,
       comfortChoiceData: {},
-      disappearAnimation: false,
       phrasesEn: {
         settings: 'settings',
         prompt: 'prompt'
@@ -381,9 +389,9 @@ export default {
 
       if (this.savedData.difficulty !== value) {
         // if (confirm('are you sure')) {
-        //   if (this.sudokuDataClass.getAdvancedPossibles()[2] && value === 0) {
-        //     this.sudokuDataClass.setAdvancedPossibly(2)
-        //   }
+          if (this.sudokuDataClass.getAdvancedPossibles()[2] && value === 0) {
+            this.sudokuDataClass.setAdvancedPossibly(2)
+          }
         this.savedData.difficulty = value
         this.setLocalField()
         // }
@@ -496,18 +504,19 @@ header {
   box-sizing: border-box;
   border-radius: 0 50px 50px 0;
   margin-top: 6vh;
-  left: 0;
   user-select: none;
   /*background-color: rgb(43, 156, 184);*/
 }
 
-.menuPanel-enter-active, .menuPanel-leave-active {
-  transition: left .5s;
+.translation-enter-active, .translation-leave-active {
+  transition: transform .5s;
+  transform: translate(0)scale(1);
 }
 
-.menuPanel-enter, .menuPanel-leave-to {
-  left: -100vw;
+.translation-enter, .translation-leave-to {
+  transform: translate(-66vw)scale(0);
 }
+
 
 .menuPanelItem {
   box-sizing: border-box;
@@ -520,6 +529,7 @@ header {
   text-align: left;
   padding: 5px;
   margin: 3px;
+  /*left: 0;*/
 }
 
 .difficultyChoice {
