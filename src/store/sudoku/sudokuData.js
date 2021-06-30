@@ -79,7 +79,7 @@ class sudokuData {
             })
             setTimeout(()=>{
                 this.autoSolveOne()
-            },delay+250)
+            },delay+1000)
         }
 
     }
@@ -131,7 +131,9 @@ class sudokuData {
                     id: id,
                     previousValue: this.Field[id].value
                 })
-                this.Field[id].value = value
+                let x = {...this.Field[id]}
+                x.value = value
+                this.Field[id] = x
                 this.allPossibly(this.Field)
             }
         }

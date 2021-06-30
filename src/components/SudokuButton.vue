@@ -1,26 +1,34 @@
 <template>
-    <div
-        ref="sudokuButton"
-        class="SudokuButton"
-        v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
-        @click="mouseDown"
-    >
-<!--      {{value}}-->
-      <div v-if="localData.value !== 0"
-           class="MainValue" v-bind:style="{color: dataView.const}">
-        <transition  mode="out-in" name="slide-fade">
+  <div
+      ref="sudokuButton"
+      class="SudokuButton"
+      v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
+      @click="mouseDown"
+  >
+    <!--      {{value}}-->
+    <div v-if="localData.value !== 0"
+         class="MainValue" v-bind:style="{color: dataView.const}">
+      <transition mode="out-in" name="slide-fade">
         <div :key="value">
           {{ value }}
         </div>
-        </transition>
-      </div>
-      <div v-else-if="possiblyShow" v-for="item in this.localData.possibly" :key="item"
-           class="PossublyValue">
-        {{ item }}
-      </div>
+      </transition>
     </div>
+    <div class="PossiblyValues" v-else-if="possiblyShow">
+      <transition-group name="slide-fade" class="PossiblyValues">
+        <div class="PossiblyValue" v-for="item in localData.possibly" :key="item" >
+          {{ item }}
+        </div>
+      </transition-group>
+      <!--        <transition  mode="out-in" name="slide-fade">-->
+      <!--        <div :key="item">-->
+      <!--          {{ item }}-->
+      <!--        </div>-->
+      <!--        </transition>-->
 
-
+    </div>
+    <!--      </transition-group>-->
+  </div>
 </template>
 <script>
 import {mapActions} from 'vuex'
@@ -29,7 +37,11 @@ export default {
   name: 'SudokuButton',
   props: {
     ButtonId: Number,
-    localData: Object,
+    localData: {
+      possibly: Set,
+      value: Number,
+      const: Boolean
+    },
     dataView: Object,
     sizeBtn: String,
     possiblyShow: Boolean,
@@ -37,9 +49,8 @@ export default {
   },
   data: function () {
     return {
-      isMouseUp: false,
-      isClicked: false,
-      value: this.localData.value === 0 ? '': this.localData.value
+      value: this.localData.value === 0 ? '' : this.localData.value,
+      // possibly: [...this.localData.possibly]
     }
   },
   methods: {
@@ -64,6 +75,9 @@ export default {
     // value() {
     //   return this.localData.value
     // },
+    possibly() {
+      return  [...this.localData.possibly]
+    },
     styles() {
       let styles = {}
       if (!this.localData.const) {
@@ -81,18 +95,31 @@ export default {
         // styles.color = 'red'
         styles.backgroundColor = 'red'
       }
-      if ((this.localData.possibly.size === 0 && !this.localData.const && this.localData.value === 0)) {
+      if ((this.possibly.length === 0 && !this.localData.const && this.localData.value === 0)) {
         styles.backgroundColor = '#720101'
       }
       return styles
     }
   },
+  // watch: {
+  //   localData: {
+  //     value() {
+  //       console.log('hi')
+  //     },
+  //     deep:true
+  //   }
+  // },
   beforeUpdate() {
     // this.value=this.localData.value
+    // this.possibly = [...this.localData.possibly]
   },
   updated() {
-    this.value=this.localData.value === 0 ? '': this.localData.value
-
+    this.value = this.localData.value === 0 ? '' : this.localData.value
+    // setTimeout(()=>{
+    //   this.possibly = [...this.localData.possibly]
+    // })
+    // this.possibly = [...this.localData.possibly]
+    // console.log(this.possibly)
     // console.log(this.localData.value)
   }
 }
@@ -111,61 +138,42 @@ export default {
   box-sizing: border-box;
 }
 
-.SudokuButton-enter-active, .SudokuButton-leave-active {
-  transition: opacity .5s;
-  opacity: 1;
-  //transition: transform .5s;
-  //transform: translate(0)scale(1);
+.PossiblyValues {
+  //margin: auto;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
 }
-
-.SudokuButton-enter, .SudokuButton-leave-to {
-  opacity: 0;
-  //transform: translate(-66vw)scale(0);
-}
-
 .slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all .2s ease;
 }
+
 .slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
+
 .slide-fade-enter, .slide-fade-leave-to
-  /* .slide-fade-leave-active for <2.1.8 */ {
+  /* .slide-fade-leave-active for <2.1.8 */
+{
   transform: translateY(10px);
   opacity: 0;
 }
 
 .MainValue {
-  font-size: 100%;
-  text-align: center;
   user-select: none;
   line-height: 0;
 }
 
-.PossublyValue {
+.PossiblyValue {
   color: #0014ff;
   height: 26%;
   width: 26%;
   font-size: 30%;
   user-select: none;
-}
-
-.right {
-  padding-right: 0px;
-  border-right-width: 3px;
-}
-
-.bottom {
-  padding-bottom: 0px;
-  border-bottom-width: 3px;
-
-}
-
-.rightbottom {
-  //color: #720101;
-  padding-bottom: 0px;
-  border-bottom-width: 3px;
-  padding-right: 0px;
-  border-right-width: 3px;
 }
 </style>
