@@ -1,5 +1,5 @@
 <template>
-  <div @click.self="pageClick()" class="Sudoku" v-if="Field">
+  <div class="Sudoku" v-if="Field">
     <transition name="translation">
       <div
           v-if="viewSettings.menuPanelShow"
@@ -11,35 +11,25 @@
         </div>
         <div class="menuPanelItem "
              v-bind:class="{secondColor: viewSettings.prompt}"
-             @click="() =>{this.easyChoice = 0
-                 viewSettings.prompt = !viewSettings.prompt}">
+             @click="promptClick">
           prompt
         </div>
         <transition name="translation">
-        <div
-            v-if="viewSettings.prompt"
-            v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[1]}"
-            class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(1)">
-          first algorithm
-        </div>
+          <div
+              v-if="viewSettings.prompt"
+              v-bind:class="{secondColor: viewSettings.advancedPossibly[1]}"
+              class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(1)">
+            first algorithm
+          </div>
         </transition>
         <transition name="translation">
-        <div
-            v-if="viewSettings.prompt"
-            v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[2]}"
-            class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(2)">
-          second algorithm
-        </div>
+          <div
+              v-if="viewSettings.prompt"
+              v-bind:class="{secondColor: viewSettings.advancedPossibly[2]}"
+              class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(2)">
+            second algorithm
+          </div>
         </transition>
-          <transition name="translation">
-        <div
-            v-if="viewSettings.prompt"
-            class="menuPanelItem"
-            @click="startAutoSolve"
-        >
-          startAutoSolve
-        </div>
-          </transition>
         <div
             v-bind:class="{secondColor: viewSettings.choiceShow}"
             class="menuPanelItem" @click="viewSettings.choiceShow = !viewSettings.choiceShow">
@@ -51,12 +41,12 @@
           easyChoice
         </div>
         <transition name="translation">
-        <div class="menuPanelItem"
-             v-if="viewSettings.easyChoiceShow"
-             v-bind:class="{secondColor: viewSettings.easyChoiceDbClick}"
-             @click="viewSettings.easyChoiceDbClick = !viewSettings.easyChoiceDbClick">
-          easyChoiceDbClick
-        </div>
+          <div class="menuPanelItem"
+               v-if="viewSettings.easyChoiceShow"
+               v-bind:class="{secondColor: viewSettings.easyChoiceDbClick}"
+               @click="viewSettings.easyChoiceDbClick = !viewSettings.easyChoiceDbClick">
+            easyChoiceDbClick
+          </div>
         </transition>
         <!--        <div-->
         <!--            @click="deleteViewSettings"-->
@@ -88,7 +78,7 @@
       </div>
     </transition>
     <!--    v-bind:class="{translation: viewSettings.menuPanelShow && rotate}"-->
-    <div class="s-page">
+    <div @click.self="pageClick()" class="s-page">
       <header>
         <div>
           <img
@@ -102,12 +92,37 @@
               @click="sudokuDataClass.undoLastValue()"
               class="menuitem"
               src="https://img.icons8.com/ios-glyphs/24/000000/undo.png"/>
+          <transition name="translation">
+            <img
+                v-if="viewSettings.prompt"
+                v-bind:class="{secondColor: viewSettings.removePossibly}"
+                @click="viewSettings.removePossibly = !viewSettings.removePossibly"
+                class="menuitem"
+                src="https://img.icons8.com/material-outlined/24/000000/pencil--v1.png"/>
+          </transition>
+          <transition name="translation">
+<!--            <div-->
+<!--                v-if="viewSettings.prompt"-->
+<!--                v-bind:class="{secondColor: sudokuDataClass.getAutoSolve()}"-->
+<!--                class="menuitem"-->
+<!--                @click="sudokuDataClass.setAutoSolve()"-->
+<!--            >-->
+<!--              a-->
+              <img
+                  v-if="viewSettings.prompt"
+                  v-bind:class="{secondColor: sudokuDataClass.getAutoSolve()}"
+                  class="menuitem"
+                  @click="sudokuDataClass.setAutoSolve()"
+                  src="https://img.icons8.com/ios/50/000000/circled-a.png"/>
+<!--            </div>-->
+          </transition>
         </div>
         <div>
           <img @click="nextSudoku" class="menuitem" src="https://img.icons8.com/ios/50/000000/arrow.png"/>
         </div>
       </header>
       <div class="Field-wrapper"
+           @click.self="pageClick()"
            v-bind:style="{flexDirection: flexW}"
       >
         <div v-if="!rotate && viewSettings.choiceShow" v-bind:style="{flexDirection: flexD}" class="choice">
@@ -157,6 +172,7 @@
           v-if="easyChoice"
           :size-btn="sizeBtn"
           :params="comfortChoiceData"
+          :redact="viewSettings.removePossibly"
       />
     </div>
   </div>
@@ -195,7 +211,9 @@ export default {
         choiceShow: true,
         menuPanelShow: false,
         prompt: true,
-        advancedPossibly: [1, 0, 0]
+        advancedPossibly: [1, 1, 0],
+        removePossibly: false,
+        autoSolve: false
       },
       savedData: JSON.parse(localStorage.getItem('savedData')) || {
         sudokuId: 1,
@@ -209,9 +227,9 @@ export default {
       stringField: 'dataManage/field',
       getDataOptions: 'dataManage/getDataOptions'
     }),
-    advancedPossibly() {
-      return this.sudokuDataClass.getAdvancedPossibles()
-    },
+    // advancedPossibly() {
+    //   return this.sudokuDataClass.getAdvancedPossibles()
+    // },
     possiblyChoice() {
       return (this.selectedButton !== -1 && this.viewSettings.prompt) ? this.Field.find(item => item.id === this.selectedButton).possibly : new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
     },
@@ -247,18 +265,26 @@ export default {
       });
       window.open(url)
     },
+    promptClick() {
+      this.easyChoice = 0
+      this.viewSettings.prompt = !this.viewSettings.prompt
+      this.sudokuDataClass.setAdvancedPossibles([1,0,0])
+      if (this.viewSettings.autoSolve) {
+        this.sudokuDataClass.setAutoSolve()
+      }
+    },
     menuPanelShow() {
       this.viewSettings.menuPanelShow = !this.viewSettings.menuPanelShow
       this.easyChoice = false
     },
     startAutoSolve() {
-      setTimeout(()=>{
-        this.sudokuDataClass.autoSolveOne()
-      },501)
-      this.menuPanelShow()
-        // if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
-        //   this.sudokuDataClass.setAdvancedPossibly(2)
-        // }
+      // setTimeout(() => {
+        this.sudokuDataClass.setAutoSolve()
+      // }, 501)
+      // this.menuPanelShow()
+      // if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
+      //   this.sudokuDataClass.setAdvancedPossibly(2)
+      // }
     },
     nextSudoku() {
       if (this.sudokuDataClass.checkWin()) {
@@ -270,11 +296,15 @@ export default {
       // console.log(this.sudokuDataClass.checkWin())
       // this.savedData.sudokuId++
       // console.log(this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty))
-      this.setLocalField(this.savedData.sudokuId)
+      this.setLocalField()
     },
     SetValue(value) {
       // if(this.Field[this.selectedButton].possibly.has(value)) {
-      this.sudokuDataClass.setFieldValue(this.selectedButton, value)
+      if (this.viewSettings.removePossibly) {
+        this.sudokuDataClass.removeFieldPossibly(this.selectedButton, value)
+      } else {
+        this.sudokuDataClass.setFieldValue(this.selectedButton, value)
+      }
       this.selectedButton = -1
       this.easyChoice = false
       // }
@@ -286,6 +316,7 @@ export default {
       this.viewSettings.menuPanelShow = false
     },
     buttonClick(data) {
+      this.viewSettings.menuPanelShow = false
       this.easyChoice = false
       setTimeout(() => {
         if (!this.viewSettings.easyChoiceDbClick) {
@@ -296,7 +327,10 @@ export default {
         this.comfortChoiceData.possibly = this.possiblyChoice
         this.comfortChoiceData.buttonId = data.id
         this.comfortChoiceData.value = this.Field[data.id].value
-        if (data.id === this.selectedButton && this.viewSettings.easyChoiceShow && !this.Field[data.id].const) {
+        if (data.id === this.selectedButton
+            && this.viewSettings.easyChoiceShow
+            && !this.Field[data.id].const
+            && !(this.Field[data.id].possibly.size === 0 && this.Field[data.id].value === 0)) {
           this.easyChoice = true
         } else {
           this.selectedButton = data.id
@@ -344,7 +378,8 @@ export default {
     },
     setLocalField() {
       // localStorage.clear()
-      this.sudokuDataClass = new FieldActions.sudokuData()
+      this.sudokuDataClass = new FieldActions.sudokuData([...this.viewSettings.advancedPossibly],
+          this.viewSettings.autoSolve)
       // console.log(this.savedData.difficulty)
       let ar = this.savedData.difficultyId.find(item => item.difficulty === this.savedData.difficulty)
 
@@ -374,24 +409,25 @@ export default {
         this.savedData.difficulty])
           .then((result) => {
             // console.log(result)
-            this.sudokuDataClass.setField(result)
-            this.Field = this.sudokuDataClass.getField()
-            this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
-              if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
-                this.sudokuDataClass.setAdvancedPossibly(2)
-              }
+            this.Field = this.sudokuDataClass.setField(result)
+            // this.sudokuDataClass.setAdvancedPossibles(this.viewSettings.advancedPossibly)
+            // if (this.sudokuDataClass.getAdvancedPossibles()[2]) {
+            //   this.sudokuDataClass.setAdvancedPossibly(2)
+            // }
           }).catch(e => {
         console.log(e)
       })
-
+      // setTimeout(()=> {
+      //   this.sudokuDataClass.autoSolveStart()
+      // },501)
     },
     setDifficulty(value) {
 
       if (this.savedData.difficulty !== value) {
         // if (confirm('are you sure')) {
-          if (this.sudokuDataClass.getAdvancedPossibles()[2] && value === 0) {
-            this.sudokuDataClass.setAdvancedPossibly(2)
-          }
+        if (this.sudokuDataClass.getAdvancedPossibles()[2] && value === 0) {
+          this.sudokuDataClass.setAdvancedPossibly(2)
+        }
         this.savedData.difficulty = value
         this.setLocalField()
         // }
@@ -444,13 +480,22 @@ export default {
   },
   updated() {
     setTimeout(() => {
+      this.viewSettings.advancedPossibly = this.sudokuDataClass.getAdvancedPossibles()
+      this.viewSettings.autoSolve = this.sudokuDataClass.getAutoSolve()
       localStorage.setItem('viewSettings', JSON.stringify(this.viewSettings))
       localStorage.setItem('savedData', JSON.stringify(this.savedData))
+      if (this.viewSettings.autoSolve && this.sudokuDataClass.checkWin()) {
+        setTimeout(() => {
+          if (this.viewSettings.autoSolve && this.sudokuDataClass.checkWin())  {
+            this.nextSudoku()
+          }
+        }, 2000)
+      }
       // localStorage.setItem('field', JSON.stringify(this.Field))
       // .map(item=> item.value).toString()
       // console.log(localStorage.getItem('field'))
-
     }, 0)
+
   }
 }
 </script>
@@ -473,7 +518,9 @@ export default {
 header {
   justify-self: flex-start;
   align-self: flex-start;
-  top: 0;
+  /*order: 2;*/
+  /*position: absolute;*/
+  /*top: 0;*/
   margin-left: auto;
   margin-right: auto;
   max-width: 100vw;
@@ -487,7 +534,9 @@ header {
 }
 
 .menuitem {
-  border-radius: 500px;
+  /*border-radius: 500px;*/
+  /*font-size: 5vh;*/
+  /*line-height: 0;*/
   height: 5vh;
   width: 5vh;
   overflow: hidden;
@@ -505,16 +554,17 @@ header {
   border-radius: 0 50px 50px 0;
   margin-top: 6vh;
   user-select: none;
+  z-index: 1;
   /*background-color: rgb(43, 156, 184);*/
 }
 
 .translation-enter-active, .translation-leave-active {
   transition: transform .5s;
-  transform: translate(0)scale(1);
+  transform: translate(0) scale(1);
 }
 
 .translation-enter, .translation-leave-to {
-  transform: translate(-66vw)scale(0);
+  transform: translate(-66vw) scale(0);
 }
 
 

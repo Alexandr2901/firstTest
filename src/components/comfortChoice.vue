@@ -7,6 +7,7 @@
         :key="item"
         :style="buttonSize"
         class=" mainColor mainItems"
+        v-bind:class="{secondColor: redact}"
         @click="selectValue(item)"
     >
       {{ item }}
@@ -32,6 +33,7 @@ export default {
   name: "comfortChoice",
   props: {
     sizeBtn: Number,
+    redact: Boolean,
     params: {
       possibly: Set,
       buttonId: Number,

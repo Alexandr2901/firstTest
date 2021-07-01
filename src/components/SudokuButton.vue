@@ -5,8 +5,7 @@
       v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
       @click="mouseDown"
   >
-    <!--      {{value}}-->
-    <div v-if="localData.value !== 0"
+    <div  v-if="localData.value !== 0"
          class="MainValue" v-bind:style="{color: dataView.const}">
       <transition mode="out-in" name="slide-fade">
         <div :key="value">
@@ -14,20 +13,13 @@
         </div>
       </transition>
     </div>
-    <div class="PossiblyValues" v-else-if="possiblyShow">
+    <div mode="in-out" class="PossiblyValues" v-else-if="possiblyShow">
       <transition-group name="slide-fade" class="PossiblyValues">
         <div class="PossiblyValue" v-for="item in localData.possibly" :key="item" >
           {{ item }}
         </div>
       </transition-group>
-      <!--        <transition  mode="out-in" name="slide-fade">-->
-      <!--        <div :key="item">-->
-      <!--          {{ item }}-->
-      <!--        </div>-->
-      <!--        </transition>-->
-
     </div>
-    <!--      </transition-group>-->
   </div>
 </template>
 <script>
@@ -58,6 +50,7 @@ export default {
       UpdateFieldTargetValue: 'sudoku/setFieldValue'
     }),
     mouseDown() {
+      // console.log(this.localData)
       // this.localData.value++
       // if (!this.localData.const) {
       this.$emit('select-button', {
@@ -73,12 +66,13 @@ export default {
   },
   computed: {
     // value() {
-    //   return this.localData.value
+    //   return this.localData.value === 0 ? '' : this.localData.value
     // },
     possibly() {
       return  [...this.localData.possibly]
     },
     styles() {
+      // console.log('1')
       let styles = {}
       if (!this.localData.const) {
         styles.color = 'rgb(0, 0, 0, 0.5)'
@@ -95,7 +89,8 @@ export default {
         // styles.color = 'red'
         styles.backgroundColor = 'red'
       }
-      if ((this.possibly.length === 0 && !this.localData.const && this.localData.value === 0)) {
+      if (this.localData.possibly.size === 0 && !this.localData.const && (this.localData.value === 0)) {
+        // console.log('qqq')
         styles.backgroundColor = '#720101'
       }
       return styles
@@ -157,10 +152,13 @@ export default {
   transition: all .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 
-.slide-fade-enter, .slide-fade-leave-to
-  /* .slide-fade-leave-active for <2.1.8 */
+.slide-fade-enter
 {
-  transform: translateY(10px);
+  transform: translateY(100px);
+  opacity: 0;
+}
+.slide-fade-leave-to {
+  transform: translateY(-100px);
   opacity: 0;
 }
 
@@ -171,9 +169,9 @@ export default {
 
 .PossiblyValue {
   color: #0014ff;
-  height: 26%;
-  width: 26%;
-  font-size: 30%;
+  height: 30%;
+  width: 30%;
+  font-size: 33%;
   user-select: none;
 }
 </style>
