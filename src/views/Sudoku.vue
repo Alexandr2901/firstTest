@@ -17,7 +17,7 @@
         <transition name="translation">
           <div
               v-if="viewSettings.prompt"
-              v-bind:class="{secondColor: viewSettings.advancedPossibly[2]}"
+              v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[2]}"
               class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(2)">
             {{ phrases.onlyHere }}
           </div>
@@ -25,7 +25,7 @@
         <transition name="translation">
           <div
               v-if="viewSettings.prompt"
-              v-bind:class="{secondColor: viewSettings.advancedPossibly[1]}"
+              v-bind:class="{secondColor: sudokuDataClass.getAdvancedPossibles()[1]}"
               class="menuPanelItem" @click="sudokuDataClass.setAdvancedPossibly(1)">
             {{ phrases.onePossiblyDelete }}
           </div>
@@ -51,6 +51,7 @@
         </transition>
         <div
             @click="deleteDataSettings"
+            v-if="savedData.difficultyId.filter(item => item.finished).length !== 0"
             class="menuPanelItem">
           {{ phrases.deleteDataSettings }}
         </div>
@@ -67,6 +68,13 @@
             </div>
           </div>
         </div>
+        <div
+            class="menuPanelItem"
+            @click="viewSettings.animations = !viewSettings.animations"
+            v-bind:class="{secondColor: viewSettings.animations}"
+        >
+          viewSettings.animations
+        </div>
 
         <!--        <div>-->
         <!--          <a style="padding: 10px" href="https://icons8.ru">икнонки взяты с сайта</a>-->
@@ -82,10 +90,6 @@
               src="https://img.icons8.com/material-outlined/24/000000/settings--v1.png"/>
         </div>
         <div class="menuBlock">
-          <img
-              @click="sudokuDataClass.undoLastValue()"
-              class="menuitem"
-              src="https://img.icons8.com/ios-glyphs/24/000000/undo.png"/>
           <transition name="translation">
             <img
                 v-if="viewSettings.prompt"
@@ -94,6 +98,11 @@
                 class="menuitem"
                 src="https://img.icons8.com/material-outlined/24/000000/pencil--v1.png"/>
           </transition>
+          <img
+              @click="sudokuDataClass.undoLastValue()"
+              class="menuitem"
+              src="https://img.icons8.com/ios-glyphs/24/000000/undo.png"/>
+
           <transition name="translation">
             <img
                 v-if="viewSettings.prompt"
@@ -130,11 +139,13 @@
           <div class="Field-line" v-for="line in 9" :key="line">
             <SudokuButton v-for="item in 9"
                           :key="item"
+                          v-bind:animations="viewSettings.animations"
                           v-bind:button-id="(line-1)*9+item - 1"
                           v-bind:size-btn="sizeBtn+'vmin'"
                           v-bind:local-data="Field[(line-1)*9+item-1]"
                           v-bind:dataView="fieldView[(line-1)*9+item-1]"
                           v-bind:possibly-show="viewSettings.prompt"
+                          v-bind:solved="solved"
                           v-bind:wrong-ids="sudokuDataClass.getWrongIds()"
                           v-on:select-button="buttonClick($event)"/>
           </div>
@@ -188,6 +199,8 @@ export default {
       Field: null,
       comfortChoiceData: {},
       lang: 'ru',
+      interval: null,
+      // solved: true,
       phrasesEn: {
         settings: 'settings',
         prompt: 'prompt',
@@ -222,6 +235,7 @@ export default {
         prompt: true,
         advancedPossibly: [1, 1, 0],
         removePossibly: false,
+        animations:true,
         autoSolve: false
       },
       savedData: {
@@ -236,6 +250,9 @@ export default {
       stringField: 'dataManage/field',
       getDataOptions: 'dataManage/getDataOptions'
     }),
+    solved () {
+      return this.sudokuDataClass.checkWin()
+    },
     phrases() {
       if (this.lang === 'ru-RU') {
         return this.phrasesRu
@@ -292,11 +309,15 @@ export default {
     },
     nextSudoku() {
       if (this.sudokuDataClass.checkWin()) {
+        // console.log(this.sudokuDataClass.getFieldString())
         this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).solved
             .push(this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id)
       }
       this.savedData.difficultyId.find(item => item.difficulty === +this.savedData.difficulty).id++
+      this.Field = null
+      // setTimeout(()=> {
       this.setLocalField()
+      // },500)
     },
     SetValue(value) {
       if (this.viewSettings.removePossibly) {
@@ -374,8 +395,10 @@ export default {
       }
     },
     setLocalField() {
-      this.sudokuDataClass = new FieldActions.sudokuData([...this.viewSettings.advancedPossibly],
-          this.viewSettings.autoSolve)
+      if (!this.sudokuDataClass) {
+        this.sudokuDataClass = new FieldActions.sudokuData([...this.viewSettings.advancedPossibly],
+            this.viewSettings.autoSolve)
+      }
       let ar = this.savedData.difficultyId.find(item => item.difficulty === this.savedData.difficulty)
       if (ar.maxId < ar.id) {
         ar.id = 0
@@ -400,11 +423,7 @@ export default {
       })
     },
     setDifficulty(value) {
-
       if (this.savedData.difficulty !== value) {
-        if (this.sudokuDataClass.getAdvancedPossibles()[2] && value === 0) {
-          this.sudokuDataClass.setAdvancedPossibly(2)
-        }
         this.savedData.difficulty = value
         this.setLocalField()
       }
@@ -431,39 +450,51 @@ export default {
           })
         })
       }
+    },
+    intervalSave() {
+      setTimeout(() => {
+        this.viewSettings.advancedPossibly = this.sudokuDataClass.getAdvancedPossibles()
+        this.viewSettings.autoSolve = this.sudokuDataClass.getAutoSolve()
+        localStorage.setItem('viewSettings', JSON.stringify(this.viewSettings))
+        localStorage.setItem('savedData', JSON.stringify(this.savedData))
+      }, 0)
     }
   },
   created() {
-    this.startSettings()
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-    this.setLocalField()
+    // localStorage.clear()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
+    document.addEventListener('click' ,this.intervalSave)
     this.lang = navigator.language || navigator.userLanguage
-    this.viewSettings = {...JSON.parse(localStorage.getItem('viewSettings'))}
-    this.savedData = {...JSON.parse(localStorage.getItem('savedData'))}
+    if (localStorage.getItem('viewSettings')) {
+      this.viewSettings = {...JSON.parse(localStorage.getItem('viewSettings'))}
+    }
+    if (localStorage.getItem('savedData')) {
+      this.savedData = {...JSON.parse(localStorage.getItem('savedData'))}
+    }
+    this.startSettings()
+    this.setLocalField()
+    // this.interval = setInterval(()=>{
+    //   this.intervalSave()
+    // },1000)
   },
   beforeDestroy() {
-    document.removeEventListener('keydown', this.keywordClick);
-    window.removeEventListener('resize', this.updateSize);
+    document.removeEventListener('keydown', this.keywordClick)
+    document.removeEventListener('click' ,this.intervalSave)
+    window.removeEventListener('resize', this.updateSize)
+    this.interval=null
   },
   updated() {
-    setTimeout(() => {
-      this.viewSettings.advancedPossibly = this.sudokuDataClass.getAdvancedPossibles()
-      this.viewSettings.autoSolve = this.sudokuDataClass.getAutoSolve()
-      localStorage.setItem('viewSettings', JSON.stringify(this.viewSettings))
-      localStorage.setItem('savedData', JSON.stringify(this.savedData))
-      if (this.viewSettings.autoSolve && this.sudokuDataClass.checkWin()) {
-        setTimeout(() => {
-          if (this.viewSettings.autoSolve && this.sudokuDataClass.checkWin()) {
-            this.nextSudoku()
-          }
-        }, 2000)
-      }
-    }, 0)
-
+    if (this.sudokuDataClass.getAutoSolve()&& this.sudokuDataClass.checkWin() && this.Field) {
+      setTimeout(() => {
+        if (this.sudokuDataClass.getAutoSolve()&& this.sudokuDataClass.checkWin() && this.Field) {
+          this.nextSudoku()
+        }
+      }, 2500)
+    }
   }
 }
 </script>
@@ -481,6 +512,15 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
+/*.Field:hover{*/
+/*  background-image: linear-gradient(transparent 50%, #0de70d);*/
+/*  background-size: 100% 100%;*/
+/*  !*background-position: 200% 200%;*!*/
+/*  background-repeat: repeat-x;*/
+/*  transition: 1s;*/
+/*  !*background-position: 50% 50%;*!*/
+/*}*/
 
 header {
   justify-self: flex-start;

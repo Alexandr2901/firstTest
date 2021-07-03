@@ -46,6 +46,7 @@ class sudokuData {
     }
 
     setAdvancedPossibly(number) {
+        this.autoSolve = false
         // this.advancedPossibly[number] = !this.advancedPossibly[number]
         this.advancedPossibly.splice(number, 1, !this.advancedPossibly[number])
         // console.log(this.advancedPossibly)
@@ -54,6 +55,7 @@ class sudokuData {
 
     setAdvancedPossibles(parameters) {
         if (this.advancedPossibly !== [1, 1, 1] && parameters !== [1, 1, 1]) {
+            this.autoSolve = false
             this.advancedPossibly = parameters
             this.allPossibly(this.Field)
         }
@@ -74,13 +76,11 @@ class sudokuData {
     autoSolveStart() {
         if (this.autoSolve) {
             let field
-            // console.log(this.advancedPossibly)
             if (this.advancedPossibly[1] && !this.advancedPossibly[2]) {
                 let x = new sudokuData([1, 1, 1])
                 x.setField(this.getFieldString())
                 field = x.getField()
             } else {
-                // console.log(this.Field)
                 field = this.Field
             }
             // console.log(field)
@@ -91,28 +91,29 @@ class sudokuData {
     }
 
     autoSolveOne() {
-        if (this.Field.some(item => item.possibly.size === 1 && item.value === 0)) {
+        if (this.Field.some(item => item.possibly.size === 1 && item.value === 0) &&
+            this.Field.every(element => (element.possibly.size !== 0 || element.value !== 0))) {
             let delay = 0
             this.Field.forEach(item => {
-                if (item.possibly.size === 1 && this.wrongIds.size === 0 &&
-                    this.autoSolve &&
-                    item.value===0 &&
-                    this.Field.every(element => (element.possibly.size !== 0 || element.value !== 0))) {
-                    delay += 50
-                    setTimeout(() => {
-                        // this.Field[item.id].value = [...item.possibly][0]
-                        this.setFieldValue(item.id, [...item.possibly][0])
-                    }, delay)
-                }
+                delay += 50
+                // setTimeout(() => {
+                    if (item.possibly.size === 1 && this.wrongIds.size === 0 &&
+                        this.autoSolve &&
+                        item.value === 0) {
+                        this.Field[item.id].value = [...item.possibly][0]
+                        // this.setFieldValue(item.id, [...item.possibly][0])
+                    }
+                console.log(delay)
+                // }, delay)
             })
-            // setTimeout(() => {
-            //     this.allPossibly()
-            //     // this.autoSolveOne()
-            // }, delay +500)
             setTimeout(() => {
-                // this.allPossibly()
-                this.autoSolveOne()
-            }, delay +1000)
+                this.allPossibly()
+                // this.autoSolveOne()
+            }, 10)
+            // setTimeout(() => {
+            //     // this.allPossibly()
+            //     this.autoSolveOne()
+            // }, 10000)
         }
 
     }
@@ -203,6 +204,8 @@ class sudokuData {
     }
 
     allPossibly(field = this.Field) {
+        // let time = new Date()
+        // setTimeout(()=> {
         this.cycleInint(field)
         if (this.advancedPossibly.some(item => item)) {
             let error = 0
@@ -213,11 +216,14 @@ class sudokuData {
             }
         }
         // let time = new Date()
-        setTimeout(()=>{
+        setTimeout(() => {
             // console.log(new Date() - time)
             this.autoSolveStart()
-        },1000)
+        }, 1000)
+        // console.log(new Date() - time)
         return field
+        // },1)
+
     }
 
     segmentsSeparate(field) {
@@ -248,6 +254,7 @@ class sudokuData {
                 this.onePossiblyDelete(item)
             }
         })
+        return true
     }
 
     existValue(segment) {
