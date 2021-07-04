@@ -7,13 +7,23 @@
         :key="item"
         :style="buttonSize"
         class=" mainColor mainItems"
-        v-bind:class="{secondColor: redact}"
+        v-bind:class="{secondColor: redact, red: !params.possibly.has(item)}"
         @click="selectValue(item)"
     >
       {{ item }}
     </div>
+<!--    <div-->
+<!--        v-for="item in params.possiblyDeleted"-->
+<!--        :key="item"-->
+<!--        :style="buttonSize"-->
+<!--        class="mainItems"-->
+<!--        v-bind:class="{secondColor: redact}"-->
+<!--        @click="selectValue(item)"-->
+<!--    >-->
+<!--      {{ item }}-->
+<!--    </div>-->
     <div
-        v-if="params.possibly.size<9 && params.value === 0 && params.possibly.size>1"
+        v-if="possibly.size<9 && params.value === 0 && possibly.size>1"
         :style="[blankItem, buttonSize]"
         class=" centerItem">
     </div>
@@ -39,7 +49,8 @@ export default {
       buttonId: Number,
       top: Number,
       left: Number,
-      value: Number
+      value: Number,
+      possiblyDeleted: Array
     }
   },
   data: function () {
@@ -61,13 +72,16 @@ export default {
     possibly () {
       let ar = new Set( [...this.params.possibly])
       ar.delete(this.params.value)
+      this.params.possiblyDeleted.forEach(item => {
+        ar.add(item)
+      })
       return ar
     },
     componentStyle() {
       let gridTemplateColumns = 3
       let gridTemplateRows = 3
-      let left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100 - this.sizeBtn
-      let top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100- this.sizeBtn
+      let left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100 - this.sizeBtn -1
+      let top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100- this.sizeBtn -1
       if (this.params.buttonId < 9) {
         top += this.sizeBtn
       }
@@ -80,21 +94,21 @@ export default {
       if (this.params.buttonId % 9 === 8) {
         left -= this.sizeBtn
       }
-      if (this.params.possibly.size < 6) {
+      if (this.possibly.size < 6) {
         if (this.params.buttonId >71) {
           top += this.sizeBtn
         }
         gridTemplateRows = 2
       }
-      if (this.params.possibly.size < 4) {
+      if (this.possibly.size < 4) {
         if (this.params.buttonId % 9 === 8) {
           left += this.sizeBtn
         }
         gridTemplateColumns = 2
       }
-      if (this.params.possibly.size <=1) {
-        left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100
-        top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100
+      if (this.possibly.size <=1) {
+        left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100 -1
+        top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100 - 1
         // left += this.sizeBtn
         // top += this.sizeBtn
         gridTemplateColumns = 1
@@ -128,10 +142,10 @@ export default {
         gridRowStart: row
       }
     }
+  },
+  mounted() {
+    console.log(this.params.possiblyDeleted)
   }
-  // mounted() {
-  //   console.log(this.params.top)
-  // }
 }
 </script>
 
@@ -139,18 +153,26 @@ export default {
 .comfortChoice {
   opacity: 2;
   pointer-events: none;
-  /*border-radius: 10px;*/
+  background-color:   #E2E3FB;
+  padding: 0.5vmin;
+  border-radius: 10px;
   user-select: none;
   position: absolute;
   display: grid;
   font-size: 8vmin;
   text-align: center;
-  box-shadow: black 0 0 20px 10px ;
+  /*transition: ;*/
+  /*box-shadow: black 0 0 20px 10px ;*/
 }
 
 .mainItems {
-  border: black solid 2px;
+  /*border: black solid 2px;*/
   padding: 1px;
+  border: 1px solid #CFCDC5;
+  border-radius: 0.6vmin;
+  margin: 0.2vmin;
+  background: #F5F5F5;
+  color: #434691;
   /*background-color: #c32525;*/
   /*border-radius: 10px;*/
   pointer-events: auto;
@@ -158,10 +180,14 @@ export default {
 }
 .centerItem{
   opacity: 0;
-  border-radius: 90px;
+  /*border-radius: 90px;*/
+  /*background-color: black;*/
 }
 .zero{
   opacity: 1;
+}
+.red{
+  color: #43A7C7;
 }
 /*.mainItems:hover {*/
 /*  background-color: #9ae35a;*/

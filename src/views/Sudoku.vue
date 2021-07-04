@@ -1,5 +1,5 @@
 <template>
-  <div class="Sudoku" v-if="Field">
+  <div @click.self="pageClick" class="Sudoku" v-if="Field">
     <transition name="translation">
       <div
           v-if="viewSettings.menuPanelShow"
@@ -78,7 +78,7 @@
       </div>
     </transition>
     <div @click.self="pageClick()" class="s-page">
-      <header>
+      <header @click.self="pageClick()">
         <div>
           <svg
               @click="menuPanelShow"
@@ -181,6 +181,7 @@
                           v-bind:dataView="fieldView[(line-1)*9+item-1]"
                           v-bind:possibly-show="viewSettings.prompt"
                           v-bind:solved="sudokuDataClass.checkWin()"
+                          v-bind:stack="sudokuDataClass.getStack()"
                           v-bind:wrong-ids="sudokuDataClass.getWrongIds()"
                           v-on:select-button="buttonClick($event)"/>
           </div>
@@ -379,6 +380,14 @@ export default {
         this.comfortChoiceData.possibly = this.possiblyChoice
         this.comfortChoiceData.buttonId = data.id
         this.comfortChoiceData.value = this.Field[data.id].value
+        let x =[]
+        if (this.sudokuDataClass.getStack().some(item=> item.id === data.id && item.possibly)) {
+          // console.log(data.id)
+          this.sudokuDataClass.getStack().filter(item => item.id === data.id && item.possibly).forEach(item=>{
+            x.push(item.possibly)
+          })
+        }
+        this.comfortChoiceData.possiblyDeleted = x
         if (data.id === this.selectedButton
             && this.viewSettings.easyChoiceShow
             && !this.Field[data.id].const
@@ -430,6 +439,7 @@ export default {
       }
     },
     setLocalField() {
+      this.pageClick()
       if (!this.sudokuDataClass) {
         this.sudokuDataClass = new FieldActions.sudokuData([...this.viewSettings.advancedPossibly],
             this.viewSettings.autoSolve)
@@ -492,6 +502,7 @@ export default {
         this.viewSettings.autoSolve = this.sudokuDataClass.getAutoSolve()
         localStorage.setItem('viewSettings', JSON.stringify(this.viewSettings))
         localStorage.setItem('savedData', JSON.stringify(this.savedData))
+        // this.pageClick()
       }, 0)
     }
   },
@@ -606,6 +617,7 @@ header {
   box-sizing: border-box;
   font-size: 4vh;
   padding: 0.5vmin 1.6vmin 0.5vmin  1.6vmin  ;
+  max-width: 98vw;
   /*min-height: 6vmin;*/
   border-radius: 8px;
   border-color: white;
@@ -635,9 +647,9 @@ header {
 .difficultyChoice div {
   text-align: center;
   margin-left: 5px;
-  min-width: 3vh;
-  width: 4vh;
-  font-size: 4vh;
+  /*min-width: 7vmin;*/
+  width: 5vmin;
+  font-size: 5vmin;
   border-radius: 3px;
   /*border: black 1px solid;*/
   background: #E2E3FB;

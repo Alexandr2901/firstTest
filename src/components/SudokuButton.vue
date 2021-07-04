@@ -18,11 +18,15 @@
     </div>
     <div mode="in-out" class="PossiblyValues" v-else-if="possiblyShow">
       <transition-group appear name="slide-fade" class="PossiblyValues" :css="animations">
-        <div class="PossiblyValue" v-for="item in localData.possibly" :key="item">
+        <div class="PossiblyValue" v-for="item in possibly" :key="item">
+          {{ item }}
+        </div>
+        <div class="red PossiblyValue " v-for="item in posD" :key="item">
           {{ item }}
         </div>
       </transition-group>
     </div>
+<!--    {{posD}}-->
   </div>
 </template>
 <script>
@@ -41,6 +45,7 @@ export default {
     sizeBtn: String,
     possiblyShow: Boolean,
     wrongIds: Set,
+    stack: Array,
     animations: Boolean,
     solved: Boolean
   },
@@ -60,13 +65,8 @@ export default {
     enter(el, done) {
       el.style.transform = this.MainValueStyle.transition
       done()
-      // console.log(this.MainValueStyle.transition)
-      // console.log(el.style.transform)
     },
     mouseDown() {
-      // console.log(this.localData)
-      // this.localData.value++
-      // if (!this.localData.const) {
       this.$emit('select-button', {
         id: this.ButtonId,
         left: this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX,
@@ -79,6 +79,15 @@ export default {
     }
   },
   computed: {
+    posD() {
+      let x =[]
+      if (this.stack.some(item=> item.id === this.ButtonId && item.possibly)) {
+        this.stack.filter(item => item.id === this.ButtonId && item.possibly).forEach(item=>{
+          x.push(item.possibly)
+        })
+      }
+      return x
+    },
     possibly() {
       return [...this.localData.possibly]
     },
@@ -104,7 +113,6 @@ export default {
       //   styles.backgroundColor = 'red'
       // }
       if (this.wrongIds.has(this.ButtonId)||this.localData.possibly.size === 0 && !this.localData.const && (this.localData.value === 0)) {
-        // console.log('qqq')
         styles.backgroundColor = '#FDD2C9'
         styles.color = '#EE5B3C'
       }
@@ -112,10 +120,9 @@ export default {
         styles.backgroundColor = '#DCF7FF'
         let x = Math.max( Math.abs(this.ButtonId%9 - 4) , Math.abs(Math.floor(this.ButtonId/9) - 4))
         let y = 1401-x*(x*50) -(this.ButtonId%9 +Math.floor(this.ButtonId/9) - 4)*25
-        // console.log(y)
         styles.transitionDelay = y + 'ms'
+        // styles.transform = 'scale(1.2)'
       }
-      // console.log(this.style)
       // if () {
 
       // }
@@ -123,19 +130,10 @@ export default {
       return styles
     }
   },
-  // watch: {
-  //   localData: {
-  //     value() {
-  //       console.log('hi')
-  //     },
-  //     deep:true
-  //   }
-  // },
-  beforeUpdate() {
-    // this.value=this.localData.value
-    // this.possibly = [...this.localData.possibly]
-  },
   updated() {
+    // if (this.posD.some(element=> element.possibly === 2)) {
+    //   // console.log(this.ButtonId)
+    // }
     this.value = this.localData.value === 0 ? '' : this.localData.value
     // setTimeout(()=>{
     //   this.possibly = [...this.localData.possibly]
@@ -145,6 +143,8 @@ export default {
     // console.log(this.localData.value)
   },
   mounted() {
+
+
     if (this.animations) {
       this.MainValueStyle.transition = 'transform: translate(-' +
           (this.$refs.sudokuButton.getBoundingClientRect().left+ window.scrollX ) + 'px, -'
@@ -179,13 +179,13 @@ export default {
   margin: 0.2vmin;
   box-sizing: border-box;
   color: #434691;
-  //animation: eye 3s ease-in-out infinite;
-  transition: background-color .2s linear;
+  //animation: eye 3s ease-in-out;
+  transition: background-color .3s linear;
 }
 
 //@keyframes eye {
-//  90% { transform: none; }
-//  95% { transform: scaleY(0.1); }
+//  75% { transform: scale(1.2); }
+//  100% { transform: none; }
 //}
 
 //.solved{
@@ -257,7 +257,9 @@ export default {
     transform: none;
   }
 }
-
+.red{
+  color: #43A7C7 !important;
+}
 .PossiblyValue {
   color: #EE5B3C;
   //color: #0014ff;

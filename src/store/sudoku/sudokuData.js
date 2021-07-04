@@ -22,10 +22,17 @@ class sudokuData {
         this.autoSolve = autoSolve
         this.wrongIds = new Set()
     }
+    getStack() {
+        return this.stack
+    }
 
     setField(stringField) {
+        let x = this.autoSolve
+        this.autoSolve = false
+        this.stack = []
         this.stringField = stringField
         this.Field = this.fieldInit(stringField)
+        this.autoSolve = x
         return this.Field
     }
 
@@ -192,8 +199,13 @@ class sudokuData {
             } else {
                 this.setFieldValue(id, value)
             }
+        } else if (this.stack.some(item => item.id === id && item.possibly === value)) {
+            this.stack.splice(this.stack.indexOf(item => item.id === id && item.possibly === value),1)
+            this.allPossibly()
+            // this.stack.find(item => item.id === id && item.possibly === value).id = null
         }
     }
+
 
     undoLastValue() {
         if (this.stack.length !== 0) {
