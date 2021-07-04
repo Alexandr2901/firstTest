@@ -382,7 +382,6 @@ export default {
         this.comfortChoiceData.value = this.Field[data.id].value
         let x =[]
         if (this.sudokuDataClass.getStack().some(item=> item.id === data.id && item.possibly)) {
-          // console.log(data.id)
           this.sudokuDataClass.getStack().filter(item => item.id === data.id && item.possibly).forEach(item=>{
             x.push(item.possibly)
           })
@@ -510,7 +509,6 @@ export default {
     window.addEventListener('resize', this.updateSize);
   },
   mounted() {
-    // localStorage.clear()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
     document.addEventListener('click', this.intervalSave)
@@ -523,9 +521,6 @@ export default {
     }
     this.startSettings()
     this.setLocalField()
-    // this.interval = setInterval(()=>{
-    //   this.intervalSave()
-    // },1000)
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keywordClick)
@@ -562,15 +557,6 @@ export default {
   border-radius: 0.8vmin;
 }
 
-/*.Field:hover{*/
-/*  background-image: linear-gradient(transparent 50%, #0de70d);*/
-/*  background-size: 100% 100%;*/
-/*  !*background-position: 200% 200%;*!*/
-/*  background-repeat: repeat-x;*/
-/*  transition: 1s;*/
-/*  !*background-position: 50% 50%;*!*/
-/*}*/
-
 header {
   justify-self: flex-start;
   align-self: flex-start;
@@ -599,7 +585,6 @@ header {
 .menuPanel {
   word-wrap: normal;
   position: absolute;
-  /*padding: 10px 15px 10px 5px;*/
   overflow: hidden;
   border-color: white;
   background-color: white;
@@ -609,7 +594,6 @@ header {
   margin-top: 6vh;
   user-select: none;
   z-index: 1;
-  /*font: Avenir Next;*/
   color: #434691;
 }
 
@@ -618,17 +602,11 @@ header {
   font-size: 4vh;
   padding: 0.5vmin 1.6vmin 0.5vmin  1.6vmin  ;
   max-width: 98vw;
-  /*min-height: 6vmin;*/
   border-radius: 8px;
   border-color: white;
   border-style: solid;
   background-color: #F5F5F5;
-
-  /*border-width: 1px 1px 1px 5px;*/
   text-align: left;
-  /*padding: 5px;*/
-  /*margin: 3px;*/
-  /*left: 0;*/
 }
 
 .translation-enter-active, .translation-leave-active {
@@ -647,11 +625,9 @@ header {
 .difficultyChoice div {
   text-align: center;
   margin-left: 5px;
-  /*min-width: 7vmin;*/
   width: 5vmin;
   font-size: 5vmin;
   border-radius: 3px;
-  /*border: black 1px solid;*/
   background: #E2E3FB;
 }
 
@@ -682,8 +658,6 @@ header {
 .choice {
   display: flex;
   flex-direction: row;
-  /*margin-top: 2vmin;*/
-  /*margin-bottom: 2vmin;*/
   margin: 2vmin;
   border-radius: 8px;
   border-color: white;

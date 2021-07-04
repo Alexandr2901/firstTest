@@ -12,16 +12,6 @@
     >
       {{ item }}
     </div>
-<!--    <div-->
-<!--        v-for="item in params.possiblyDeleted"-->
-<!--        :key="item"-->
-<!--        :style="buttonSize"-->
-<!--        class="mainItems"-->
-<!--        v-bind:class="{secondColor: redact}"-->
-<!--        @click="selectValue(item)"-->
-<!--    >-->
-<!--      {{ item }}-->
-<!--    </div>-->
     <div
         v-if="possibly.size<9 && params.value === 0 && possibly.size>1"
         :style="[blankItem, buttonSize]"
@@ -109,8 +99,6 @@ export default {
       if (this.possibly.size <=1) {
         left = (this.params.left ) / Math.min(window.innerHeight, window.innerWidth) * 100 -1
         top = (this.params.top) / Math.min(window.innerHeight, window.innerWidth) * 100 - 1
-        // left += this.sizeBtn
-        // top += this.sizeBtn
         gridTemplateColumns = 1
         gridTemplateRows = 1
       }
@@ -143,9 +131,6 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log(this.params.possiblyDeleted)
-  }
 }
 </script>
 
@@ -161,36 +146,30 @@ export default {
   display: grid;
   font-size: 8vmin;
   text-align: center;
-  /*transition: ;*/
-  /*box-shadow: black 0 0 20px 10px ;*/
+  animation-name: Appearance;
+  animation-duration: 0.2s;
+  animation-timing-function: linear;
+}
+@keyframes Appearance {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
 }
 
 .mainItems {
-  /*border: black solid 2px;*/
   padding: 1px;
   border: 1px solid #CFCDC5;
   border-radius: 0.6vmin;
   margin: 0.2vmin;
   background: #F5F5F5;
   color: #434691;
-  /*background-color: #c32525;*/
-  /*border-radius: 10px;*/
   pointer-events: auto;
   box-sizing: border-box;
 }
 .centerItem{
   opacity: 0;
-  /*border-radius: 90px;*/
-  /*background-color: black;*/
-}
-.zero{
-  opacity: 1;
 }
 .red{
   color: #43A7C7;
 }
-/*.mainItems:hover {*/
-/*  background-color: #9ae35a;*/
-/*}*/
 
 </style>
