@@ -3,7 +3,7 @@
     <transition name="translation">
       <div
           v-if="viewSettings.menuPanelShow"
-          class="menuPanel mainColor">
+          class="menuPanel">
         <div
             @click="menuPanelShow"
             class="menuPanelItem">
@@ -62,58 +62,93 @@
           <div class="difficultyChoice">
             <div @click="setDifficulty(item)"
                  v-for="item in savedData.difficultyId.filter(item => !item.finished).map(item => {return item.difficulty})"
-                 v-bind:class="{secondColor: item === savedData.difficulty}"
+                 v-bind:class="{primaryColor: item === savedData.difficulty}"
                  :key="item">
               {{ item }}
             </div>
           </div>
         </div>
-        <div
-            class="menuPanelItem"
-            @click="viewSettings.animations = !viewSettings.animations"
-            v-bind:class="{secondColor: viewSettings.animations}"
-        >
-          viewSettings.animations
-        </div>
-
-        <!--        <div>-->
-        <!--          <a style="padding: 10px" href="https://icons8.ru">икнонки взяты с сайта</a>-->
-        <!--        </div>-->
+<!--        <div-->
+<!--            class="menuPanelItem"-->
+<!--            @click="viewSettings.animations = !viewSettings.animations"-->
+<!--            v-bind:class="{secondColor: viewSettings.animations}"-->
+<!--        >-->
+<!--          viewSettings.animations-->
+<!--        </div>-->
       </div>
     </transition>
     <div @click.self="pageClick()" class="s-page">
       <header>
         <div>
-          <img
+          <svg
               @click="menuPanelShow"
               class="menuitem"
-              src="https://img.icons8.com/material-outlined/24/000000/settings--v1.png"/>
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+              focusable="false" width="1em" height="1em"
+              style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);"
+              preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+            <g fill="none">
+              <path d="M21 18H3v-2h18v2zm0-5H3v-2h18v2zm0-5H3V6h18v2z" fill="#434691"/>
+            </g>
+          </svg>
         </div>
         <div class="menuBlock">
           <transition name="translation">
-            <img
-                v-if="viewSettings.prompt"
-                v-bind:class="{secondColor: viewSettings.removePossibly}"
-                @click="viewSettings.removePossibly = !viewSettings.removePossibly"
-                class="menuitem"
-                src="https://img.icons8.com/material-outlined/24/000000/pencil--v1.png"/>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                 v-if="viewSettings.prompt"
+                 v-bind:class="{secondColor: viewSettings.removePossibly}"
+                 @click="viewSettings.removePossibly = !viewSettings.removePossibly"
+                 class="menuitem"
+                 focusable="false" width="1em" height="1em"
+                 style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);"
+                 preserveAspectRatio="xMidYMid meet" viewBox="0 0 36 36">
+              <path class="clr-i-outline clr-i-outline-path-1"
+                    d="M33.87 8.32L28 2.42a2.07 2.07 0 0 0-2.92 0L4.27 23.2l-1.9 8.2a2.06 2.06 0 0 0 2 2.5a2.14 2.14 0 0 0 .43 0l8.29-1.9l20.78-20.76a2.07 2.07 0 0 0 0-2.92zM12.09 30.2l-7.77 1.63l1.77-7.62L21.66 8.7l6 6zM29 13.25l-6-6l3.48-3.46l5.9 6z"
+                    fill="#434691"/>
+            </svg>
           </transition>
-          <img
+          <svg
               @click="sudokuDataClass.undoLastValue()"
               class="menuitem"
-              src="https://img.icons8.com/ios-glyphs/24/000000/undo.png"/>
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+              focusable="false" width="1em" height="1em"
+              style="transform: scale(-1, 1) "
+              preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+            <g fill="none">
+              <path
+                  d="M11.995 4a8 8 0 1 0 7.735 10h-2.081a6 6 0 1 1-5.654-8a5.92 5.92 0 0 1 4.223 1.78L13 11h7V4l-2.351 2.35A7.965 7.965 0 0 0 11.995 4z"
+                  fill="#434691"/>
+            </g>
+          </svg>
 
           <transition name="translation">
-            <img
+            <svg
                 v-if="viewSettings.prompt"
                 v-bind:class="{secondColor: sudokuDataClass.getAutoSolve()}"
                 class="menuitem"
                 @click="sudokuDataClass.setAutoSolve()"
-                src="https://img.icons8.com/ios/50/000000/circled-a.png"/>
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                 focusable="false" width="1em" height="1em"
+                 style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);"
+                 preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+              <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm-.99-14L6.88 17h1.9l1-2.81h4.44l.99 2.81h1.9L12.98 6h-1.97zm-.66 6.59l1.6-4.55h.09l1.6 4.55h-3.29z"
+                  fill="#434691"/>
+            </svg>
           </transition>
         </div>
         <div>
-          <img @click="nextSudoku" class="menuitem" src="https://img.icons8.com/ios/50/000000/arrow.png"/>
+          <!--          <img @click="nextSudoku" class="menuitem" src="https://img.icons8.com/ios/50/000000/arrow.png"/>-->
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+               focusable="false" width="1em" height="1em"
+               @click="nextSudoku" class="menuitem"
+               style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);"
+               preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+            <path fill="#434691"
+                  d="M256.25 16.042c-132.548 0-240 107.451-240 240s107.452 240 240 240s240-107.452 240-240s-107.45-240-240-240zM403.328 403.12A207.253 207.253 0 1 1 447.917 337a207.364 207.364 0 0 1-44.589 66.12z"/>
+            <path fill="#434691"
+                  d="M239.637 164.987l75.053 75.054H128.137v32H314.69l-75.053 75.054l22.627 22.627l113.681-113.681L262.264 142.36l-22.627 22.627z"/>
+          </svg>
         </div>
       </header>
       <div class="Field-wrapper"
@@ -145,7 +180,7 @@
                           v-bind:local-data="Field[(line-1)*9+item-1]"
                           v-bind:dataView="fieldView[(line-1)*9+item-1]"
                           v-bind:possibly-show="viewSettings.prompt"
-                          v-bind:solved="solved"
+                          v-bind:solved="sudokuDataClass.checkWin()"
                           v-bind:wrong-ids="sudokuDataClass.getWrongIds()"
                           v-on:select-button="buttonClick($event)"/>
           </div>
@@ -190,7 +225,7 @@ export default {
   data() {
     return {
       easyChoice: false,
-      sizeBtn: 11,
+      sizeBtn: 10.5,
       rotate: false,
       flexD: 'column',
       flexW: 'wrap',
@@ -200,7 +235,6 @@ export default {
       comfortChoiceData: {},
       lang: 'ru',
       interval: null,
-      // solved: true,
       phrasesEn: {
         settings: 'settings',
         prompt: 'prompt',
@@ -235,7 +269,7 @@ export default {
         prompt: true,
         advancedPossibly: [1, 1, 0],
         removePossibly: false,
-        animations:true,
+        animations: true,
         autoSolve: false
       },
       savedData: {
@@ -250,7 +284,7 @@ export default {
       stringField: 'dataManage/field',
       getDataOptions: 'dataManage/getDataOptions'
     }),
-    solved () {
+    solved() {
       return this.sudokuDataClass.checkWin()
     },
     phrases() {
@@ -261,7 +295,7 @@ export default {
       }
     },
     possiblyChoice() {
-      return (this.selectedButton !== -1 && this.viewSettings.prompt) ? this.Field.find(item => item.id === this.selectedButton).possibly : new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      return (this.selectedButton > -1 && this.viewSettings.prompt) ? this.Field.find(item => item.id === this.selectedButton).possibly : new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])
     },
     fieldView() {
       let view = []
@@ -382,13 +416,14 @@ export default {
       this.$router.push({name: 'SudokuHome'})
     },
     updateSize() {
-      if (window.innerWidth < window.innerHeight * 1.1) {
-        this.sizeBtn = 11
+      // localStorage.clear()
+      if (window.innerWidth< window.innerHeight * 1.1) {
+        this.sizeBtn = 10.5
         this.rotate = true
         this.flexD = 'row'
         this.flexW = 'column'
       } else {
-        this.sizeBtn = 10
+        this.sizeBtn = 9
         this.rotate = false
         this.flexD = 'column'
         this.flexW = 'row'
@@ -467,7 +502,7 @@ export default {
     // localStorage.clear()
     this.updateSize()
     document.addEventListener('keydown', this.keywordClick)
-    document.addEventListener('click' ,this.intervalSave)
+    document.addEventListener('click', this.intervalSave)
     this.lang = navigator.language || navigator.userLanguage
     if (localStorage.getItem('viewSettings')) {
       this.viewSettings = {...JSON.parse(localStorage.getItem('viewSettings'))}
@@ -483,14 +518,14 @@ export default {
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keywordClick)
-    document.removeEventListener('click' ,this.intervalSave)
+    document.removeEventListener('click', this.intervalSave)
     window.removeEventListener('resize', this.updateSize)
-    this.interval=null
+    this.interval = null
   },
   updated() {
-    if (this.sudokuDataClass.getAutoSolve()&& this.sudokuDataClass.checkWin() && this.Field) {
+    if (this.sudokuDataClass.getAutoSolve() && this.sudokuDataClass.checkWin() && this.Field) {
       setTimeout(() => {
-        if (this.sudokuDataClass.getAutoSolve()&& this.sudokuDataClass.checkWin() && this.Field) {
+        if (this.sudokuDataClass.getAutoSolve() && this.sudokuDataClass.checkWin() && this.Field) {
           this.nextSudoku()
         }
       }, 2500)
@@ -511,6 +546,9 @@ export default {
 .Field {
   display: flex;
   flex-direction: column;
+  padding: 0.7vmin;
+  background: #FFFFFF;
+  border-radius: 0.8vmin;
 }
 
 /*.Field:hover{*/
@@ -544,18 +582,41 @@ header {
   box-sizing: border-box;
   padding: 5px;
   user-select: none;
+  fill: #434691;
 }
 
 .menuPanel {
   word-wrap: normal;
   position: absolute;
-  padding: 10px 15px 10px 5px;
+  /*padding: 10px 15px 10px 5px;*/
   overflow: hidden;
+  border-color: white;
+  background-color: white;
   box-sizing: border-box;
-  border-radius: 0 50px 50px 0;
+  border-style: solid;
+  border-radius: 10px;
   margin-top: 6vh;
   user-select: none;
   z-index: 1;
+  /*font: Avenir Next;*/
+  color: #434691;
+}
+
+.menuPanelItem {
+  box-sizing: border-box;
+  font-size: 4vh;
+  padding: 0.5vmin 1.6vmin 0.5vmin  1.6vmin  ;
+  /*min-height: 6vmin;*/
+  border-radius: 8px;
+  border-color: white;
+  border-style: solid;
+  background-color: #F5F5F5;
+
+  /*border-width: 1px 1px 1px 5px;*/
+  text-align: left;
+  /*padding: 5px;*/
+  /*margin: 3px;*/
+  /*left: 0;*/
 }
 
 .translation-enter-active, .translation-leave-active {
@@ -566,22 +627,6 @@ header {
 .translation-enter, .translation-leave-to {
   transform: translate(-66vw) scale(0);
 }
-
-
-.menuPanelItem {
-  box-sizing: border-box;
-  font-size: 3vmin;
-  min-height: 3vh;
-  border-radius: 10px;
-  border-color: black;
-  border-style: solid;
-  border-width: 1px 1px 1px 5px;
-  text-align: left;
-  padding: 5px;
-  margin: 3px;
-  /*left: 0;*/
-}
-
 .difficultyChoice {
   display: flex;
   flex-direction: row;
@@ -591,8 +636,11 @@ header {
   text-align: center;
   margin-left: 5px;
   min-width: 3vh;
+  width: 4vh;
+  font-size: 4vh;
   border-radius: 3px;
-  border: black 1px solid;
+  /*border: black 1px solid;*/
+  background: #E2E3FB;
 }
 
 .Field-line {
@@ -622,13 +670,23 @@ header {
 .choice {
   display: flex;
   flex-direction: row;
-  margin-top: 2vmin;
-  padding: 2vmin;
+  /*margin-top: 2vmin;*/
+  /*margin-bottom: 2vmin;*/
+  margin: 2vmin;
+  border-radius: 8px;
+  border-color: white;
+  border-style: solid;
+  background-color: white;
 }
 
 .choice-button {
-  width: 8vmin;
-  height: 8vmin;
+  border-radius: 6px;
+  border-color: white;
+  border-style: solid;
+  font-size: 3.5vmin;
+  width: 8.5vmin;
+  height: 8.5vmin;
+  color: #434691;
   user-select: none;
 }
 

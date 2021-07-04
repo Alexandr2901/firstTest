@@ -94,22 +94,25 @@ class sudokuData {
         if (this.Field.some(item => item.possibly.size === 1 && item.value === 0) &&
             this.Field.every(element => (element.possibly.size !== 0 || element.value !== 0))) {
             let delay = 0
+            let add = 25
             this.Field.forEach(item => {
-                delay += 50
-                // setTimeout(() => {
+                delay += add
+                add = add*0.97
+                // console.log(add)
+                setTimeout(() => {
                     if (item.possibly.size === 1 && this.wrongIds.size === 0 &&
                         this.autoSolve &&
                         item.value === 0) {
                         this.Field[item.id].value = [...item.possibly][0]
                         // this.setFieldValue(item.id, [...item.possibly][0])
                     }
-                console.log(delay)
-                // }, delay)
+                // console.log(delay)
+                }, delay)
             })
             setTimeout(() => {
                 this.allPossibly()
                 // this.autoSolveOne()
-            }, 10)
+            }, delay+10)
             // setTimeout(() => {
             //     // this.allPossibly()
             //     this.autoSolveOne()
@@ -329,14 +332,16 @@ class sudokuData {
     }
 
     checkWin() {
-        return this.Field.every(item => item.value > 0 && item.value <= 9) && this.wrongIds.size === 0
+        // console.log(this.wrongIds)
+        return this.Field.every(item => item.value > 0 && item.value <= 9)
+            //&& this.wrongIds.size === 0
     }
 
     checkGuaranteedWin(str = this.getFieldString()) {
         // this.setAdvancedPossibles([1, 1, 1])
         let field = new sudokuData([1, 1, 1])
         field.setField(str)
-        return field.Field.every(item => (item.value > 0 && item.value <= 9) || item.possibly.size === 1)
+        return field.Field.every(item => (item.value > 0 && item.value <= 9) || (item.possibly.size === 1 && item.value === 0))
     }
 
     checkDeadlock() {

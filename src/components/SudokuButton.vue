@@ -6,6 +6,7 @@
       v-bind:style="[{backgroundColor: dataView.bgcolor, width: sizeBtn, height: sizeBtn, fontSize: sizeBtn} ,styles]"
       @click="mouseDown"
   >
+<!--    {{Math.max( Math.abs(this.ButtonId%9 - 4) , Math.abs(Math.floor(this.ButtonId/9) - 4))}}-->
     <div v-if="localData.value !== 0"
          v-bind:style="MainValueStyle.transition"
          class="MainValue">
@@ -16,7 +17,7 @@
 <!--      </transition>-->
     </div>
     <div mode="in-out" class="PossiblyValues" v-else-if="possiblyShow">
-      <transition-group name="slide-fade" class="PossiblyValues" :css="animations">
+      <transition-group appear name="slide-fade" class="PossiblyValues" :css="animations">
         <div class="PossiblyValue" v-for="item in localData.possibly" :key="item">
           {{ item }}
         </div>
@@ -86,14 +87,16 @@ export default {
       // left: this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX,
       //     top: this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY
       if (!this.localData.const) {
-        styles.color = 'rgb(0, 0, 0, 0.5)'
+        styles.color = '#EE5B3C'
       }
       if (this.ButtonId % 9 === 2 || this.ButtonId % 9 === 5) {
-        styles.borderRightWidth = '2px'
+        // styles.borderRightWidth = '4px'
+        styles.marginRight = '0.6vmin'
         styles.paddingRight = 0
       }
       if (this.ButtonId > 17 && this.ButtonId < 27 || this.ButtonId > 44 && this.ButtonId < 54) {
-        styles.borderBottomWidth = '2px'
+        // styles.borderBottomWidth = '4px'
+        styles.marginBottom = '0.6vmin'
         styles.paddingBottom = 0
       }
       if (this.wrongIds.has(this.ButtonId)) {
@@ -103,6 +106,13 @@ export default {
       if (this.localData.possibly.size === 0 && !this.localData.const && (this.localData.value === 0)) {
         // console.log('qqq')
         styles.backgroundColor = '#720101'
+      }
+      if (this.solved) {
+        styles.backgroundColor = '#6cf884'
+        let x = Math.max( Math.abs(this.ButtonId%9 - 4) , Math.abs(Math.floor(this.ButtonId/9) - 4))
+        let y = 1401-x*(x*50) -(this.ButtonId%9 +Math.floor(this.ButtonId/9) - 4)*25
+        // console.log(y)
+        styles.transitionDelay = y + 'ms'
       }
       // console.log(this.style)
       // if () {
@@ -134,9 +144,12 @@ export default {
     // console.log(this.localData.value)
   },
   mounted() {
-    this.MainValueStyle.transition = 'transform: translate(-' +
-        (this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX) + 'px, -'
-        + (this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY) + 'px) scale(0.1)'
+    if (this.animations) {
+      this.MainValueStyle.transition = 'transform: translate(-' +
+          (this.$refs.sudokuButton.getBoundingClientRect().left+ window.scrollX ) + 'px, -'
+          + (this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY) + 'px) scale(0.1)'
+    }
+
     // this.MainValueStyle.animation = 'eye 3s ease-in-out'
     // this.MainValueStyle.keyframes = `
     // animation: eye 3s ease-in-out infinite;
@@ -150,18 +163,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 .SudokuButton {
-  border-color: black;
-  border-width: 1px 1px 1px 1px;
-  border-style: solid;
+  border: 1px solid #CFCDC5;
+  border-radius: 6px;
+  //border-color: black;
+  //border-width: 1px 1px 1px 1px;
+  //border-style: solid;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #F5F5F5;
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 2px;
+  padding: 0.4vmin;
+  margin: 0.2vmin;
   box-sizing: border-box;
-  animation: eye 3s ease-in-out infinite;
-  //transition: background-color 5s cubic-bezier(.5, -1, .5, 2);
+  color: #434691;
+  //animation: eye 3s ease-in-out infinite;
+  transition: background-color .2s linear;
 }
 
 //@keyframes eye {
@@ -192,28 +210,28 @@ export default {
 //}
 
 .slide-fade-enter-active {
-  transition: all .4s linear;
+  transition: all .4s ease;
 
 }
 
 .slide-fade-leave-active {
-  transition: all .4s linear;
+  transition: all .4s ease;
 }
 
 .slide-fade-enter {
-  transform: translate(-100px, -100px);
-  //opacity: 0;
+  transform: scale(0.5) translateY(10px);
+  opacity: 0;
 }
 
 .slide-fade-leave-to {
-  transform: scale(2) translateY(-100px);
+  transform: scale(2) translateY(-10px);
   opacity: 0;
 }
 
 .MainValue {
   user-select: none;
   line-height: 0;
-  animation: myAnim .4s linear;
+  animation: myAnim .5s ease;
   animation-fill-mode: forwards;
   //transform: scale(0.1);
   //transition: all .4s linear;
@@ -224,8 +242,14 @@ export default {
 @keyframes myAnim {
   //from {
   //  transform: inherit;
-  80% {
-    transform: scale(1.5);
+  //0%{
+  //  transform: scale(0.1);
+  //}
+  //25%{
+  //  transform: scale(0.05);
+  //}
+  75% {
+    transform: scale(1.2);
   }
   //}
   100%{
@@ -234,7 +258,8 @@ export default {
 }
 
 .PossiblyValue {
-  color: #0014ff;
+  color: #EE5B3C;
+  //color: #0014ff;
   height: 30%;
   width: 30%;
   font-size: 33%;

@@ -14,12 +14,15 @@ body {
 }
 
 .mainColor {
-  background-color: #E2E3FB;
+  background-color: #E2E3FB ;
 
 }
 .secondColor {
-  background-color: #FDE0B0;
-
+  background-color: #FDE0B0 !important;
 }
 
+.primaryColor{
+  background-color: #434691 !important;
+  color: white;
+}
 </style>
