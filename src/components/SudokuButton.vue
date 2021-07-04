@@ -87,7 +87,7 @@ export default {
       // left: this.$refs.sudokuButton.getBoundingClientRect().left + window.scrollX,
       //     top: this.$refs.sudokuButton.getBoundingClientRect().top + window.scrollY
       if (!this.localData.const) {
-        styles.color = '#EE5B3C'
+        styles.color = '#43A7C7'
       }
       if (this.ButtonId % 9 === 2 || this.ButtonId % 9 === 5) {
         // styles.borderRightWidth = '4px'
@@ -99,16 +99,17 @@ export default {
         styles.marginBottom = '0.6vmin'
         styles.paddingBottom = 0
       }
-      if (this.wrongIds.has(this.ButtonId)) {
-        // styles.color = 'red'
-        styles.backgroundColor = 'red'
-      }
-      if (this.localData.possibly.size === 0 && !this.localData.const && (this.localData.value === 0)) {
+      // if (this.wrongIds.has(this.ButtonId)) {
+      //   // styles.color = 'red'
+      //   styles.backgroundColor = 'red'
+      // }
+      if (this.wrongIds.has(this.ButtonId)||this.localData.possibly.size === 0 && !this.localData.const && (this.localData.value === 0)) {
         // console.log('qqq')
-        styles.backgroundColor = '#720101'
+        styles.backgroundColor = '#FDD2C9'
+        styles.color = '#EE5B3C'
       }
       if (this.solved) {
-        styles.backgroundColor = '#6cf884'
+        styles.backgroundColor = '#DCF7FF'
         let x = Math.max( Math.abs(this.ButtonId%9 - 4) , Math.abs(Math.floor(this.ButtonId/9) - 4))
         let y = 1401-x*(x*50) -(this.ButtonId%9 +Math.floor(this.ButtonId/9) - 4)*25
         // console.log(y)
