@@ -49,17 +49,16 @@ class sudokuSolve {
     allPossubly(field) {
         //console.log('allPossublystart');
         //console.log(this.advanchedPossibly)
-        let error = 0
+        // let error = 0
         //this.methods = data
         this.cycleInint(field)
         // if (cycle) {
         //     this.cycleInint(field)
         // }
         //this.repeat = true
-        while (this.repeat || error < 2) {
+        while (this.repeat) {
             //console.log('1223');
-            error= error + 1
-            this.repeat = false
+            // error= error + 1
             this.segmentsSeparate(field)
             //alert('123')
         }
@@ -70,12 +69,12 @@ class sudokuSolve {
         // setTimeout(()=>{
         //     this.possiblyend = true
         // },0)
-        this.possiblyends++
+        // this.possiblyends++
         //console.log('allPossublyend');
         return field
     }
     segmentsSeparate(field) {
-        //console.log('segmentsSeparate');
+        this.repeat = false
         this.segments=[]
         for (let i = 0; i < 9; i++) {
             let selectedrow = []

@@ -10,13 +10,15 @@ export default {
     //     // }
     //     return  state.fields[id]
     // },
-    getDataOptions: state => {
-        let x = []
-        state.fields.forEach(item => {
-            x.push(item.length-1)
-        })
-        return x
-    },
+    fields: state => state.fields,
+    field: state => difficulty => state.fields[difficulty][0],
+        // getDataOptions: state => {
+        //     let x = []
+        //     state.fields.forEach(item => {
+        //         x.push(item.length-1)
+        //     })
+        //     return x
+        // },
     // fields: state => state.fields.slice(0,100),
     // fieldsN: state => (start,count) => {
     //     count = (count<state.fields.length) ? count : state.fields.length
